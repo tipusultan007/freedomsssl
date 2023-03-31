@@ -1,0 +1,389 @@
+{
+    "menu": [
+        {
+            "name": "Dashboard",
+            "icon": "home",
+            "slug": "/"
+        },
+        {
+            "name": "Users",
+            "icon": "users",
+            "dropdown": "1",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "users/create",
+                    "name": "Create New User",
+                    "icon": "user-plus",
+                    "slug": "user-create"
+                },
+                {
+                    "url": "users",
+                    "name": "User",
+                    "icon": "user",
+                    "slug": "users"
+                },
+                {
+                    "url": "",
+                    "name": "Admin Users",
+                    "icon": "user",
+                    "slug": "users"
+                },
+                {
+                    "url": "roles",
+                    "name": "Roles & Permissions",
+                    "icon": "shield",
+                    "slug": "roles"
+                },
+                {
+                    "url": "permissions",
+                    "name": "Download Report",
+                    "icon": "lock",
+                    "slug": "app-todo"
+                }
+            ]
+        },
+        {
+            "name": "Savings",
+            "icon": "dollar-sign",
+            "dropdown": "1",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "daily-savings",
+                    "name": "Daily Savings",
+                    "icon": "dollar-sign",
+                    "slug": "daily-savings"
+                },
+                {
+                    "url": "daily-loans",
+                    "name": "Daily Loans",
+                    "icon": "dollar-sign",
+                    "slug": "daily-loans"
+                },
+                {
+                    "url": "daily-loan-packages",
+                    "name": "Packages",
+                    "icon": "package",
+                    "slug": "daily-loan-packages"
+                },
+                {
+                    "url": "add-profits",
+                    "name": "Add Profits",
+                    "icon": "dollar-sign",
+                    "slug": "add-profits"
+                },
+                {
+                    "url": "adjust-amounts",
+                    "name": "Adjust Loan",
+                    "icon": "dollar-sign",
+                    "slug": "adjust-amounts"
+                },
+                {
+                    "url": "adjust-amounts",
+                    "name": "Download Report",
+                    "icon": "dollar-sign",
+                    "slug": "adjust-amounts"
+                }
+            ]
+        },
+        {
+            "name": "DPS",
+            "icon": "dollar-sign",
+            "dropdown": "1",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "all-dps",
+                    "name": "All DPS",
+                    "icon": "dollar-sign",
+                    "slug": "all-dps"
+                },
+                {
+                    "url": "dps-loans",
+                    "name": "DPS Loans",
+                    "icon": "dollar-sign",
+                    "slug": "dps-loans"
+                },
+                {
+                    "url": "dps-packages",
+                    "name": "DPS Packages",
+                    "icon": "package",
+                    "slug": "dps-packages"
+                },
+                {
+                    "url": "adjust-amounts",
+                    "name": "Download Report",
+                    "icon": "dollar-sign",
+                    "slug": "adjust-amounts"
+                }
+            ]
+        },
+        {
+            "name": "Special DPS",
+            "icon": "dollar-sign",
+            "dropdown": "1",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "special-dps",
+                    "name": "All Special DPS",
+                    "icon": "dollar-sign",
+                    "slug": "special-dps"
+                },
+                {
+                    "url": "special-dps-loans",
+                    "name": "Special Loans",
+                    "icon": "dollar-sign",
+                    "slug": "special-dps-loans"
+                },
+                {
+                    "url": "special-dps-packages",
+                    "name": "Special DPS Packages",
+                    "icon": "package",
+                    "slug": "special-dps-packages"
+                },
+                {
+                    "url": "adjust-amounts",
+                    "name": "Download Report",
+                    "icon": "dollar-sign",
+                    "slug": "adjust-amounts"
+                }
+            ]
+        },
+        {
+            "name": "FDR",
+            "icon": "dollar-sign",
+            "dropdown": "1",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "fdrs",
+                    "name": "All FDR",
+                    "icon": "dollar-sign",
+                    "slug": "all-fdr"
+                },
+                {
+                    "url": "fdr-deposits",
+                    "name": "All FDR Deposit",
+                    "icon": "dollar-sign",
+                    "slug": "fdr-deposits"
+                },
+                {
+                    "url": "fdr-withdraws",
+                    "name": "All FDR Withdraw",
+                    "icon": "dollar-sign",
+                    "slug": "fdr-withdraws"
+                },
+                {
+                    "url": "profit-collections",
+                    "name": "Profit Withdraw",
+                    "icon": "dollar-sign",
+                    "slug": "fdr-withdraws"
+                },
+                {
+                    "url": "fdr-packages",
+                    "name": "FDR Packages",
+                    "icon": "package",
+                    "slug": "fdr-packages"
+                }
+            ]
+        },
+        {
+            "name": "Cash",
+            "icon": "box",
+            "dropdown": "1",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "cash-ins",
+                    "name": "Cash IN",
+                    "icon": "arrow-down",
+                    "slug": "cash-in"
+                },
+                {
+                    "url": "cashouts",
+                    "name": "Cash OUT",
+                    "icon": "arrow-up",
+                    "slug": "cashouts"
+                },
+                {
+                    "url": "cashin-categories",
+                    "name": "Cash IN Category",
+                    "icon": "file",
+                    "slug": "cash-report"
+                },
+                {
+                    "url": "cashout-categories",
+                    "name": "Cash OUT Category",
+                    "icon": "file",
+                    "slug": "raise-support",
+                    "newTab": true
+                },
+                {
+                    "url": "cash-report",
+                    "name": "Cash Report",
+                    "icon": "bar-chart-2",
+                    "slug": "cash-report"
+                }
+            ]
+        },
+        {
+            "name": "Reports",
+            "icon": "bar-chart-2",
+            "dropdown": "1",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "",
+                    "name": "Savings",
+                    "icon": "dollar-sign",
+                    "slug": "cash-in",
+                    "submenu": [
+                        {
+                            "url": "cash-ins",
+                            "name": "Daily Savings",
+                            "icon": "square",
+                            "slug": "cash-in"
+                        },
+                        {
+                            "url": "cashouts",
+                            "name": "Daily Loans",
+                            "icon": "square",
+                            "slug": "cashouts"
+                        },
+                        {
+                            "url": "cash-report",
+                            "name": "Savings Transactions",
+                            "icon": "square",
+                            "slug": "cash-report"
+                        }
+                    ]
+                },
+                {
+                    "url": "cash-report",
+                    "name": "DPS",
+                    "icon": "dollar-sign",
+                    "slug": "cash-report",
+                    "submenu": [
+                        {
+                            "url": "cash-ins",
+                            "name": "DPS",
+                            "icon": "square",
+                            "slug": "cash-in"
+                        },
+                        {
+                            "url": "https://pixinvent.ticksy.com/",
+                            "name": "DPS Loans",
+                            "icon": "square",
+                            "slug": "raise-support",
+                            "newTab": true
+                        },
+                        {
+                            "url": "cash-report",
+                            "name": "DPS Transactions",
+                            "icon": "square",
+                            "slug": "cash-report"
+                        },
+                        {
+                            "url": "cash-report",
+                            "name": "DPS Loan Transactions",
+                            "icon": "square",
+                            "slug": "cash-report"
+                        }
+                    ]
+                },
+                {
+                    "url": "cash-report",
+                    "name": "Special DPS",
+                    "icon": "dollar-sign",
+                    "slug": "cash-report",
+                    "submenu": [
+                        {
+                            "url": "cash-ins",
+                            "name": "Special DPS",
+                            "icon": "square",
+                            "slug": "cash-in"
+                        },
+                        {
+                            "url": "cash-report",
+                            "name": "Special Loans",
+                            "icon": "square",
+                            "slug": "cash-report"
+                        },
+                        {
+                            "url": "cash-report",
+                            "name": "Special DPS Transactions",
+                            "icon": "square",
+                            "slug": "cash-report"
+                        },
+                        {
+                            "url": "cash-report",
+                            "name": "Special Loan Transactions",
+                            "icon": "square",
+                            "slug": "cash-report"
+                        }
+                    ]
+                },
+                {
+                    "url": "cash-report",
+                    "name": "FDR",
+                    "icon": "dollar-sign",
+                    "slug": "cash-report",
+                    "submenu": [
+                        {
+                            "url": "fdrs",
+                            "name": "All FDR",
+                            "icon": "pie-chart",
+                            "slug": "all-fdr"
+                        },
+                        {
+                            "url": "fdr-deposits",
+                            "name": "All FDR Deposit",
+                            "icon": "codepen",
+                            "slug": "fdr-deposits"
+                        },
+                        {
+                            "url": "fdr-withdraws",
+                            "name": "All FDR Withdraw",
+                            "icon": "codepen",
+                            "slug": "fdr-withdraws"
+                        },
+                        {
+                            "url": "fdr-withdraws",
+                            "name": "Profit Withdraw",
+                            "icon": "codepen",
+                            "slug": "fdr-withdraws"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Settings",
+            "icon": "edit",
+            "dropdown": "1",
+            "slug": "",
+            "submenu": [
+                {
+                    "url": "all-dps",
+                    "name": "App Settings",
+                    "icon": "copy",
+                    "slug": ""
+                },
+                {
+                    "url": "dps-loans",
+                    "name": "Bulk SMS API",
+                    "icon": "box",
+                    "slug": "dps-loans"
+                },
+                {
+                    "url": "dps-packages",
+                    "name": "Web Mail Setting",
+                    "icon": "package",
+                    "slug": "dps-packages"
+                }
+            ]
+        }
+    ]
+}
