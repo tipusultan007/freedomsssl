@@ -58,39 +58,40 @@ class DailyWithdrawAccount extends Controller
     public static function delete($trxId)
     {
         $transaction = Transaction::where('account_id',13)->where('trx_id',$trxId)->first();
-        $account = Account::find(13);
-        $account->balance -= $transaction->amount;
-        $account->save();
+        if ($transaction) {
+            $account = Account::find(13);
+            $account->balance -= $transaction->amount;
+            $account->save();
 
-        $account = Account::find(12);
-        $account->balance += $transaction->amount;
-        $account->save();
+            $account = Account::find(12);
+            $account->balance += $transaction->amount;
+            $account->save();
 
-        switch ($transaction->type)
-        {
-            case "cash":
-                $account = Account::find(5);
-                $account->balance += $transaction->amount;
-                $account->save();
-                break;
-            case "bank":
-                $account = Account::find(3);
-                $account->balance += $transaction->amount;
-                $account->save();
-                break;
-            case "bkash":
-                $account = Account::find(4);
-                $account->balance += $transaction->amount;
-                $account->save();
-                break;
-            case "nagad":
-                $account = Account::find(23);
-                $account->balance += $transaction->amount;
-                $account->save();
-                break;
-            default:
+            switch ($transaction->type) {
+                case "cash":
+                    $account = Account::find(5);
+                    $account->balance += $transaction->amount;
+                    $account->save();
+                    break;
+                case "bank":
+                    $account = Account::find(3);
+                    $account->balance += $transaction->amount;
+                    $account->save();
+                    break;
+                case "bkash":
+                    $account = Account::find(4);
+                    $account->balance += $transaction->amount;
+                    $account->save();
+                    break;
+                case "nagad":
+                    $account = Account::find(23);
+                    $account->balance += $transaction->amount;
+                    $account->save();
+                    break;
+                default:
 
+            }
+            $transaction->delete();
         }
-        $transaction->delete();
     }
 }

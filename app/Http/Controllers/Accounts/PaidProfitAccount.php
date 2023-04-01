@@ -118,56 +118,76 @@ class PaidProfitAccount extends Controller
     {
         if($type=="daily") {
             $transaction = Transaction::where('account_id', 38)->where('trx_id', $trxId)->first();
-            $paid = Account::find(38);
-            $paid->balance -= $transaction->amount;
-            $paid->save();
-            $unpaid = Account::find(43);
-            $unpaid->balance += $transaction->amount;
-            $unpaid->save();
+            if ($transaction)
+            {
+                $paid = Account::find(38);
+                $paid->balance -= $transaction->amount;
+                $paid->save();
+                $unpaid = Account::find(43);
+                $unpaid->balance += $transaction->amount;
+                $unpaid->save();
+            }
+
         }elseif ($type=="dps"){
             $transaction = Transaction::where('account_id', 39)->where('trx_id', $trxId)->first();
-            $account = Account::find(39);
-            $account->balance -= $transaction->amount;
-            $account->save();
+
+            if ($transaction)
+            {
+                $account = Account::find(39);
+                $account->balance -= $transaction->amount;
+                $account->save();
+            }
         }elseif($type=="special"){
             $transaction = Transaction::where('account_id', 40)->where('trx_id', $trxId)->first();
-            $account = Account::find(40);
-            $account->balance -= $transaction->amount;
-            $account->save();
+
+            if ($transaction)
+            {
+                $account = Account::find(40);
+                $account->balance -= $transaction->amount;
+                $account->save();
+            }
         }elseif ($type=="fdr"){
             $transaction = Transaction::where('account_id', 41)->where('trx_id', $trxId)->first();
-            $paid = Account::find(41);
-            $paid->balance -= $transaction->amount;
-            $paid->save();
-            $unpaid = Account::find(42);
-            $unpaid->balance += $transaction->amount;
-            $unpaid->save();
-        }
-        switch ($transaction->type)
-        {
-            case "cash":
-                $account = Account::find(5);
-                $account->balance += $transaction->amount;
-                $account->save();
-                break;
-            case "bank":
-                $account = Account::find(3);
-                $account->balance += $transaction->amount;
-                $account->save();
-                break;
-            case "bkash":
-                $account = Account::find(4);
-                $account->balance += $transaction->amount;
-                $account->save();
-                break;
-            case "nagad":
-                $account = Account::find(23);
-                $account->balance += $transaction->amount;
-                $account->save();
-                break;
-            default:
 
+            if ($transaction)
+            {
+                $paid = Account::find(41);
+                $paid->balance -= $transaction->amount;
+                $paid->save();
+                $unpaid = Account::find(42);
+                $unpaid->balance += $transaction->amount;
+                $unpaid->save();
+            }
         }
-        $transaction->delete();
+        if ($transaction)
+        {
+            switch ($transaction->type)
+            {
+                case "cash":
+                    $account = Account::find(5);
+                    $account->balance += $transaction->amount;
+                    $account->save();
+                    break;
+                case "bank":
+                    $account = Account::find(3);
+                    $account->balance += $transaction->amount;
+                    $account->save();
+                    break;
+                case "bkash":
+                    $account = Account::find(4);
+                    $account->balance += $transaction->amount;
+                    $account->save();
+                    break;
+                case "nagad":
+                    $account = Account::find(23);
+                    $account->balance += $transaction->amount;
+                    $account->save();
+                    break;
+                default:
+
+            }
+            $transaction->delete();
+        }
+
     }
 }

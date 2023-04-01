@@ -145,7 +145,7 @@ class FdrWithdrawController extends Controller
         $fdr                = Fdr::find($request->fdr_id);
         $data['account_no'] = $fdr->account_no;
         $data['user_id']    = $fdr->user_id;
-        $data['trx_id']    = TransactionController::trxId();
+        $data['trx_id']    = $this->trxId();
         $data['created_by'] = Auth::id();
 
         $fdr->balance -= $request->amount;
@@ -178,7 +178,30 @@ class FdrWithdrawController extends Controller
             ->route('fdr-withdraws.edit', $fdrWithdraw)
             ->withSuccess(__('crud.common.created'));*/
     }
+    public function trxId()
+    {
+        $record = Transaction::latest()->first();
+        $dateTime = Carbon::now('Asia/Dhaka');
 
+        if ($record) {
+
+            $expNum = explode('-', $record->trx_id);
+
+            if ($dateTime->format('jny') == $expNum[1]) {
+                $s = str_pad($expNum[2] + 1, 4, "0", STR_PAD_LEFT);
+                $nextTxNumber = 'TRX-' . $expNum[1] . '-' . $s;
+            } else {
+                //increase 1 with last invoice number
+                $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+            }
+        } else {
+
+            $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+
+        }
+
+        return $nextTxNumber;
+    }
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\FdrWithdraw $fdrWithdraw
@@ -239,7 +262,11 @@ class FdrWithdrawController extends Controller
     public function destroy($id)
     {
         $fdrWithdraw = FdrWithdraw::find($id);
-        $this->authorize('delete', $fdrWithdraw);
+        //$this->authorize('delete', $fdrWithdraw);
+
+        $fdrDeposit = FdrDeposit::find($fdrWithdraw->fdr_deposit_id);
+        $fdrDeposit->balance += $fdrWithdraw->amount;
+        $fdrDeposit->save();
 
         $fdr          = Fdr::find($fdrWithdraw->fdr_id);
         $fdr->balance += $fdrWithdraw->amount;

@@ -54,35 +54,36 @@ class SpecialDpsAccount extends Controller
     public static function delete($trxId)
     {
         $transaction = Transaction::where('account_id',26)->where('trx_id',$trxId)->first();
-        $account = Account::find(26);
-        $account->balance -= $transaction->amount;
-        $account->save();
-        switch ($transaction->type)
-        {
-            case "cash":
-                $account = Account::find(5);
-                $account->balance -= $transaction->amount;
-                $account->save();
-                break;
-            case "bank":
-                $account = Account::find(3);
-                $account->balance -= $transaction->amount;
-                $account->save();
-                break;
-            case "bkash":
-                $account = Account::find(4);
-                $account->balance -= $transaction->amount;
-                $account->save();
-                break;
-            case "nagad":
-                $account = Account::find(23);
-                $account->balance -= $transaction->amount;
-                $account->save();
-                break;
-            default:
+        if ($transaction) {
+            $account = Account::find(26);
+            $account->balance -= $transaction->amount;
+            $account->save();
+            switch ($transaction->type) {
+                case "cash":
+                    $account = Account::find(5);
+                    $account->balance -= $transaction->amount;
+                    $account->save();
+                    break;
+                case "bank":
+                    $account = Account::find(3);
+                    $account->balance -= $transaction->amount;
+                    $account->save();
+                    break;
+                case "bkash":
+                    $account = Account::find(4);
+                    $account->balance -= $transaction->amount;
+                    $account->save();
+                    break;
+                case "nagad":
+                    $account = Account::find(23);
+                    $account->balance -= $transaction->amount;
+                    $account->save();
+                    break;
+                default:
 
+            }
+            $transaction->delete();
         }
-        $transaction->delete();
 
     }
 }

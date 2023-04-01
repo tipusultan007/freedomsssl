@@ -128,7 +128,7 @@ class TransactionController extends Controller
 
     public static function trxId()
     {
-        $record   = Transaction::latest()->first();
+        $record = Transaction::latest()->first();
         $dateTime = Carbon::now('Asia/Dhaka');
 
         if ($record) {
@@ -136,7 +136,7 @@ class TransactionController extends Controller
             $expNum = explode('-', $record->trx_id);
 
             if ($dateTime->format('jny') == $expNum[1]) {
-                $s            = str_pad($expNum[2] + 1, 4, "0", STR_PAD_LEFT);
+                $s = str_pad($expNum[2] + 1, 4, "0", STR_PAD_LEFT);
                 $nextTxNumber = 'TRX-' . $expNum[1] . '-' . $s;
             } else {
                 //increase 1 with last invoice number

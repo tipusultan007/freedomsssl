@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Accounts\FdrDepositAccount;
+use App\Http\Controllers\Accounts\FdrWithdrawAccount;
+use App\Http\Controllers\Accounts\PaidProfitAccount;
 use App\Models\Account;
 use App\Models\CashIn;
 use App\Models\Cashout;
@@ -153,6 +156,7 @@ class FdrController extends Controller
         $fdr = Fdr::create($data);
         $data['fdr_id'] = $fdr->id;
         $data['balance'] = $fdr->amount;
+        $data['trx_id'] = $this->trxId();
         $fdr->balance += $request->amount;
         $fdr->save();
         $deposit = FdrDeposit::create($data);
@@ -174,7 +178,30 @@ class FdrController extends Controller
             ->route('fdrs.edit', $fdr)
             ->withSuccess(__('crud.common.created'));*/
     }
+    public function trxId()
+    {
+        $record = Transaction::latest()->first();
+        $dateTime = Carbon::now('Asia/Dhaka');
 
+        if ($record) {
+
+            $expNum = explode('-', $record->trx_id);
+
+            if ($dateTime->format('jny') == $expNum[1]) {
+                $s = str_pad($expNum[2] + 1, 4, "0", STR_PAD_LEFT);
+                $nextTxNumber = 'TRX-' . $expNum[1] . '-' . $s;
+            } else {
+                //increase 1 with last invoice number
+                $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+            }
+        } else {
+
+            $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+
+        }
+
+        return $nextTxNumber;
+    }
     public function accountTransaction(FdrDeposit $deposit)
     {
         $dps_transaction = Transaction::create([
@@ -253,29 +280,35 @@ class FdrController extends Controller
         $deposits = FdrDeposit::where('fdr_id',$id)->get();
         $withdraws = FdrWithdraw::where('fdr_id',$id)->get();
         $profits = FdrProfit::where('fdr_id',$id)->get();
-        foreach ($deposits as $deposit)
-        {
-            Transaction::where('account_id',1)->where('trx_id',$deposit->trx_id)->delete();
-            $deposit->delete();
-        }
-        foreach ($withdraws as $withdraw)
-        {
-            Transaction::where('account_id',16)->where('trx_id',$deposit->trx_id)->delete();
-            $withdraw->delete();
-        }
         foreach ($profits as $profit)
         {
-            Transaction::where('account_id',16)->where('trx_id',$profit->trx_id)->delete();
+            PaidProfitAccount::delete($profit->trx_id,'fdr');
+            //Transaction::where('account_id',16)->where('trx_id',$profit->trx_id)->delete();
             ProfitCollection::where('fdr_profit_id',$profit->id)->delete();
             $profit->delete();
         }
-        $cashAccount = Account::find(4); //ASSET (CASH+)
+        foreach ($withdraws as $withdraw)
+        {
+            FdrWithdrawAccount::delete($withdraw->trx_id);
+            //Transaction::where('account_id',16)->where('trx_id',$deposit->trx_id)->delete();
+            $withdraw->delete();
+        }
+
+        foreach ($deposits as $deposit)
+        {
+            FdrDepositAccount::delete($deposit->trx_id);
+            //Transaction::where('account_id',1)->where('trx_id',$deposit->trx_id)->delete();
+            $deposit->delete();
+        }
+
+
+        /*$cashAccount = Account::find(4); //ASSET (CASH+)
         $cashAccount->balance += $fdr->profit;
         $cashAccount->save();
 
         $depositAccount = Account::find(1); //LIABILITY (DEPOSIT +)
         $depositAccount->balance -= $fdr->balance;
-        $depositAccount->save();
+        $depositAccount->save();*/
 
         Nominees::where('account_no',$fdr->account_no)->delete();
         CashIn::where('account_no',$fdr->account_no)->delete();
