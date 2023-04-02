@@ -357,11 +357,12 @@ class DailyLoanController extends Controller
             {
                 OtherFeeAccount::delete($item->trx_id);
             }
+            CashIn::where('trx_id',$item->trx_id)->delete();
             //Transaction::where('trx_id',$item->trx_id)->delete();
             $item->delete();
         }
 
-        CashIn::where('daily_loan_id',$id)->delete();
+
         Cashout::where('daily_loan_id',$id)->delete();
         //Transaction::whereIn('account_id',[10,11,32])->where('account_no',$loan->account_no)->delete();
         $loan->delete();

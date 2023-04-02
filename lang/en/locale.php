@@ -240,6 +240,7 @@ return [
     "Create New User"          => "Create New User",
     "Create New Savings"          => "Create New Savings",
     "Accounts Management" => "Accounts Management",
-    "Accounts" => "Accounts"
+    "Accounts" => "Accounts",
+    "Cashbook" => "Cashbook"
 
 ];

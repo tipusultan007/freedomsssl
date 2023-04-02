@@ -153,6 +153,7 @@ class SpecialDpsLoanController extends Controller
         $data = $request->all();
         $data['trx_id'] = TransactionController::trxId();
         $loan = SpecialDpsLoan::where('account_no', $request->account_no)->first();
+        $data['trx_type'] = "cash";
         if ($loan) {
             $data['before_loan'] = $loan->remain_loan;
             $loan->loan_amount += $request->loan_amount;
@@ -180,7 +181,7 @@ class SpecialDpsLoanController extends Controller
             Guarantor::create($data);
 
             $data['name'] = $loan->user->name;
-            $data['trx_type'] = "cash";
+
             SpecialLoanAccount::create($data);
             //$transaction = $this->accountTransaction($takenLoan);
         } else {

@@ -212,6 +212,11 @@
                     "name": "Cash IN",
                     "icon": "arrow-down",
                     "slug": "cash-in"
+                }, {
+                    "url": "cashbook",
+                    "name": "Cashbook",
+                    "icon": "arrow-down",
+                    "slug": "cashbook"
                 },
                 {
                     "url": "cashouts",

@@ -424,19 +424,7 @@ class SavingsCollectionController extends Controller
             $dailySavings->total -= $savingsCollection->saving_amount;
             $dailySavings->save();
             SavingsAccount::delete($dailyCollection->trx_id);
-            //$transaction = Transaction::where('account_id',1)->where('trx_id',$dailyCollection->trx_id)->first();
 
-            /*if ($transaction) {
-                $depositAccount = Account::find(1);
-                $depositAccount->balance -= $transaction->amount;
-                $depositAccount->save();
-
-                $cashAccount = Account::find(4); //ASSET (CASH+)
-                $cashAccount->balance -= $transaction->amount;
-                $cashAccount->save();
-
-                $transaction->delete();
-            }*/
 
         }elseif($dailyCollection->saving_type=='withdraw')
         {
@@ -451,22 +439,6 @@ class SavingsCollectionController extends Controller
             $dailySavings->save();
 
             DailyWithdrawAccount::delete($dailyCollection->trx_id);
-           /* $transaction = Transaction::where('account_id',16)->where('trx_id',$dailyCollection->trx_id)->first();
-            if ($transaction) {
-                $withdrawAccount = Account::find(16);
-                $withdrawAccount->balance -= $transaction->amount;
-                $withdrawAccount->save();
-
-                $depositAccount = Account::find(1); //LIABILITY (DEPOSIT -)
-                $depositAccount->balance += $transaction->amount;
-                $depositAccount->save();
-
-                $cashAccount = Account::find(4); //ASSET (CASH-)
-                $cashAccount->balance += $transaction->amount;
-                $cashAccount->save();
-                $transaction->delete();
-            }*/
-
         }
 
         if ($savingsCollection->late_fee > 0) {
