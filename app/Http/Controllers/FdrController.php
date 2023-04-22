@@ -156,7 +156,7 @@ class FdrController extends Controller
         $fdr = Fdr::create($data);
         $data['fdr_id'] = $fdr->id;
         $data['balance'] = $fdr->amount;
-        $data['trx_id'] = $this->trxId();
+        $data['trx_id'] = $this->trxId($request->date);
         $fdr->balance += $request->amount;
         $fdr->save();
         $deposit = FdrDeposit::create($data);
@@ -178,25 +178,24 @@ class FdrController extends Controller
             ->route('fdrs.edit', $fdr)
             ->withSuccess(__('crud.common.created'));*/
     }
-    public function trxId()
+    public function trxId($date)
     {
-        $record = Transaction::latest()->first();
-        $dateTime = Carbon::now('Asia/Dhaka');
-
+        $record = Transaction::latest('id')->first();
+        $dateTime = new Carbon($date);
+        $permitted_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $uid = substr(str_shuffle($permitted_chars), 0, 6);
         if ($record) {
-
             $expNum = explode('-', $record->trx_id);
-
             if ($dateTime->format('jny') == $expNum[1]) {
-                $s = str_pad($expNum[2] + 1, 4, "0", STR_PAD_LEFT);
-                $nextTxNumber = 'TRX-' . $expNum[1] . '-' . $s;
+                $s = str_pad($expNum[3]+1, 4, "0", STR_PAD_LEFT);
+                $nextTxNumber = 'TRX-' . $expNum[1] .'-'.$uid. '-' . $s;
             } else {
                 //increase 1 with last invoice number
-                $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+                $nextTxNumber = 'TRX-' . $dateTime->format('jny') .'-'.$uid. '-0001';
             }
         } else {
 
-            $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+            $nextTxNumber = 'TRX-' . $dateTime->format('jny') .'-'.$uid. '-0001';
 
         }
 

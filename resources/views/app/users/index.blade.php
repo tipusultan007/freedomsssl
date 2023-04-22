@@ -587,7 +587,7 @@
                             var $name = full['name'],
                                 $email = full['email'],
                                 $id = full['id'],
-                                $image = full['profile_photo_url'];
+                                $image = full['profile_photo_path'];
                             if ($image) {
                                 // For Avatar image
                                 var $output =
@@ -817,10 +817,8 @@
         })
         // Delete Record
         $('.user-list-table tbody').on('click', '.delete-record', function () {
-
             var id = $(this).data("id");
             var token = $("meta[name='csrf-token']").attr("content");
-
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",

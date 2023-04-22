@@ -11,6 +11,7 @@ use App\Models\DailySavings;
 use App\Models\Dps;
 use App\Models\DpsLoan;
 use App\Models\Due;
+use App\Models\Fdr;
 use App\Models\Guarantor;
 use App\Models\LoanDocuments;
 use App\Models\Nominees;
@@ -334,21 +335,35 @@ class SpecialDpsController extends Controller
     public function specialDpsInfoByAccount($account)
     {
         $savings = SpecialDps::where('account_no',$account)->first();
+        //$savings = Dps::where('account_no', $account)->first();
         $user = User::find($savings->user_id);
-        $dps = Dps::where('user_id',$user->id)->count();
-        $daily_savings = DailySavings::where('user_id',$user->id)->count();
-        $special_dps = SpecialDps::where('user_id',$user->id)->count();
-        $daily_loans = DailyLoan::where('user_id',$user->id)->count();
-        $dps_loans = DpsLoan::where('user_id',$user->id)->count();
-        $special_dps_loans = SpecialDpsLoan::where('user_id',$user->id)->count();
+        $dps = Dps::where('user_id', $user->id)->where('status','active')->sum('balance');
+        $daily_savings = DailySavings::where('user_id', $user->id)->sum('total');
+        $special_dps = SpecialDps::where('user_id', $user->id)->where('status','active')->sum('balance');
+        $daily_loans = DailyLoan::where('user_id', $user->id)->where('status','active')->sum('balance');
+        $fdr = Fdr::where('user_id', $user->id)->where('status','active')->sum('balance');
+        $dps_loans = DpsLoan::where('user_id', $user->id)->where('status','active')->sum('remain_loan');
+        $special_dps_loans = SpecialDpsLoan::where('user_id', $user->id)->where('status','active')->sum('remain_loan');
 
+        $guarantors = array();
+        $guarantorOff = Guarantor::where('user_id',$savings->user_id)->get();
+        if ($guarantorOff)
+        {
+            foreach ($guarantorOff as $item)
+            {
+                $guarantors[] = $item->account_no;
+            }
+        }
+
+        $data['guarantors'] = $guarantors;
         $data['user'] = $user;
-        $data['dps'] = $dps;
-        $data['daily_savings'] = $daily_savings;
-        $data['special_dps'] = $special_dps;
-        $data['daily_loans'] = $daily_loans;
-        $data['dps_loans'] = $dps_loans;
-        $data['special_dps_loans'] = $special_dps_loans;
+        $data['dps'] = $dps.' Tk.';
+        $data['fdr'] = $fdr.' Tk.';
+        $data['daily_savings'] = $daily_savings.' Tk.';
+        $data['special_dps'] = $special_dps.' Tk.';
+        $data['daily_loans'] = $daily_loans.' Tk.';
+        $data['dps_loans'] = $dps_loans.' Tk.';
+        $data['special_dps_loans'] = $special_dps_loans.' Tk.';
         return json_encode($data);
     }
 

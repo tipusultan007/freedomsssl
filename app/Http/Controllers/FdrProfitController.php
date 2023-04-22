@@ -159,7 +159,7 @@ class FdrProfitController extends Controller
         $data['user_id'] = $fdr->user_id;
         $data['account_no'] = $fdr->account_no;
         $data['created_by'] = Auth::id();
-        $data['trx_id'] = TransactionController::trxId();
+        $data['trx_id'] = TransactionController::trxId($request->date);
         $data['balance'] = $fdr->balance;
         $fdrProfit = FdrProfit::create($data);
 

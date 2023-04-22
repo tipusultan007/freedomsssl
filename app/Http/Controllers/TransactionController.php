@@ -20,7 +20,19 @@ class TransactionController extends Controller
 
     public function dataTransactions(Request $request)
     {
-        $totalData = Transaction::count();
+        //$totalData = Transaction::count();
+        if (!empty($request->account_id) && !empty($request->from) && !empty($request->to))
+        {
+            $totalData = Transaction::whereBetween('date',[$request->from, $request->to])->where('account_id',$request->account_id)->count();
+        }elseif (!empty($request->from) && !empty($request->to))
+        {
+            $totalData = Transaction::whereBetween('date',[$request->from, $request->to])->count();
+        }elseif(!empty($request->account_id))
+        {
+            $totalData = Transaction::where('account_id',$request->account_id)->count();
+        }else{
+            $totalData = Transaction::count();
+        }
         $totalFiltered = $totalData;
 
         $limit = $request->input('length');
@@ -28,10 +40,43 @@ class TransactionController extends Controller
 
         if(empty($request->input('search.value')))
         {
-            $posts = Transaction::with('account')->offset($start)
+            /*$posts = Transaction::with('account')->offset($start)
                 ->limit($limit)
                 ->orderBy('trx_id','desc')
-                ->get();
+                ->get();*/
+
+            if (!empty($request->account_id) && !empty($request->from) && !empty($request->to))
+            {
+                $posts = Transaction::with('account')
+                    ->whereBetween('date',[$request->from, $request->to])
+                    ->where('account_id',$request->account_id)
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('trx_id','desc')
+                    ->get();
+
+            }elseif (!empty($request->from) && !empty($request->to))
+            {
+                $posts = Transaction::with('account')
+                    ->whereBetween('date',[$request->from, $request->to])
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('trx_id','desc')
+                    ->get();
+            }elseif(!empty($request->account_id))
+            {
+                $posts = Transaction::with('account')
+                    ->where('account_id',$request->account_id)
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('trx_id','desc')
+                    ->get();
+            }else{
+                $posts = Transaction::with('account')->offset($start)
+                    ->limit($limit)
+                    ->orderBy('trx_id','desc')
+                    ->get();
+            }
         }
         $data = array();
         if(!empty($posts))
@@ -41,9 +86,10 @@ class TransactionController extends Controller
                 $trx = $post->trx_id??'';
                 $nestedData['id'] = $post->id;
                 $nestedData['account'] = '<strong>'.$post->account->name.'</strong><br>'.$post->description;
-                $nestedData['ac_details'] = '<strong>'.$post->account_no.'</strong><br>'.$post->name;
+                $nestedData['account_no'] = $post->account_no;
+                $nestedData['name'] = $post->name;
                 $nestedData['amount'] = $post->amount;
-                $nestedData['trx_id'] = $post->trx_id??'';
+                $nestedData['trx_id'] = $post->trx_id;
                 $nestedData['date'] = date('d M Y',strtotime($post->date));
                 $data[] = $nestedData;
 
@@ -126,25 +172,24 @@ class TransactionController extends Controller
         //
     }
 
-    public static function trxId()
+    public static function trxId($date)
     {
-        $record = Transaction::latest()->first();
-        $dateTime = Carbon::now('Asia/Dhaka');
-
+        $record = Transaction::latest('id')->first();
+        $dateTime = new Carbon($date);
+        $permitted_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $uid = substr(str_shuffle($permitted_chars), 0, 6);
         if ($record) {
-
             $expNum = explode('-', $record->trx_id);
-
             if ($dateTime->format('jny') == $expNum[1]) {
-                $s = str_pad($expNum[2] + 1, 4, "0", STR_PAD_LEFT);
-                $nextTxNumber = 'TRX-' . $expNum[1] . '-' . $s;
+                $s = str_pad($expNum[3]+1, 4, "0", STR_PAD_LEFT);
+                $nextTxNumber = 'TRX-' . $expNum[1] .'-'.$uid. '-' . $s;
             } else {
                 //increase 1 with last invoice number
-                $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+                $nextTxNumber = 'TRX-' . $dateTime->format('jny') .'-'.$uid. '-0001';
             }
         } else {
 
-            $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+            $nextTxNumber = 'TRX-' . $dateTime->format('jny') .'-'.$uid. '-0001';
 
         }
 

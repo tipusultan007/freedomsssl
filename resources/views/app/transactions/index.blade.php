@@ -48,14 +48,52 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6 col-12">
+
+                                @php
+                                    $categories = \App\Models\Account::all();
+                                @endphp
+                                <select name="account_id" id="account_id"
+                                        class="form-select select2"
+                                        data-allow-clear="on"
+                                        data-placeholder="Select Account">
+                                    <option value="">Select Account</option>
+                                    @foreach($categories as $item)
+                                        <option value="{{ $item->id }}"> {{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-xl-3 col-md-6 col-12">
+                                <input type="text" id="date_from" name="from" class="form-control flatpickr-basic"
+                                       placeholder="Start Date"/>
+                            </div>
+                            <div class="col-xl-3 col-md-6 col-12">
+                                <input type="text" class="form-control flatpickr-basic" name="to"
+                                       id="date_to" placeholder="End Date">
+                            </div>
+                            <div class="col-xl-3 col-md-6 col-12">
+                                <button class="btn btn-primary" id="btn-filter" type="button">Filter</button>
+                            </div>
+                        </div>
+                        {{--
+                                                <h6 class="text-secondary mt-1">Viewing Data Between: <span class="text-success from"></span> and <span class="text-success to"></span></h6>
+                        --}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
                     <table class="datatables-basic table table-sm">
                         <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Account</th>
                             <th>Trx ID</th>
-                            <th>A/C Holder</th>
-                            <th>Amount</th>
+                            <th>Account</th>
+                            <th>A/C No</th>
+                            <th>Name</th>
+                            <th class="text-end">Amount</th>
                         </tr>
                         </thead>
                     </table>
@@ -140,25 +178,27 @@
         var assetPath = $('body').attr('data-asset-path'),
             userView = '{{ url('users') }}/';
 
-        function loadData() {
+        function loadData(id,from,to) {
             $('.datatables-basic').DataTable({
                 "proccessing": true,
                 "serverSide": true,
                 "ordering": false,
                 "ajax": {
-                    "url": "{{ url('dataTransactions') }}"
+                    "url": "{{ url('dataTransactions') }}",
+                    "data":{account_id: id, from:from,to:to}
                 },
                 "columns": [
                     {"data": "date"},
-                    {"data": "account"},
                     {"data": "trx_id"},
-                    {"data": "ac_details"},
+                    {"data": "account"},
+                    {"data": "account_no"},
+                    {"data": "name"},
                     {"data": "amount"}
                 ],
                 columnDefs: [
                     {
-                        targets: -1,
-                        className: 'text-align-right'
+                        targets: 5,
+                        className: 'text-end'
                     }
                 ],
                 dom:
@@ -186,31 +226,31 @@
                                 extend: 'print',
                                 text: feather.icons['printer'].toSvg({class: 'font-small-4 me-50'}) + 'Print',
                                 className: 'dropdown-item',
-                                exportOptions: {columns: [0, 1, 2, 3]}
+                                exportOptions: {columns: [0, 2, 3, 4, 5]}
                             },
                             {
                                 extend: 'csv',
                                 text: feather.icons['file-text'].toSvg({class: 'font-small-4 me-50'}) + 'Csv',
                                 className: 'dropdown-item',
-                                exportOptions: {columns: [0, 1, 2, 3]}
+                                exportOptions: {columns: [0, 2, 3, 4, 5]}
                             },
                             {
                                 extend: 'excel',
                                 text: feather.icons['file'].toSvg({class: 'font-small-4 me-50'}) + 'Excel',
                                 className: 'dropdown-item',
-                                exportOptions: {columns: [0, 1, 2, 3]}
+                                exportOptions: {columns: [0, 2, 3, 4, 5]}
                             },
                             {
                                 extend: 'pdf',
                                 text: feather.icons['clipboard'].toSvg({class: 'font-small-4 me-50'}) + 'Pdf',
                                 className: 'dropdown-item',
-                                exportOptions: {columns: [0, 1, 2, 3]}
+                                exportOptions: {columns: [0, 2, 3, 4, 5]}
                             },
                             {
                                 extend: 'copy',
                                 text: feather.icons['copy'].toSvg({class: 'font-small-4 me-50'}) + 'Copy',
                                 className: 'dropdown-item',
-                                exportOptions: {columns: [0, 1, 2, 3]}
+                                exportOptions: {columns: [0, 2, 3, 4, 5]}
                             }
                         ],
                         init: function (api, node, config) {
@@ -226,5 +266,27 @@
             });
         }
 
+        var from = new Date().toJSON().slice(0, 10);
+        var to = new Date().toJSON().slice(0, 10);
+
+        function padTo2Digits(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        function formatDate(date) {
+            return [
+                padTo2Digits(date.getDate()),
+                padTo2Digits(date.getMonth() + 1),
+                date.getFullYear(),
+            ].join('/');
+        }
+
+        $("#btn-filter").on('click',function () {
+            from = $("input[name=from]").val();
+            to = $("input[name=to]").val();
+            let cat = $("#account_id").val();
+            $(".datatables-basic").DataTable().destroy();
+            loadData(cat,from,to);
+        })
     </script>
 @endsection

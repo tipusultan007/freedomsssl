@@ -56,7 +56,7 @@
                             <th>Date</th>
                             <th>Package</th>
                             <th>Balance</th>
-                            <th>Introducer</th>
+                            <th>Amount</th>
                             <th>Created By</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -438,7 +438,7 @@
                     {"data": "date"},
                     {"data": "package"},
                     {"data": "balance"},
-                    {"data": "introducer"},
+                    {"data": "package_amount"},
                     {"data": "createdBy"},
                     {"data": "status"},
                     {"data": "action"},

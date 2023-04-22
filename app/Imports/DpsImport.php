@@ -15,16 +15,16 @@ class DpsImport implements ToModel, WithHeadingRow,WithBatchInserts, WithChunkRe
     public function model(array $row)
     {
         $dps = new Dps();
-        $dps->id = $row['id'];
+        //$dps->id = $row['id'];
         $dps->user_id = $row['user_id'];
         $dps->dps_package_id = $row['dps_package_id'];
-        $dps->introducer_id = $row['introducer_id'];
+        //$dps->introducer_id = $row['introducer_id'];
         $dps->account_no = $row['account_no'];
-        $dps->receipt_book = $row['receipt_book'];
+        /*$dps->receipt_book = $row['receipt_book'];*/
         $dps->package_amount = $row['package_amount'];
-        $dps->opening_date = $this->transformDate($row['opening_date']);
-        $dps->commencement = $this->transformDate($row['commencement']);
-        $dps->created_by = $row['created_by'];
+        $dps->opening_date = $row['opening_date'];
+        $dps->commencement = $row['commencement'];
+        /*$dps->created_by = $row['created_by'];*/
         $dps->status = $row['status'];
         $dps->save();
 

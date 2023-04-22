@@ -31,6 +31,7 @@ class DailyCollection extends Model
         'daily_loan_id',
         'savings_balance',
         'loan_balance',
+        'grace',
         'date',
         'collection_date',
         'created_by',

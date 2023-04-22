@@ -18,6 +18,7 @@ use App\Models\DailySavings;
 use App\Models\SavingsCollection;
 use App\Http\Requests\SavingsCollectionStoreRequest;
 use App\Http\Requests\SavingsCollectionUpdateRequest;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SavingsCollectionController extends Controller
@@ -52,15 +53,6 @@ class SavingsCollectionController extends Controller
                 ->where('collector_id',$request->collector)
                 ->whereBetween('date',[$request->from,$request->to])
                 ->count();
-        }elseif (!empty($request->from) && !empty($request->to))
-        {
-            $totalData = SavingsCollection::whereBetween('date',[$request->from,$request->to])
-                ->count();
-        }elseif (!empty($request->account) && !empty($request->collector))
-        {
-            $totalData = SavingsCollection::where('account_no',$request->account)
-                ->where('collector_id',$request->collector)
-                ->count();
         }elseif (!empty($request->account) && !empty($request->from) && !empty($request->to))
         {
             $totalData = SavingsCollection::where('account_no',$request->account)
@@ -70,6 +62,15 @@ class SavingsCollectionController extends Controller
         {
             $totalData = SavingsCollection::where('collector_id',$request->collector)
                 ->whereBetween('date',[$request->from,$request->to])
+                ->count();
+        }elseif (!empty($request->from) && !empty($request->to))
+        {
+            $totalData = SavingsCollection::whereBetween('date',[$request->from,$request->to])
+                ->count();
+        }elseif (!empty($request->account) && !empty($request->collector))
+        {
+            $totalData = SavingsCollection::where('account_no',$request->account)
+                ->where('collector_id',$request->collector)
                 ->count();
         }elseif (!empty($request->account))
         {
@@ -100,28 +101,7 @@ class SavingsCollectionController extends Controller
                     ->limit($limit)
                     ->orderBy('savings_collections.date','desc')
                     ->get();
-            }elseif (!empty($request->from) && !empty($request->to))
-            {
-                $posts = SavingsCollection::join('users','users.id','=','savings_collections.user_id')
-                    ->join('users as collector','collector.id','=','savings_collections.collector_id')
-                    ->whereBetween('savings_collections.date',[$request->from,$request->to])
-                    ->select('savings_collections.*','users.name','collector.name as c_name')
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy('savings_collections.date','desc')
-                    ->get();
-            }elseif (!empty($request->account) && !empty($request->collector))
-            {
-                $posts = SavingsCollection::join('users','users.id','=','savings_collections.user_id')
-                    ->join('users as collector','collector.id','=','savings_collections.collector_id')
-                    ->where('savings_collections.account_no',$request->account)
-                    ->where('savings_collections.collector_id',$request->collector)
-                    ->select('savings_collections.*','users.name','collector.name as c_name')
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy('savings_collections.date','desc')
-                    ->get();
-            }elseif ($request->account !="" && $request->from !="" && $request->to !="")
+            }elseif ( !empty($request->account) &&  !empty($request->from) &&  !empty($request->to))
             {
                 $posts = SavingsCollection::join('users','users.id','=','savings_collections.user_id')
                     ->join('users as collector','collector.id','=','savings_collections.collector_id')
@@ -145,6 +125,27 @@ class SavingsCollectionController extends Controller
                     ->orderBy('savings_collections.date','desc')
                     ->get();
 
+            }elseif (!empty($request->from) && !empty($request->to))
+            {
+                $posts = SavingsCollection::join('users','users.id','=','savings_collections.user_id')
+                    ->join('users as collector','collector.id','=','savings_collections.collector_id')
+                    ->whereBetween('savings_collections.date',[$request->from,$request->to])
+                    ->select('savings_collections.*','users.name','collector.name as c_name')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('savings_collections.date','desc')
+                    ->get();
+            }elseif (!empty($request->account) && !empty($request->collector))
+            {
+                $posts = SavingsCollection::join('users','users.id','=','savings_collections.user_id')
+                    ->join('users as collector','collector.id','=','savings_collections.collector_id')
+                    ->where('savings_collections.account_no',$request->account)
+                    ->where('savings_collections.collector_id',$request->collector)
+                    ->select('savings_collections.*','users.name','collector.name as c_name')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('savings_collections.date','desc')
+                    ->get();
             }elseif (!empty($request->account))
             {
                 $posts = SavingsCollection::join('users','users.id','=','savings_collections.user_id')
@@ -327,25 +328,28 @@ class SavingsCollectionController extends Controller
                 $cashin->daily_collection_id = $savingsCollection->collection_id;
                 $cashin->amount = $request->saving_amount + $late_fee + $other_fee;
                 $cashin->date = $request->date;
-                $cashin->created_by = $request->collector_id;
+                $cashin->created_by = Auth::id();
                 $cashin->save();
                 $dailyCollection->saving_amount = $request->saving_amount;
                 $dailyCollection->late_fee = $request->late_fee;
                 $dailyCollection->other_fee = $request->other_fee;
                 $dailyCollection->savings_balance = $request->balance;
-                $dailyCollection->collector_id = $request->collector_id;
+                $dailyCollection->created_by = Auth::id();
                 $dailyCollection->date = $request->date;
                 $dailyCollection->saving_type = $request->type;
                 $dailyCollection->save();
+                SavingsAccount::update($savingsCollection->trx_id,$request->saving_amount);
+
             }else{
                 CashIn::where('daily_collection_id',$savingsCollection->collection_id)->delete();
+                SavingsAccount::delete($savingsCollection->trx_id);
                 $cashout = Cashout::create([
                     'cashout_category_id' => 1,
                     'account_no' => $savingsCollection->account_no,
                     'daily_collection_id' => $savingsCollection->collection_id,
                     'amount' => $request->saving_amount - ($late_fee + $other_fee),
                     'date' => $request->date,
-                    'created_by' => $request->collector_id,
+                    'created_by' => Auth::id(),
                     'user_id' => $savingsCollection->user_id,
                 ]);
 
@@ -353,10 +357,14 @@ class SavingsCollectionController extends Controller
                 $dailyCollection->late_fee = $request->late_fee;
                 $dailyCollection->other_fee = $request->other_fee;
                 $dailyCollection->savings_balance = $request->balance;
-                $dailyCollection->collector_id = $request->collector_id;
+                $dailyCollection->created_by = Auth::id();
                 $dailyCollection->date = $request->date;
                 $dailyCollection->saving_type = $request->type;
                 $dailyCollection->save();
+                $data = $dailyCollection;
+                $data['name'] = $dailyCollection->user->name;
+                $data['trx_type'] = 'cash';
+                DailyWithdrawAccount::create($data);
             }
         }else{
             if ($request->type == 'withdraw')
@@ -366,35 +374,41 @@ class SavingsCollectionController extends Controller
                 $cashout->daily_collection_id = $savingsCollection->collection_id;
                 $cashout->amount = $request->saving_amount - ($late_fee + $other_fee);
                 $cashout->date = $request->date;
-                $cashout->created_by = $request->collector_id;
+                $cashout->created_by = Auth::id();
                 $cashout->save();
                 $dailyCollection->saving_amount = $request->saving_amount;
                 $dailyCollection->late_fee = $request->late_fee;
                 $dailyCollection->other_fee = $request->other_fee;
                 $dailyCollection->savings_balance = $request->balance;
-                $dailyCollection->collector_id = $request->collector_id;
+                $dailyCollection->created_by = Auth::id();
                 $dailyCollection->date = $request->date;
                 $dailyCollection->saving_type = $request->type;
                 $dailyCollection->save();
+                DailyWithdrawAccount::update($savingsCollection->trx_id,$request->saving_amount);
             }else{
                 Cashout::where('daily_collection_id',$savingsCollection->collection_id)->delete();
+                DailyWithdrawAccount::delete($savingsCollection->trx_id);
                 $cashin = CashIn::create([
                     'cashin_category_id' => 1,
                     'account_no' => $savingsCollection->account_no,
                     'daily_collection_id' => $savingsCollection->collection_id,
                     'amount' => $request->saving_amount + $late_fee + $other_fee,
                     'date' => $request->date,
-                    'created_by' => $request->collector_id,
+                    'created_by' => Auth::id(),
                     'user_id' => $savingsCollection->user_id,
                 ]);
                 $dailyCollection->saving_amount = $request->saving_amount;
                 $dailyCollection->late_fee = $request->late_fee;
                 $dailyCollection->other_fee = $request->other_fee;
                 $dailyCollection->savings_balance = $request->balance;
-                $dailyCollection->collector_id = $request->collector_id;
+                $dailyCollection->created_by = Auth::id();
                 $dailyCollection->date = $request->date;
                 $dailyCollection->saving_type = $request->type;
                 $dailyCollection->save();
+                $data = $dailyCollection;
+                $data['name'] = $dailyCollection->user->name;
+                $data['trx_type'] = 'cash';
+                SavingsAccount::create($data);
             }
         }
         $savingsCollection->update($request->all());

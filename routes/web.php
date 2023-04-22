@@ -128,6 +128,7 @@ Route::get('dataDailyLoanCollection', [DailyLoanCollectionController::class, 'da
 Route::get('getLoanCollectionDataByLoan', [DailyLoanController::class, 'getLoanCollectionDataByLoan']);
 Route::post('savings-collection-import', [SavingsCollectionController::class, 'import']);
 Route::post('daily-loan-collection-import', [DailyLoanCollectionController::class, 'import']);
+Route::post('daily-loan-import', [DailyLoanController::class, 'import']);
 Route::get('getPackageInfo/{id}', [DailyLoanPackageController::class, 'getPackageInfo']);
 Route::get('daily-reset/{id}', [DailySavingsController::class, 'reset']);
 
@@ -279,17 +280,19 @@ Route::get('dataCashbook',[\App\Http\Controllers\ReportController::class,'dataCa
 Route::resource('guarantors', GuarantorController::class);
 Route::resource('all-loan-documents', LoanDocumentsController::class);
 Route::resource('all-nominees', NomineesController::class);
-
+Route::get('getDetails/{id}',[GuarantorController::class,'getDetails']);
 
 /*
 |--------------------------------------------------------------------------
 |                          Accounts
 |--------------------------------------------------------------------------
 */
+    Route::resource('closing-accounts',\App\Http\Controllers\ClosingAccountController::class);
     Route::resource('accounts',\App\Http\Controllers\AccountController::class);
     Route::resource('transactions',\App\Http\Controllers\TransactionController::class);
     Route::get('allAccounts',[\App\Http\Controllers\AccountController::class,'allAccounts']);
     Route::get('dataTransactions',[\App\Http\Controllers\TransactionController::class,'dataTransactions']);
+    Route::get('allClosings',[ClosingAccountController::class,'allClosings']);
 
 
 

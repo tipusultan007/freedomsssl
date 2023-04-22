@@ -31,6 +31,39 @@
 @section('content')
     <!-- Basic table -->
     <section id="basic-datatable">
+        <a class="dropdown-item" href="#" data-bs-toggle="modal"
+           data-bs-target="#loanCollectionImportModal">
+            <i class="me-1" data-feather="message-square"></i>
+            <span class="align-middle">Import Daily Loan Collections</span>
+        </a>
+        <div class="modal fade text-start" id="loanCollectionImportModal" tabindex="-1" aria-labelledby="myModalLabel4"
+             data-bs-backdrop="false" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-gradient-primary">
+                        <h4 class="modal-title text-white" id="myModalLabel4">Import Daily Loan Collections</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ url('daily-loan-import') }}" method="POST"
+                          enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 mb-1 mb-sm-0">
+                                    <label for="formFile" class="form-label">Select Excel File</label>
+                                    <input class="form-control" name="file" type="file" id="formFile">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success">Import</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -492,7 +525,7 @@
                                 'Delete</a>' +
                                 '</div>' +
                                 '</div>' +
-                                '<a href="javascript:;" class="item-edit">' +
+                                '<a href="" class="item-edit">' +
                                 feather.icons['edit'].toSvg({ class: 'font-small-4' }) +
                                 '</a>'
                             );

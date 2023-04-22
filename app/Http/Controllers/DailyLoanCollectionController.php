@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use App\Models\DailyLoanCollection;
 use App\Http\Requests\DailyLoanCollectionStoreRequest;
 use App\Http\Requests\DailyLoanCollectionUpdateRequest;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DailyLoanCollectionController extends Controller
@@ -324,7 +325,7 @@ class DailyLoanCollectionController extends Controller
        {
            $cashin->amount = $request->loan_installment + $late_fee + $other_fee;
            $cashin->date = $request->date;
-           $cashin->created_by = $request->collector_id;
+           $cashin->created_by = Auth::id();
            $cashin->save();
        }
 
@@ -335,6 +336,7 @@ class DailyLoanCollectionController extends Controller
         $dailyCollection->collector_id = $request->collector_id;
         $dailyCollection->date = $request->date;
         $dailyCollection->save();
+        DailyLoanPaymentAccount::update($dailyCollection->trx_id,$request->loan_installment);
 
         return json_encode("Success");
     }

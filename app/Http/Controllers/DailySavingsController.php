@@ -2,6 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Accounts\DailyLoanAccount;
+use App\Http\Controllers\Accounts\DailyLoanPaymentAccount;
+use App\Http\Controllers\Accounts\DailyWithdrawAccount;
+use App\Http\Controllers\Accounts\LateFeeAccount;
+use App\Http\Controllers\Accounts\PaidInterestAccount;
+use App\Http\Controllers\Accounts\PaidProfitAccount;
+use App\Http\Controllers\Accounts\SavingsAccount;
 use App\Models\Account;
 use App\Models\AddProfit;
 use App\Models\CashIn;
@@ -35,27 +42,69 @@ class DailySavingsController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view-any', DailySavings::class);
-        $savings = DailySavings::all();
+
+        /*$collections = SavingsCollection::orderBy('date', 'asc')->get();
+        foreach ($collections as $collection) {
+            $dailySavings = DailySavings::find($collection->daily_savings_id);
+            if ($collection->type == 'deposit') {
+                $dailySavings->deposit += $collection->saving_amount;
+                $dailySavings->total += $collection->saving_amount;
+                $dailySavings->save();
+
+            } elseif ($collection->type == 'withdraw') {
+                $dailySavings->withdraw += $collection->saving_amount;
+                $dailySavings->total -= $collection->saving_amount;
+                $dailySavings->save();
+
+            }
+            $collection->balance = $dailySavings->total;
+            $collection->save();
+        }*/
+
+        /*SavingsCollection::chunk(2000, function ($collections) {
+            foreach ($collections as $collection) {
+                switch ($collection->type)
+                {
+                    case 'deposit':
+                        $dailySavings = DailySavings::find($collection->daily_savings_id);
+                        $dailySavings->deposit += $collection->saving_amount;
+                        $dailySavings->total += $collection->saving_amount;
+                        $dailySavings->save();
+                        $collection->balance = $dailySavings->total;
+                        $collection->save();
+                        break;
+                    case 'withdraw':
+                        $dailySavings = DailySavings::find($collection->daily_savings_id);
+                        $dailySavings->withdraw += $collection->saving_amount;
+                        $dailySavings->total -= $collection->saving_amount;
+                        $dailySavings->save();
+                        $collection->balance = $dailySavings->total;
+                        $collection->save();
+                        break;
+                    default:
+                }
+            }
+        });*/
         $breadcrumbs = [
             ['name' => "List"]
         ];
         return view(
-            'app.all_daily_savings.index',compact('breadcrumbs')
+            'app.all_daily_savings.index', compact('breadcrumbs')
         );
     }
 
     public function dailySavingsData(Request $request)
     {
-       /* $columns = array(
-            0 =>'account_no',
-            1=> 'name',
-            2=> 'date',
-            3=> 'deposit',
-            4=> 'withdraw',
-            5=> 'profit',
-            6=> 'total',
-            7=> 'status'
-        );*/
+        /* $columns = array(
+             0 =>'account_no',
+             1=> 'name',
+             2=> 'date',
+             3=> 'deposit',
+             4=> 'withdraw',
+             5=> 'profit',
+             6=> 'total',
+             7=> 'status'
+         );*/
 
         $totalData = DailySavings::count();
 
@@ -66,39 +115,35 @@ class DailySavingsController extends Controller
         //$order = $columns[$request->input('order.0.column')];
         //$dir = $request->input('order.0.dir');
 
-        if(empty($request->input('search.value')))
-        {
+        if (empty($request->input('search.value'))) {
             $posts = DailySavings::with('user')->offset($start)
                 ->limit($limit)
-                ->orderBy('account_no','asc')
+                ->orderBy('account_no', 'asc')
                 ->get();
-        }
-        else {
+        } else {
             $search = $request->input('search.value');
 
-            $posts =  DailySavings::with('user')
-                ->join('users','daily_savings.user_id','=','users.id')
-                ->where('daily_savings.account_no', 'LIKE',"%{$search}%")
-                ->orWhere('users.name', 'LIKE',"%{$search}%")
+            $posts = DailySavings::with('user')
+                ->join('users', 'daily_savings.user_id', '=', 'users.id')
+                ->where('daily_savings.account_no', 'LIKE', "%{$search}%")
+                ->orWhere('users.name', 'LIKE', "%{$search}%")
                 ->offset($start)
                 ->limit($limit)
-                ->orderBy('account_no','asc')
+                ->orderBy('account_no', 'asc')
                 ->get();
 
             $totalFiltered = DailySavings::with('user')
-                ->join('users','daily_savings.user_id','=','users.id')
-                ->where('daily_savings.account_no', 'LIKE',"%{$search}%")
-                ->orWhere('users.name', 'LIKE',"%{$search}%")
+                ->join('users', 'daily_savings.user_id', '=', 'users.id')
+                ->where('daily_savings.account_no', 'LIKE', "%{$search}%")
+                ->orWhere('users.name', 'LIKE', "%{$search}%")
                 ->count();
         }
 
         $data = array();
-        if(!empty($posts))
-        {
-            foreach ($posts as $post)
-            {
-                $show =  route('daily-savings.show',$post->id);
-                $edit =  route('daily-savings.edit',$post->id);
+        if (!empty($posts)) {
+            foreach ($posts as $post) {
+                $show = route('daily-savings.show', $post->id);
+                $edit = route('daily-savings.edit', $post->id);
 
                 $nestedData['id'] = $post->id;
                 $nestedData['name'] = $post->user->name;
@@ -117,10 +162,10 @@ class DailySavingsController extends Controller
         }
 
         $json_data = array(
-            "draw"            => intval($request->input('draw')),
-            "recordsTotal"    => intval($totalData),
+            "draw" => intval($request->input('draw')),
+            "recordsTotal" => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
-            "data"            => $data
+            "data" => $data
         );
 
         echo json_encode($json_data);
@@ -150,11 +195,11 @@ class DailySavingsController extends Controller
     {
         $this->authorize('create', DailySavings::class);
 
-       // $validated = $request->validated();
+        // $validated = $request->validated();
 
         $data = $request->all();
         $data['created_by'] = Auth::id();
-        $data['account_no'] = 'DS'.str_pad($request->account_no,4,"0",STR_PAD_LEFT);
+        $data['account_no'] = 'DS' . str_pad($request->account_no, 4, "0", STR_PAD_LEFT);
         $dailySavings = DailySavings::create($data);
         $data['user_id'] = $request->nominee_account;
         $nominee = Nominees::create($data);
@@ -169,9 +214,9 @@ class DailySavingsController extends Controller
         $data['total'] = $info->total;
         $data['status'] = $info->status;
         $data['id'] = $info->id;
-       /* return redirect()
-            ->route('all-daily-savings.edit', $dailySavings)
-            ->withSuccess(__('crud.common.created'));*/
+        /* return redirect()
+             ->route('all-daily-savings.edit', $dailySavings)
+             ->withSuccess(__('crud.common.created'));*/
         echo json_encode($data);
     }
 
@@ -186,10 +231,10 @@ class DailySavingsController extends Controller
         $this->authorize('view', $dailySavings);
 
         $breadcrumbs = [
-            ['link' => "/daily-savings", 'name' => "Daily Savings"], ['link' =>"javascript:void(0)" ,'name' => "Details"],['name' => $dailySavings->account_no]
+            ['link' => "/daily-savings", 'name' => "Daily Savings"], ['link' => "javascript:void(0)", 'name' => "Details"], ['name' => $dailySavings->account_no]
         ];
 
-        return view('app.all_daily_savings.show', compact('dailySavings','breadcrumbs'));
+        return view('app.all_daily_savings.show', compact('dailySavings', 'breadcrumbs'));
     }
 
     /**
@@ -216,8 +261,9 @@ class DailySavingsController extends Controller
      */
     public function update(
         DailySavingsUpdateRequest $request,
-        DailySavings $dailySavings
-    ) {
+        DailySavings              $dailySavings
+    )
+    {
         $this->authorize('update', $dailySavings);
 
         $validated = $request->validated();
@@ -236,18 +282,48 @@ class DailySavingsController extends Controller
      */
     public function destroy($id)
     {
-       // $this->authorize('delete', $dailySavings);
+        // $this->authorize('delete', $dailySavings);
 
         $dailySavings = DailySavings::find($id);
-
-        $withdrawAccount = Account::find(16);
+        $dailyCollection = DailyCollection::where('account_no', $dailySavings->account_no)->get();
+        /*$withdrawAccount = Account::find(16);
         $depositAccount = Account::find(1);
         $cashAccount = Account::find(4);
         $loanProvideAccount = Account::find(2);
         $loanPaymentAccount = Account::find(13);
-        $interestPaidAccount = Account::find(7);
-        $loan = DailyLoan::where('account_no',$dailySavings->account_no)->where('status','active')->first();
-        if ($loan) {
+        $interestPaidAccount = Account::find(7);*/
+
+        $loans = DailyLoan::where('account_no', $dailySavings->account_no)->get();
+        foreach ($loans as $loan) {
+            DailyLoanAccount::delete($loan->trx_id);
+        }
+        foreach ($dailyCollection as $item) {
+            if ($item->saving_type == "deposit") {
+                SavingsAccount::delete($item->trx_id);
+            } elseif ($item->saving_type == "withdraw") {
+                DailyWithdrawAccount::delete($item->trx_id);
+            }
+
+            DailyLoanAccount::delete($item->trx_id);
+            PaidInterestAccount::delete($item->trx_id, 'daily');
+            PaidProfitAccount::delete($item->trx_id, 'daily');
+
+            if ($item->late_fee > 0) {
+                LateFeeAccount::delete($item->trx_id);
+            }
+            if ($item->other_fee > 0) {
+                LateFeeAccount::delete($item->trx_id);
+            }
+            if ($item->loan_late_fee > 0) {
+                LateFeeAccount::delete($item->trx_id);
+            }
+            if ($item->loan_other_fee > 0) {
+                LateFeeAccount::delete($item->trx_id);
+            }
+            DailyLoanPaymentAccount::delete($item->trx_id);
+        }
+
+        /*if ($loan) {
             $balance = $loan->balance;
             $paid = $loan->loan_amount + $loan->interest - $loan->balance;
             if ($paid >= $loan->interest) {
@@ -278,33 +354,33 @@ class DailySavingsController extends Controller
         $depositAccount->save();
 
         $cashAccount->balance -= $dailySavings->total;
-        $cashAccount->save();
+        $cashAccount->save();*/
 
-        DailyLoan::where('account_no',$dailySavings->account_no)->delete();
-        Nominees::where('account_no',$dailySavings->account_no)->delete();
-        LoanDocuments::where('account_no',$dailySavings->account_no)->delete();
-        AddProfit::where('account_no',$dailySavings->account_no)->delete();
-        SavingsCollection::where('account_no',$dailySavings->account_no)->delete();
-        DailyLoanCollection::where('account_no',$dailySavings->account_no)->delete();
-        DailySavingsClosing::where('account_no',$dailySavings->account_no)->delete();
-        DailyCollection::where('account_no',$dailySavings->account_no)->delete();
-        CashIn::where('account_no',$dailySavings->account_no)->delete();
-        Cashout::where('account_no',$dailySavings->account_no)->delete();
-        Transaction::where('account_no',$dailySavings->account_no)->delete();
+        //DailyLoan::where('account_no',$dailySavings->account_no)->delete();
+        Nominees::where('account_no', $dailySavings->account_no)->delete();
+        LoanDocuments::where('account_no', $dailySavings->account_no)->delete();
+        AddProfit::where('account_no', $dailySavings->account_no)->delete();
+        SavingsCollection::where('account_no', $dailySavings->account_no)->delete();
+        DailyLoanCollection::where('account_no', $dailySavings->account_no)->delete();
+        DailySavingsClosing::where('account_no', $dailySavings->account_no)->delete();
+        DailyCollection::where('account_no', $dailySavings->account_no)->delete();
+        CashIn::where('account_no', $dailySavings->account_no)->delete();
+        Cashout::where('account_no', $dailySavings->account_no)->delete();
+        //Transaction::where('account_no',$dailySavings->account_no)->delete();
         $dailySavings->delete();
         echo "success";
     }
 
     public function savingsInfoByAccount($account)
     {
-        $daily_savings = DailySavings::where('account_no',$account)->first();
+        $daily_savings = DailySavings::where('account_no', $account)->first();
         $user = User::find($daily_savings->user_id);
-        $dps = Dps::where('user_id',$user->id)->count();
-        $daily_savings = DailySavings::where('user_id',$user->id)->count();
-        $special_dps = SpecialDps::where('user_id',$user->id)->count();
-        $daily_loans = DailyLoan::where('user_id',$user->id)->count();
-        $dps_loans = DpsLoan::where('user_id',$user->id)->count();
-        $special_dps_loans = SpecialDpsLoan::where('user_id',$user->id)->count();
+        $dps = Dps::where('user_id', $user->id)->count();
+        $daily_savings = DailySavings::where('user_id', $user->id)->count();
+        $special_dps = SpecialDps::where('user_id', $user->id)->count();
+        $daily_loans = DailyLoan::where('user_id', $user->id)->count();
+        $dps_loans = DpsLoan::where('user_id', $user->id)->count();
+        $special_dps_loans = SpecialDpsLoan::where('user_id', $user->id)->count();
 
         $data['user'] = $user;
         $data['dps'] = $dps;
@@ -318,12 +394,11 @@ class DailySavingsController extends Controller
 
     public function isSavingsExist($ac)
     {
-        $savings = DailySavings::where('account_no',$ac)->count();
+        $savings = DailySavings::where('account_no', $ac)->count();
 
-        if ($savings>0)
-        {
+        if ($savings > 0) {
             return "yes";
-        }else{
+        } else {
             return "no";
         }
     }
@@ -331,9 +406,25 @@ class DailySavingsController extends Controller
     public function reset($id)
     {
         $savings = DailySavings::find($id);
-        Transaction::where('account_no',$savings->account_no)->delete();
+        //Transaction::where('account_no',$savings->account_no)->delete();
+        $dailyCollection = DailyCollection::where('account_no', $savings->account_no)->get();
+        foreach ($dailyCollection as $item) {
+            if ($item->saving_type == "deposit") {
+                SavingsAccount::delete($item->trx_id);
+            } elseif ($item->saving_type == "withdraw") {
+                DailyWithdrawAccount::delete($item->trx_id);
+            }
 
-        $depositAccount = Account::find(1); //LIABILITY (DEPOSIT +)
+            PaidProfitAccount::delete($item->trx_id, 'daily');
+
+            if ($item->late_fee > 0) {
+                LateFeeAccount::delete($item->trx_id);
+            }
+            if ($item->other_fee > 0) {
+                LateFeeAccount::delete($item->trx_id);
+            }
+        }
+        /*$depositAccount = Account::find(1); //LIABILITY (DEPOSIT +)
         $depositAccount->balance -= $savings->deposit;
         $depositAccount->save();
 
@@ -348,7 +439,7 @@ class DailySavingsController extends Controller
 
         $withdrawAccount = Account::find(16); //LIABILITY (DEPOSIT -)
         $withdrawAccount->balance -= $savings->withdraw;
-        $withdrawAccount->save();
+        $withdrawAccount->save();*/
 
         $savings->deposit = 0;
         $savings->withdraw = 0;

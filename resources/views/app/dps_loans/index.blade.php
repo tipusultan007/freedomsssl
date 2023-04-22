@@ -19,21 +19,34 @@
     </div>
 @endsection
 @section('vendor-style')
-    {{-- vendor css files --}}
+    <!-- vendor css files -->
+    <link rel='stylesheet' href="{{ asset(mix('vendors/css/forms/wizard/bs-stepper.min.css')) }}">
+    <link rel='stylesheet' href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
+
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/responsive.bootstrap5.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/buttons.bootstrap5.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/rowGroup.bootstrap5.min.css')) }}">
-    <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}">
-    <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
-    <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
-    <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-toastr.css')) }}">
+
+
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/pickadate/pickadate.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}">
+@endsection
+@section('page-style')
+    <!-- Page css files -->
+    <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/form-wizard.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/form-validation.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('css/base/pages/modal-create-app.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/pickers/form-flat-pickr.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/pickers/form-pickadate.css')) }}">
 
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-sweet-alerts.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-toastr.css')) }}">
+
 
 @endsection
+
 
 @section('content')
     <!-- Basic table -->
@@ -61,71 +74,6 @@
             </div>
         </div>
         <!-- Modal to add new record -->
-        <div class="modal modal-slide-in fade" id="modals-slide-in">
-            <div class="modal-dialog sidebar-sm">
-                <form class="add-new-record modal-content pt-0">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
-                    <div class="modal-header mb-1">
-                        <h5 class="modal-title" id="exampleModalLabel">New Record</h5>
-                    </div>
-                    <div class="modal-body flex-grow-1">
-                        <div class="mb-1">
-                            <label class="form-label" for="basic-icon-default-fullname">Full Name</label>
-                            <input
-                                type="text"
-                                class="form-control dt-full-name"
-                                id="basic-icon-default-fullname"
-                                placeholder="John Doe"
-                                aria-label="John Doe"
-                            />
-                        </div>
-                        <div class="mb-1">
-                            <label class="form-label" for="basic-icon-default-post">Post</label>
-                            <input
-                                type="text"
-                                id="basic-icon-default-post"
-                                class="form-control dt-post"
-                                placeholder="Web Developer"
-                                aria-label="Web Developer"
-                            />
-                        </div>
-                        <div class="mb-1">
-                            <label class="form-label" for="basic-icon-default-email">Email</label>
-                            <input
-                                type="text"
-                                id="basic-icon-default-email"
-                                class="form-control dt-email"
-                                placeholder="john.doe@example.com"
-                                aria-label="john.doe@example.com"
-                            />
-                            <small class="form-text"> You can use letters, numbers & periods </small>
-                        </div>
-                        <div class="mb-1">
-                            <label class="form-label" for="basic-icon-default-date">Joining Date</label>
-                            <input
-                                type="text"
-                                class="form-control dt-date"
-                                id="basic-icon-default-date"
-                                placeholder="MM/DD/YYYY"
-                                aria-label="MM/DD/YYYY"
-                            />
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label" for="basic-icon-default-salary">Salary</label>
-                            <input
-                                type="text"
-                                id="basic-icon-default-salary"
-                                class="form-control dt-salary"
-                                placeholder="$12000"
-                                aria-label="$12000"
-                            />
-                        </div>
-                        <button type="button" class="btn btn-primary data-submit me-1">Submit</button>
-                        <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </section>
     <!--/ Basic table -->
     <div class="modal fade text-start" id="dpsLoanImportModal" tabindex="-1" aria-labelledby="myModalLabel4" data-bs-backdrop="false" aria-hidden="true">
@@ -189,12 +137,290 @@
             </div>
         </div>
     </div>
+    <!-- create app modal -->
+    <div class="modal fade" id="createFdrModal" tabindex="-1" aria-labelledby="createAppTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-transparent">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pb-3 px-sm-3">
+                    <h1 class="text-center mb-1" id="createAppTitle">Add New Special Loan</h1>
+                    <p class="text-center mb-2">Provide Loan details with this form</p>
 
+                    <div class="bs-stepper vertical wizard-modern create-app-wizard">
+                        <div class="bs-stepper-header" role="tablist">
+                            <div class="step" data-target="#create-app-details" role="tab" id="create-app-details-trigger">
+                                <button type="button" class="step-trigger py-75">
+                <span class="bs-stepper-box">
+                  <i data-feather="book" class="font-medium-3"></i>
+                </span>
+                                    <span class="bs-stepper-label">
+                  <span class="bs-stepper-title">Loan</span>
+                  <span class="bs-stepper-subtitle">Loan Details</span>
+                </span>
+                                </button>
+                            </div>
+                            <div class="step" data-target="#create-app-frameworks" role="tab" id="create-app-frameworks-trigger">
+                                <button type="button" class="step-trigger py-75">
+                <span class="bs-stepper-box">
+                  <i data-feather="package" class="font-medium-3"></i>
+                </span>
+                                    <span class="bs-stepper-label">
+                  <span class="bs-stepper-title">Documents</span>
+                  <span class="bs-stepper-subtitle">Document Details</span>
+                </span>
+                                </button>
+                            </div>
+                            <div class="step" data-target="#create-app-database" role="tab" id="create-app-database-trigger">
+                                <button type="button" class="step-trigger py-75">
+                <span class="bs-stepper-box">
+                  <i data-feather="command" class="font-medium-3"></i>
+                </span>
+                                    <span class="bs-stepper-label">
+                  <span class="bs-stepper-title">Guarantor</span>
+                  <span class="bs-stepper-subtitle">Guarantor details</span>
+                </span>
+                                </button>
+                            </div>
+
+                            <div class="step" data-target="#create-app-submit" role="tab" id="create-app-submit-trigger">
+                                <button type="button" class="step-trigger py-75">
+                <span class="bs-stepper-box">
+                  <i data-feather="check" class="font-medium-3"></i>
+                </span>
+                                    <span class="bs-stepper-label">
+                  <span class="bs-stepper-title">Submit</span>
+                  <span class="bs-stepper-subtitle">Submit your app</span>
+                </span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- content -->
+                        <div class="bs-stepper-content shadow-none">
+                            <div id="create-app-details" class="content" role="tabpanel" aria-labelledby="create-app-details-trigger">
+                                <form>
+                                    <div class="row mb-3">
+                                        @php
+                                            $accounts = \App\Models\Dps::with('user')->where('status','active')->get();
+                                        @endphp
+                                        <div class="col-md-6 mb-2">
+                                            <label for="account_no" class="form-label">A/C No</label>
+                                            <select data-allow-clear="true" name="account_no" id="account_no" class="select2 form-select" data-placeholder="Select Account">
+
+                                                <option value="">Select Account</option>
+                                                @forelse($accounts as $account)
+                                                    <option value="{{ $account->account_no }}">{{ $account->account_no }}
+                                                        || {{ $account->user->name }}</option>
+                                                @empty
+                                                @endforelse
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-3 mb-2">
+                                            <label for="loan_amount" class="form-label">Loan Amount</label>
+                                            <input type="text" class="form-control" id="loan_amount" name="loan_amount">
+                                        </div>
+
+                                        <div class="col-md-3 mb-2">
+                                            <label for="interest1" class="form-label">Interest Rate</label>
+                                            <input type="number" class="form-control" id="interest1" name="interest1">
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label for="interest2" class="form-label">Special Interest Rate</label>
+                                            <input type="number" class="form-control" id="interest2" name="interest2">
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label for="upto_amount" class="form-label">Upto Amount</label>
+                                            <input type="text" class="form-control" id="upto_amount" name="upto_amount">
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label for="account_no" class="form-label">Loan Date</label>
+                                            <input type="text" class="form-control flatpickr-basic" id="opening_date"
+                                                   name="opening_date" aria-label="MM/DD/YYYY">
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label for="account_no" class="form-label">Commencement</label>
+                                            <input type="text" class="form-control flatpickr-basic" id="commencement"
+                                                   name="commencement" aria-label="MM/DD/YYYY">
+                                        </div>
+
+
+                                        <div class="col-md-12 mb-2">
+                                            <label for="account_no" class="form-label">Note</label>
+                                            <input type="text" class="form-control" id="note"
+                                                   name="note">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="created_by" value="{{ auth()->id() }}">
+                                    <input type="hidden" name="user_id" id="user_id">
+                                </form>
+
+                                <div class="d-flex justify-content-between mt-2">
+                                    <button class="btn btn-outline-secondary btn-prev" disabled>
+                                        <i data-feather="arrow-left" class="align-middle me-sm-25 me-0"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none">Next</span>
+                                        <i data-feather="arrow-right" class="align-middle ms-sm-25 ms-0"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div
+                                id="create-app-frameworks"
+                                class="content"
+                                role="tabpanel"
+                                aria-labelledby="create-app-frameworks-trigger"
+                            >
+                                <h5 class="mb-1">Document Details</h5>
+                                <form>
+                                    <div class="row mb-3">
+
+                                        <div class="col-md-4 mb-2">
+                                            <label for="bank_name" class="form-label">Bank Name</label>
+                                            <input type="text" class="form-control" id="bank_name" name="bank_name">
+                                        </div>
+
+                                        <div class="col-md-4 mb-2">
+                                            <label for="branch_name" class="form-label">Branch Name</label>
+                                            <input type="text" class="form-control" id="branch_name" name="branch_name">
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            <label for="cheque_no" class="form-label">Cheque No</label>
+                                            <input type="text" class="form-control" id="cheque_no" name="cheque_no">
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <label for="document_name" class="form-label">Upload Documents</label>
+                                            <input class="form-control" type="file" name="document_name" id="document_name" multiple />
+                                        </div>
+
+                                        <div class="col-md-6 mb-2">
+                                            <label for="account_no" class="form-label">Note</label>
+                                            <input type="text" class="form-control" id="note"
+                                                   name="note">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="created_by" value="{{ auth()->id() }}">
+                                </form>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i data-feather="arrow-left" class="align-middle me-sm-25 me-0"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none">Next</span>
+                                        <i data-feather="arrow-right" class="align-middle ms-sm-25 ms-0"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="create-app-database" class="content" role="tabpanel" aria-labelledby="create-app-database-trigger">
+                                <h5 class="mb-1">Enter Guarantor Details</h5>
+                                <form>
+                                    <div class="row">
+                                        <div class="mb-1 col-md-12">
+                                            @php
+$users = \App\Models\User::all();
+ @endphp
+                                            <label class="form-label" for="name">Select User</label>
+                                            <select name="guarantor_user_id" id="guarantor_user_id" class="select2 form-select" data-allow-clear="on" data-placeholder="-- Select User --">
+                                                <option value="">Select Guarantor</option>
+                                                @foreach($users as $user)
+                                                    <option value="{{ $user->id }}">{{ $user->name }} || {{ $user->father_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="mb-1 col-md-6">
+                                            <label class="form-label" for="name">Name</label>
+                                            <input type="text" name="name" id="name" class="form-control"
+                                                   placeholder="John"/>
+                                        </div>
+                                        <div class="mb-1 col-md-6">
+                                            <label class="form-label" for="phone">Phone</label>
+                                            <input type="text" name="phone" id="phone" class="form-control"/>
+                                        </div>
+
+                                        <div class="mb-1 col-md-6">
+                                            <label class="form-label" for="address">Address</label>
+                                            <input type="text" name="address" id="address" class="form-control"/>
+                                        </div>
+                                        <div class="mb-1 col-md-6">
+                                            <label class="form-label" for="percentage">A/C No</label>
+                                            <input type="text" name="exist_ac_no" id="exist_ac_no" class="form-control"/>
+                                        </div>
+                                    </div>
+
+
+                                    <input type="hidden" name="status" value="active">
+                                    <input type="hidden" name="created_by" value="{{ auth()->id() }}">
+                                </form>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i data-feather="arrow-left" class="align-middle me-sm-25 me-0"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none">Next</span>
+                                        <i data-feather="arrow-right" class="align-middle ms-sm-25 ms-0"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div
+                                id="create-app-submit"
+                                class="content text-center"
+                                role="tabpanel"
+                                aria-labelledby="create-app-submit-trigger"
+                            >
+                                <h3>Submit 🥳</h3>
+                                <p>Submit your app to kickstart your project.</p>
+                                <img
+                                    src="{{asset('images/illustration/pricing-Illustration.svg')}}"
+                                    height="218"
+                                    alt="illustration"
+                                />
+                                <div class="d-flex justify-content-between mt-3">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i data-feather="arrow-left" class="align-middle me-sm-25 me-0"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-success btn-submit">
+                                        <span class="align-middle d-sm-inline-block d-none">Submit</span>
+                                        <i data-feather="check" class="align-middle ms-sm-25 ms-0"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bs-stepper-content detail-data w-50 pt-0">
+
+                                <div class="divider">
+                                    <div class="divider-text">Applicant's Information</div>
+                                </div>
+                                <div class="user-data">
+
+                                </div>
+
+
+                                <div class="divider">
+                                    <div class="divider-text">Guarantor's Information</div>
+                                </div>
+                                <div class="guarantor-data">
+
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / create app modal -->
 @endsection
 
 
 @section('vendor-script')
     {{-- vendor files --}}
+    <!-- vendor files -->
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap5.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.responsive.min.js')) }}"></script>
@@ -207,17 +433,19 @@
     <script src="{{ asset(mix('vendors/js/tables/datatable/buttons.html5.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/tables/datatable/buttons.print.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.rowGroup.min.js')) }}"></script>
-    <script src="{{ asset(mix('vendors/js/pickers/flatpickr/flatpickr.min.js')) }}"></script>
+
+    <script src="{{ asset(mix('vendors/js/forms/wizard/bs-stepper.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/forms/select/select2.full.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/forms/cleave/cleave.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/forms/cleave/addons/cleave-phone.us.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/forms/validation/jquery.validate.min.js')) }}"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.colVis.min.js"></script>
-    <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
-    <!-- vendor files -->
+
     <script src="{{ asset(mix('vendors/js/pickers/pickadate/picker.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/pickadate/picker.date.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/pickadate/picker.time.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/pickadate/legacy.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/flatpickr/flatpickr.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
 
 @endsection
 @section('page-script')
@@ -422,7 +650,7 @@
                         className: 'add-new btn btn-primary',
                         attr: {
                             'data-bs-toggle': 'modal',
-                            'data-bs-target': '#modals-slide-in'
+                            'data-bs-target': '#createFdrModal'
                         },
                         init: function (api, node, config) {
                             $(node).removeClass('btn-secondary');
@@ -567,6 +795,316 @@
             })
 
 
+        });
+        $('#account_no').on('select2:select', function (e) {
+            $(".user-data").empty();
+            var data = e.params.data;
+            $.ajax({
+                url: "{{ url('dpsInfoByAccount') }}/"+data.id,
+                dataType: "json",
+                type: "get",
+                success: function (data) {
+                    $("#user_id").val(data.user.id);
+                    var image = '';
+                    if (data.user.profile_photo_path == null)
+                    {
+                        image = data.user.profile_photo_url+'&size=110';
+                    }else {
+                        image = data.user.profile_photo_path;
+                    }
+                    $(".user-data").append(`
+                    <!--<div class="user-avatar-section">
+                                <div class="d-flex align-items-center flex-column">
+                                    <img class="img-fluid rounded mt-3 mb-2" src="${image}" height="80" width="80" alt="User avatar">
+                                    <div class="user-info text-center">
+                                        <h4>${data.user.name}</h4>
+                                        <span class="badge bg-light-secondary">${data.user.phone1}</span>
+                                    </div>
+                                </div>
+                            </div>-->
+                           <!-- <h4 class="fw-bolder border-bottom pb-50 mb-1">Details</h4>-->
+<table class="table table-sm">
+<tr>
+<td><b>${data.user.name}</b> <br>
+<span class="badge bg-light-secondary">${data.user.phone1}</span>
+</td>
+<td><img class="img-fluid rounded" src="${image}" height="60" width="60" alt="User avatar"></td>
+</tr>
+</table>
+                            <div class="info-container">
+                                <table class="table table-sm table-striped">
+                                    <tr>
+                                        <td class="fw-bolder me-25">Father:</td>
+                                        <td>${data.user.father_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Mother:</td>
+                                        <td>${data.user.mother_name}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="fw-bolder me-25">Join Date:</td>
+                                        <td>${data.user.join_date}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total Savings:</td>
+                                        <td>${data.daily_savings}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total DPS:</td>
+                                        <td>${data.dps}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total Special DPS:</td>
+                                        <td>${data.special_dps}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Daily Loans:</td>
+                                        <td>${data.daily_loans}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">DPS Loans:</td>
+                                        <td>${data.dps_loans}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Special DPS Loan:</td>
+                                        <td>${data.special_dps_loans}</td>
+                                    </tr>
+<tr>
+                                        <td class="fw-bolder me-25">FDR:</td>
+                                        <td>${data.fdr}</td>
+                                    </tr>
+<tr>
+                                        <td class="fw-bolder me-25">Guarantor:</td>
+                                        <td class="gtable"></td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                    `);
+                    if (data.guarantors != null)
+                    {
+                        $.each(data.guarantors,function (a,b) {
+                            $(".gtable").append(`
+                            <span class="badge bg-danger">${b}</span>
+                            `);
+                        })
+                    }
+                }
+            })
+        });
+        $("#guarantor_user_id").on("select2:select",function (e) {
+            let user_id = e.params.data.id;
+            $("#name").val('');
+            $("#address").val('');
+            $("#phone").val('');
+            $(".guarantor-data").empty();
+            $.ajax({
+                url: "{{ url('getDetails') }}/"+user_id,
+                type: "GET",
+                dataType: "JSON",
+                success: function (data) {
+                    //console.log(data)
+                    $("#name").val(data.user.name);
+                    $("#address").val(data.user.present_address);
+                    $("#phone").val(data.user.phone1);
+
+                    var image = '';
+                    if (data.user.profile_photo_path == null)
+                    {
+                        image = data.user.profile_photo_url+'&size=110';
+                    }else {
+                        image = data.user.profile_photo_path;
+                    }
+                    $(".guarantor-data").append(`
+                 <table class="table table-sm">
+<tr>
+<td><b>${data.user.name}</b> <br>
+<span class="badge bg-light-secondary">${data.user.phone1}</span>
+</td>
+<td><img class="img-fluid rounded" src="${image}" height="60" width="60" alt="User avatar"></td>
+</tr>
+</table>
+                            <div class="info-container">
+                                <table class="table table-sm table-striped">
+                                    <tr>
+                                        <td class="fw-bolder me-25">Father:</td>
+                                        <td>${data.user.father_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Mother:</td>
+                                        <td>${data.user.mother_name}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="fw-bolder me-25">Join Date:</td>
+                                        <td>${data.user.join_date}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total Savings:</td>
+                                        <td>${data.daily_savings}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total DPS:</td>
+                                        <td>${data.dps}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total Special DPS:</td>
+                                        <td>${data.special_dps}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Daily Loans:</td>
+                                        <td>${data.daily_loans}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">DPS Loans:</td>
+                                        <td>${data.dps_loans}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Special DPS Loan:</td>
+                                        <td>${data.special_dps_loans}</td>
+                                    </tr>
+<tr>
+                                        <td class="fw-bolder me-25">FDR:</td>
+                                        <td>${data.fdr}</td>
+                                    </tr>
+<tr>
+                                        <td class="fw-bolder me-25">Guarantor:</td>
+                                        <td class="gtable2"></td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                    `);
+                    if (data.guarantors != null)
+                    {
+                        $.each(data.guarantors,function (a,b) {
+                            $(".gtable2").append(`
+                            <span class="badge bg-danger">${b}</span>
+                            `);
+                        })
+                    }
+                }
+            })
+        })
+
+        $(function () {
+            ('use strict');
+            var modernVerticalWizard = document.querySelector('.create-app-wizard'),
+                createAppModal = document.getElementById('createFdrModal'),
+                assetsPath = '../../../app-assets/';
+
+            var basicPickr = $('.flatpickr-basic');
+            if (basicPickr.length) {
+                basicPickr.flatpickr({
+                    static: true,
+                    altInput: true,
+                    altFormat: 'd/m/Y',
+                    dateFormat: 'Y-m-d',
+                    allowInput: true
+                });
+            }
+
+            if ($('body').attr('data-framework') === 'laravel') {
+                assetsPath = $('body').attr('data-asset-path');
+            }
+
+            // --- create app  ----- //
+            if (typeof modernVerticalWizard !== undefined && modernVerticalWizard !== null) {
+                var modernVerticalStepper = new Stepper(modernVerticalWizard, $form = $(modernVerticalWizard).find('form'),
+                    $form.each(function () {
+                        var $this = $(this);
+                        $this.validate({
+                            rules: {
+                                account_no: {
+                                    required: true
+                                },
+                                loan_amount: {
+                                    required: true
+                                },
+                                interest1: {
+                                    required: true
+                                },
+                                opening_date: {
+                                    required: true
+                                },
+                                commencement: {
+                                    required: true
+                                },
+                            }
+                        });
+                    }), {
+                        linear: false
+                    });
+
+
+
+                $(modernVerticalWizard)
+                    .find('.btn-next')
+                    .on('click', function () {
+                        var isValid = $(this).parent().siblings('form').valid();
+                        if (isValid) {
+                            modernVerticalStepper.next();
+                        } else {
+                            e.preventDefault();
+                        }
+
+                    });
+                $(modernVerticalWizard)
+                    .find('.btn-prev')
+                    .on('click', function () {
+                        modernVerticalStepper.previous();
+                    });
+
+                $(modernVerticalWizard)
+                    .find('.btn-submit')
+                    .on('click', function () {
+                        var $this = $(".btn-submit"); //submit button selector using ID
+                        var $caption = $this.html();// We store the html content of the submit button
+
+                        var formData = $("form").serializeArray();
+                        $.ajax({
+                            url: "{{ route('dps-loans.store') }}",
+                            method: "POST",
+                            data: formData,
+                            beforeSend: function () {//We add this before send to disable the button once we submit it so that we prevent the multiple click
+                                $this.attr('disabled', true).html("Processing...");
+                            },
+                            success: function (data) {
+                                $this.attr('disabled', false).html($caption);
+                                //$(".spinner").hide();
+                                $("form").trigger('reset');
+                                $("#createFdrModal").modal("hide");
+                                toastr.success('New DPS Loan successfully added.', 'New DPS Loan!', {
+                                    closeButton: true,
+                                    tapToDismiss: false
+                                });
+                                $(".user-data").empty();
+                                $(".guarantor-data").empty();
+
+                                $(".datatables-basic").DataTable().destroy();
+                                loadData();
+                            },
+                            error: function () {
+                                $this.attr('disabled', false).html($caption);
+                                $("#createFdrModal").modal("hide");
+                                toastr.error('New DPS Loan account added failed.', 'Failed!', {
+                                    closeButton: true,
+                                    tapToDismiss: false
+                                });
+                                $(".datatables-basic").DataTable().destroy();
+                                loadData();
+                            }
+                        })
+                    });
+
+                // reset wizard on modal hide
+                createAppModal.addEventListener('hide.bs.modal', function (event) {
+                    modernVerticalStepper.to(1);
+                });
+            }
+
+            // --- / create app ----- //
         });
     </script>
 @endsection

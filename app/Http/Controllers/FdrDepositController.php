@@ -159,7 +159,7 @@ class FdrDepositController extends Controller
         $data = $request->all();
         $data['account_no'] = $fdr->account_no;
         $data['user_id'] = $fdr->user_id;
-        $data['trx_id'] = TransactionController::trxId();
+        $data['trx_id'] = TransactionController::trxId($request->date);
         $data['balance'] = $request->amount;
         $data['created_by'] = Auth::id();
         $fdrDeposit = FdrDeposit::create($data);

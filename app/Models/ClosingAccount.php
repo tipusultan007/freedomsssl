@@ -9,14 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ClosingAccount extends Model
 {
     use HasFactory;
-    use Searchable;
-
     protected $fillable = [
         'account_no',
         'user_id',
         'type',
         'deposit',
-        'Withdraw',
+        'withdraw',
         'remain',
         'profit',
         'service_charge',
@@ -27,9 +25,9 @@ class ClosingAccount extends Model
         'dps_id',
         'special_dps_id',
         'fdr_id',
+        'trx_id'
     ];
 
-    protected $searchableFields = ['*'];
 
     protected $table = 'closing_accounts';
 

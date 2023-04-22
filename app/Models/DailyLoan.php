@@ -30,6 +30,7 @@ class DailyLoan extends Model
         'approved_by',
         'status',
         'balance',
+        'grace',
         'paid_interest',
         'trx_id'
     ];

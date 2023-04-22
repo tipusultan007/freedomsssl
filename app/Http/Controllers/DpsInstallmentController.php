@@ -55,22 +55,22 @@ class DpsInstallmentController extends Controller
                 ->where('collector_id', $request->collector)
                 ->whereBetween('date', [$request->from, $request->to])
                 ->count();
-        } elseif (!empty($request->from) && !empty($request->to)) {
+        }elseif (!empty($request->account) && !empty($request->from) && !empty($request->to)) {
+            $totalData = DpsInstallment::where('account_no', $request->account)
+                ->whereBetween('date', [$request->from, $request->to])
+                ->count();
+        }  elseif (!empty($request->collector) && !empty($request->from) && !empty($request->to)) {
+            $totalData = DpsInstallment::where('collector_id', $request->collector)
+                ->whereBetween('date', [$request->from, $request->to])
+                ->count();
+        }  elseif (!empty($request->from) && !empty($request->to)) {
             $totalData = DpsInstallment::whereBetween('date', [$request->from, $request->to])
                 ->count();
         } elseif (!empty($request->account) && !empty($request->collector)) {
             $totalData = DpsInstallment::where('account_no', $request->account)
                 ->where('collector_id', $request->collector)
                 ->count();
-        } elseif (!empty($request->account) && !empty($request->from) && !empty($request->to)) {
-            $totalData = DpsInstallment::where('account_no', $request->account)
-                ->whereBetween('date', [$request->from, $request->to])
-                ->count();
-        } elseif (!empty($request->collector) && !empty($request->from) && !empty($request->to)) {
-            $totalData = DpsInstallment::where('collector_id', $request->collector)
-                ->whereBetween('date', [$request->from, $request->to])
-                ->count();
-        } elseif (!empty($request->account)) {
+        }elseif (!empty($request->account)) {
             $totalData = DpsInstallment::where('account_no', $request->account)->count();
         } elseif (!empty($request->collector)) {
             $totalData = DpsInstallment::where('collector_id', $request->collector)
@@ -88,6 +88,26 @@ class DpsInstallmentController extends Controller
                 $posts = DpsInstallment::join('users', 'users.id', '=', 'dps_installments.user_id')
                     ->join('users as collector', 'collector.id', '=', 'dps_installments.collector_id')
                     ->where('dps_installments.account_no', $request->account)
+                    ->where('dps_installments.collector_id', $request->collector)
+                    ->whereBetween('dps_installments.date', [$request->from, $request->to])
+                    ->select('dps_installments.*', 'users.name', 'collector.name as c_name')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('id', 'desc')
+                    ->get();
+            }elseif (!empty($request->account) && !empty($request->from) && !empty($request->to)) {
+                $posts = DpsInstallment::join('users', 'users.id', '=', 'dps_installments.user_id')
+                    ->join('users as collector', 'collector.id', '=', 'dps_installments.collector_id')
+                    ->where('dps_installments.account_no', $request->account)
+                    ->whereBetween('dps_installments.date', [$request->from, $request->to])
+                    ->select('dps_installments.*', 'users.name', 'collector.name as c_name')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('id', 'desc')
+                    ->get();
+            } elseif (!empty($request->collector) && !empty($request->from) && !empty($request->to)) {
+                $posts = DpsInstallment::join('users', 'users.id', '=', 'dps_installments.user_id')
+                    ->join('users as collector', 'collector.id', '=', 'dps_installments.collector_id')
                     ->where('dps_installments.collector_id', $request->collector)
                     ->whereBetween('dps_installments.date', [$request->from, $request->to])
                     ->select('dps_installments.*', 'users.name', 'collector.name as c_name')
@@ -114,27 +134,7 @@ class DpsInstallmentController extends Controller
                     ->limit($limit)
                     ->orderBy('id', 'desc')
                     ->get();
-            } elseif (!empty($request->account) && !empty($request->from) && !empty($request->to)) {
-                $posts = DpsInstallment::join('users', 'users.id', '=', 'dps_installments.user_id')
-                    ->join('users as collector', 'collector.id', '=', 'dps_installments.collector_id')
-                    ->where('dps_installments.account_no', $request->account)
-                    ->whereBetween('dps_installments.date', [$request->from, $request->to])
-                    ->select('dps_installments.*', 'users.name', 'collector.name as c_name')
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy('id', 'desc')
-                    ->get();
-            } elseif (!empty($request->collector) && !empty($request->from) && !empty($request->to)) {
-                $posts = DpsInstallment::join('users', 'users.id', '=', 'dps_installments.user_id')
-                    ->join('users as collector', 'collector.id', '=', 'dps_installments.collector_id')
-                    ->where('dps_installments.collector_id', $request->collector)
-                    ->whereBetween('dps_installments.date', [$request->from, $request->to])
-                    ->select('dps_installments.*', 'users.name', 'collector.name as c_name')
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy('id', 'desc')
-                    ->get();
-            } elseif (!empty($request->account)) {
+            }  elseif (!empty($request->account)) {
                 $posts = DpsInstallment::join('users', 'users.id', '=', 'dps_installments.user_id')
                     ->join('users as collector', 'collector.id', '=', 'dps_installments.collector_id')
                     ->where('dps_installments.account_no', $request->account)
@@ -250,7 +250,7 @@ class DpsInstallmentController extends Controller
         $this->authorize('create', DpsInstallment::class);
         $data = $request->all();
         $data['collector_id'] = Auth::user()->id;
-        $data['trx_id'] = $this->trxId();
+        $data['trx_id'] = $this->trxId($request->date);
 
         //$data['trx_type'] = $request->deposited_via;
         $installment = DpsInstallment::create($data);
@@ -273,6 +273,9 @@ class DpsInstallmentController extends Controller
                     $dpsCollection = DpsCollection::create([
                         'account_no' => $installment->account_no,
                         'user_id' => $installment->user_id,
+                        'trx_id' => $installment->trx_id,
+                        'late_fee' => $installment->late_fee,
+                        'other_fee' => $installment->other_fee,
                         'dps_id' => $installment->dps_id,
                         'dps_amount' => $installment->dps_amount,
                         'balance' => $dps->balance,
@@ -290,6 +293,9 @@ class DpsInstallmentController extends Controller
                         'account_no' => $installment->account_no,
                         'user_id' => $installment->user_id,
                         'dps_id' => $installment->dps_id,
+                        'trx_id' => $installment->trx_id,
+                        'late_fee' => $installment->late_fee,
+                        'other_fee' => $installment->other_fee,
                         'dps_amount' => $installment->dps_amount,
                         'balance' => $dps->balance,
                         'month' => $date->format('F'),
@@ -311,6 +317,9 @@ class DpsInstallmentController extends Controller
                             'account_no' => $installment->account_no,
                             'user_id' => $installment->user_id,
                             'dps_id' => $installment->dps_id,
+                            'trx_id' => $installment->trx_id,
+                            'late_fee' => $installment->late_fee,
+                            'other_fee' => $installment->other_fee,
                             'dps_amount' => $dps->package_amount,
                             'balance' => $dps->balance,
                             'month' => $date->format('F'),
@@ -329,6 +338,9 @@ class DpsInstallmentController extends Controller
                             'account_no' => $installment->account_no,
                             'user_id' => $installment->user_id,
                             'dps_id' => $installment->dps_id,
+                            'trx_id' => $installment->trx_id,
+                            'late_fee' => $installment->late_fee,
+                            'other_fee' => $installment->other_fee,
                             'dps_amount' => $dps->package_amount,
                             'balance' => $dps->balance,
                             'month' => $date->format('F'),
@@ -1123,6 +1135,7 @@ class DpsInstallmentController extends Controller
     public function dataByAccount(Request $request)
     {
         $dps = Helpers::getDueDps($request->account, $request->date);
+        $due = Due::where('account_no',$request->account)->first();
         $loan = DpsLoan::where('account_no', $request->account)->first();
         $loanCollection = '';
         if ($loan) {
@@ -1130,6 +1143,7 @@ class DpsInstallmentController extends Controller
         }
 
         $data['user'] = $dps['user'];
+        $data['due'] = $due?$due->remain:"0";
         $data['dpsInfo'] = $dps['dpsInfo'];
         $data['dpsDue'] = $dps['dpsDue'];
         $data['loanInfo'] = $loan ? Helpers::getInterest($request->account, $request->date, '') : "";
@@ -1141,25 +1155,24 @@ class DpsInstallmentController extends Controller
 
     }
 
-    public function trxId()
+    public function trxId($date)
     {
-        $record = Transaction::latest()->first();
-        $dateTime = Carbon::now('Asia/Dhaka');
-
+        $record = Transaction::latest('id')->first();
+        $dateTime = new Carbon($date);
+        $permitted_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $uid = substr(str_shuffle($permitted_chars), 0, 6);
         if ($record) {
-
             $expNum = explode('-', $record->trx_id);
-
             if ($dateTime->format('jny') == $expNum[1]) {
-                $s = str_pad($expNum[2] + 1, 4, "0", STR_PAD_LEFT);
-                $nextTxNumber = 'TRX-' . $expNum[1] . '-' . $s;
+                $s = str_pad($expNum[3]+1, 4, "0", STR_PAD_LEFT);
+                $nextTxNumber = 'TRX-' . $expNum[1] .'-'.$uid. '-' . $s;
             } else {
                 //increase 1 with last invoice number
-                $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+                $nextTxNumber = 'TRX-' . $dateTime->format('jny') .'-'.$uid. '-0001';
             }
         } else {
 
-            $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+            $nextTxNumber = 'TRX-' . $dateTime->format('jny') .'-'.$uid. '-0001';
 
         }
 
@@ -1194,175 +1207,35 @@ class DpsInstallmentController extends Controller
         $data['name'] = $installment->user->name;
         $data['trx_type'] = $installment->deposited_via;
         if ($installment->dps_amount > 0) {
-            /*$dps_transaction = Transaction::create([
-                'account_id' => 1,
-                'description' => 'DPS Installment',
-                'trx_id' => $installment->trx_id,
-                'date' => $installment->date,
-                'amount' => $installment->dps_amount,
-                'user_id' => $installment->collector_id,
-                'account_no' => $installment->account_no,
-                'name' => $installment->user->name,
-            ]);
-            $depositAccount = Account::find(1); //LIABILITY (DEPOSIT +)
-            $depositAccount->balance += $dps_transaction->amount;
-            $depositAccount->save();
 
-            $cashAccount = Account::find(4); //ASSET (CASH+)
-            $cashAccount->balance += $dps_transaction->amount;
-            $cashAccount->save();*/
             DpsAccount::create($data);
         }
         if ($installment->loan_installment > 0) {
             DpsLoanPaymentAccount::create($data);
-            /*$dps_transaction = Transaction::create([
-                'account_id' => 13,
-                'description' => 'DPS Loan Payment',
-                'trx_id' => $installment->trx_id,
-                'date' => $installment->date,
-                'amount' => $installment->loan_installment,
-                'user_id' => $installment->collector_id,
-                'account_no' => $installment->account_no,
-                'name' => $installment->user->name,
-            ]);
 
-            $interestAccount = Account::find(13); //LOAN PAYMENT+
-            $interestAccount->balance += $dps_transaction->amount;
-            $interestAccount->save();
-
-            $cashAccount = Account::find(4); //ASSET (CASH+)
-            $cashAccount->balance += $dps_transaction->amount;
-            $cashAccount->save();
-
-            $loanProvidetAccount = Account::find(2); //ASSET (LOAN PROVIDE-)
-            $loanProvidetAccount->balance -= $dps_transaction->amount;
-            $loanProvidetAccount->save();*/
         }
         if ($installment->interest > 0) {
 
             $data['interest_type'] = 'dps';
             PaidInterestAccount::create($data);
-            /*$interest_transaction = Transaction::create([
-                'account_id' => 7,
-                'description' => 'DPS Loan Interest Paid',
-                'trx_id' => $installment->trx_id,
-                'date' => $installment->date,
-                'amount' => $installment->interest,
-                'user_id' => $installment->collector_id,
-                'account_no' => $installment->account_no,
-                'name' => $installment->user->name,
-            ]);
 
-            $interestAccount = Account::find(7); //INCOME (LOAN INTEREST PAID+)
-            $interestAccount->balance += $interest_transaction->amount;
-            $interestAccount->save();
-
-            $cashAccount = Account::find(4); //ASSET (CASH+)
-            $cashAccount->balance += $interest_transaction->amount;
-            $cashAccount->save();
-
-            $unpaidInterestAccount = Account::find(8); //INCOME (LOAN INTEREST UNPAID-)
-            $unpaidInterestAccount->balance -= $interest_transaction->amount;
-            $unpaidInterestAccount->save();
-
-            $unpaidInterestAccount1 = Account::find(5); //ASSET (LOAN INTEREST UNPAID-)
-            $unpaidInterestAccount1->balance -= $interest_transaction->amount;
-            $unpaidInterestAccount1->save();*/
         }
         if ($installment->advance > 0) {
             AdvanceAccount::create($data);
-            /*$advanced_transaction = Transaction::create([
-                'account_id' => 3,
-                'description' => 'Advance',
-                'trx_id' => $installment->trx_id,
-                'date' => $installment->date,
-                'amount' => $installment->advance,
-                'user_id' => $installment->collector_id,
-                'account_no' => $installment->account_no,
-                'name' => $installment->user->name,
-            ]);
-
-            $advanceAccount = Account::find(3); //LIABILITY ( ADVANCE AMOUNT +)
-            $advanceAccount->balance += $advanced_transaction->amount;
-            $advanceAccount->save();
-
-            $cashAccount = Account::find(4); //ASSET (CASH+)
-            $cashAccount->balance += $advanced_transaction->amount;
-            $cashAccount->save();*/
         }
         if ($installment->advance_return > 0) {
             AdvanceAdjustAccount::create($data);
-            /*$advancedReturn_transaction = Transaction::create([
-                'account_id' => 14,
-                'description' => 'Adjustment',
-                'trx_id' => $installment->trx_id,
-                'date' => $installment->date,
-                'amount' => $installment->advance,
-                'user_id' => $installment->collector_id,
-                'account_no' => $installment->account_no,
-                'name' => $installment->user->name,
-            ]);
 
-            $advanceAdjustAccount = Account::find(14); // ( ADVANCE ADJUST +)
-            $advanceAdjustAccount->balance += $advancedReturn_transaction->amount;
-            $advanceAdjustAccount->save();
-
-            $advanceAccount = Account::find(3); //LIABILITY ( ADVANCE AMOUNT -)
-            $advanceAccount->balance -= $advancedReturn_transaction->amount;
-            $advanceAccount->save();
-
-            $cashAccount = Account::find(4); //ASSET (CASH-)
-            $cashAccount->balance -= $advancedReturn_transaction->amount;
-            $cashAccount->save();*/
         }
 
         if ($installment->due > 0) {
             DueAccount::create($data);
-            /*$due_transaction = Transaction::create([
-                'account_id' => 6,
-                'description' => 'Due',
-                'trx_id' => $installment->trx_id,
-                'date' => $installment->date,
-                'amount' => $installment->due,
-                'user_id' => $installment->collector_id,
-                'account_no' => $installment->account_no,
-                'name' => $installment->user->name,
-            ]);
 
-            $dueAmountAccount = Account::find(6); //ASSET (DUE AMOUNT+)
-            $dueAmountAccount->balance += $due_transaction->amount;
-            $dueAmountAccount->save();
-
-            $cashAccount = Account::find(4); //ASSET (CASH-)
-            $cashAccount->balance -= $due_transaction->amount;
-            $cashAccount->save();*/
 
         }
 
         if ($installment->due_return > 0) {
             DueReturnAccount::create($data);
-            /* $duereturn_transaction = Transaction::create([
-                 'account_id' => 15,
-                 'description' => 'Due Return',
-                 'trx_id' => $installment->trx_id,
-                 'date' => $installment->date,
-                 'amount' => $installment->due_return,
-                 'user_id' => $installment->collector_id,
-                 'account_no' => $installment->account_no,
-                 'name' => $installment->user->name,
-             ]);
-
-             $dueReturnAccount = Account::find(15); //ASSET (DUE AMOUNT-)
-             $dueReturnAccount->balance += $duereturn_transaction->amount;
-             $dueReturnAccount->save();
-
-             $dueAmountAccount = Account::find(6); //ASSET (DUE AMOUNT-)
-             $dueAmountAccount->balance -= $duereturn_transaction->amount;
-             $dueAmountAccount->save();
-
-             $cashAccount = Account::find(4); //ASSET (CASH+)
-             $cashAccount->balance += $duereturn_transaction->amount;
-             $cashAccount->save();*/
 
             if ($installment->late_fee > 0) {
                 LateFeeAccount::create($data);

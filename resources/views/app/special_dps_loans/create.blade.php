@@ -82,8 +82,8 @@
                                     <div class="col-md-6 mb-2">
                                         <label for="account_no" class="form-label">A/C No</label>
                                         <select data-allow-clear="true" name="account_no" id="account_no"
-                                                class="select2 form-select">
-
+                                                class="select2 form-select" data-placeholder="Select Account">
+                                            <option value=""></option>
                                             @forelse($accounts as $account)
                                                 <option value="{{ $account->account_no }}">{{ $account->account_no }}
                                                     || {{ $account->user->name }}</option>
@@ -194,6 +194,18 @@
                             </div>
                             <form>
                                 <div class="row">
+                                    <div class="mb-1 col-md-12">
+                                        @php
+                                        $users = \App\Models\User::all();
+                                        @endphp
+                                        <label class="form-label" for="name">Select User</label>
+                                        <select name="guarantor_user_id" id="guarantor_user_id" class="select2 form-select" data-allow-clear="on" data-placeholder="-- Select User --">
+                                            <option value="">Select Guarantor</option>
+                                            @foreach($users as $user)
+                                                <option value="{{ $user->id }}">{{ $user->name }} || {{ $user->father_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <div class="mb-1 col-md-6">
                                         <label class="form-label" for="name">Name</label>
                                         <input type="text" name="name" id="name" class="form-control"
@@ -244,6 +256,19 @@
 
                     <div class="card-body">
                         <div class="user-data">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+
+                    <div class="divider">
+                        <div class="divider-text">Guarantor's Information</div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="guarantor-data">
 
                         </div>
                     </div>
@@ -408,13 +433,17 @@
                         $(".spinner").show();
                         var formData = $("form").serializeArray();
                         $.ajax({
-                            url: "{{ route('daily-savings.store') }}",
+                            url: "{{ route('special-dps-loans.store') }}",
                             method: "POST",
                             data: formData,
                             success: function (data) {
                                 $(".spinner").hide();
                                 $("form").trigger('reset');
-                                toastr.success('New savings account successfully added.', 'New Savings!', {
+                                $("#account_no").val("").trigger("change");
+                                $("#guarantor_user_id").val("").trigger("change");
+                                $(".user-data").empty();
+                                $(".guarantor-data").empty();
+                                toastr.success('New Special Loan successfully created.', 'New Special Loan!', {
                                     closeButton: true,
                                     tapToDismiss: false
                                 });
@@ -450,57 +479,164 @@
                             </div>
                             <h4 class="fw-bolder border-bottom pb-50 mb-1">Details</h4>
                             <div class="info-container">
-                                <ul class="list-unstyled">
-                                    <li class="mb-75">
-                                        <span class="fw-bolder me-25">Father:</span>
-                                        <span>${data.user.father_name}</span>
-                                    </li>
-                                    <li class="mb-75">
-                                        <span class="fw-bolder me-25">Mother:</span>
-                                        <span>${data.user.mother_name}</span>
-                                    </li>
-                                    <li class="mb-75">
-                                        <span class="fw-bolder me-25">Spouse:</span>
-                                        <span class="badge bg-light-success">${data.user.spouse_name}</span>
-                                    </li>
-                                    <li class="mb-75">
-                                        <span class="fw-bolder me-25">Present Address:</span>
-                                        <span>${data.user.present_address}</span>
-                                    </li>
-                                    <li class="mb-75">
-                                        <span class="fw-bolder me-25">Join Date:</span>
-                                        <span>${data.user.join_date}</span>
-                                    </li>
-                                    <li class="mb-75">
-                                        <span class="fw-bolder me-25">Total Savings:</span>
-                                        <span>${data.daily_savings}</span>
-                                    </li>
-                                    <li class="mb-75">
-                                        <span class="fw-bolder me-25">Total DPS:</span>
-                                        <span>${data.dps}</span>
-                                    </li>
-                                    <li class="mb-75">
-                                        <span class="fw-bolder me-25">Total Special DPS:</span>
-                                        <span>${data.special_dps}</span>
-                                    </li>
-                                    <li class="mb-75">
-                                        <span class="fw-bolder me-25">Daily Loans:</span>
-                                        <span>${data.daily_loans}</span>
-                                    </li>
-                                    <li class="mb-75">
-                                        <span class="fw-bolder me-25">DPS Loans:</span>
-                                        <span>${data.dps_loans}</span>
-                                    </li>
-                                    <li class="mb-75">
-                                        <span class="fw-bolder me-25">Special DPS Loan:</span>
-                                        <span>${data.special_dps_loans}</span>
-                                    </li>
-                                </ul>
+                                <table class="table table-sm table-striped">
+                                    <tr>
+                                        <td class="fw-bolder me-25">Father:</td>
+                                        <td>${data.user.father_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Mother:</td>
+                                        <td>${data.user.mother_name}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="fw-bolder me-25">Join Date:</td>
+                                        <td>${data.user.join_date}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total Savings:</td>
+                                        <td>${data.daily_savings}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total DPS:</td>
+                                        <td>${data.dps}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total Special DPS:</td>
+                                        <td>${data.special_dps}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Daily Loans:</td>
+                                        <td>${data.daily_loans}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">DPS Loans:</td>
+                                        <td>${data.dps_loans}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Special DPS Loan:</td>
+                                        <td>${data.special_dps_loans}</td>
+                                    </tr>
+<tr>
+                                        <td class="fw-bolder me-25">FDR:</td>
+                                        <td>${data.fdr}</td>
+                                    </tr>
+<tr>
+                                        <td class="fw-bolder me-25">Guarantor:</td>
+                                        <td class="gtable"></td>
+                                    </tr>
+                                </table>
+
                             </div>
                     `);
+                    if (data.guarantors != null)
+                    {
+                        $.each(data.guarantors,function (a,b) {
+                            $(".gtable").append(`
+                            <span class="badge bg-danger">${b}</span>
+                            `);
+                        })
+                    }
                 }
             })
         });
+
+        $("#guarantor_user_id").on("select2:select",function (e) {
+            let user_id = e.params.data.id;
+            $("#name").val('');
+            $("#address").val('');
+            $("#phone").val('');
+            $(".guarantor-data").empty();
+            $.ajax({
+                url: "{{ url('getDetails') }}/"+user_id,
+                type: "GET",
+                dataType: "JSON",
+                success: function (data) {
+                    //console.log(data)
+                    $("#name").val(data.user.name);
+                    $("#address").val(data.user.present_address);
+                    $("#phone").val(data.user.phone1);
+
+                    var image = '';
+                    if (data.user.profile_photo_path == null)
+                    {
+                        image = data.user.profile_photo_url+'&size=110';
+                    }else {
+                        image = data.user.profile_photo_path;
+                    }
+                    $(".guarantor-data").append(`
+                    <div class="user-avatar-section">
+                                <div class="d-flex align-items-center flex-column">
+                                    <img class="img-fluid rounded mt-3 mb-2" src="${image}" height="110" width="110" alt="User avatar">
+                                    <div class="user-info text-center">
+                                        <h4>${data.user.name}</h4>
+                                        <span class="badge bg-light-secondary">${data.user.phone1}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4 class="fw-bolder border-bottom pb-50 mb-1">Details</h4>
+                            <div class="info-container">
+                                <table class="table table-sm table-striped">
+                                    <tr>
+                                        <td class="fw-bolder me-25">Father:</td>
+                                        <td>${data.user.father_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Mother:</td>
+                                        <td>${data.user.mother_name}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="fw-bolder me-25">Join Date:</td>
+                                        <td>${data.user.join_date}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total Savings:</td>
+                                        <td>${data.daily_savings}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total DPS:</td>
+                                        <td>${data.dps}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Total Special DPS:</td>
+                                        <td>${data.special_dps}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Daily Loans:</td>
+                                        <td>${data.daily_loans}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">DPS Loans:</td>
+                                        <td>${data.dps_loans}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bolder me-25">Special DPS Loan:</td>
+                                        <td>${data.special_dps_loans}</td>
+                                    </tr>
+<tr>
+                                        <td class="fw-bolder me-25">FDR:</td>
+                                        <td>${data.fdr}</td>
+                                    </tr>
+<tr>
+                                        <td class="fw-bolder me-25">Guarantor:</td>
+                                        <td class="gtable2"></td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                    `);
+                    if (data.guarantors != null)
+                    {
+                        $.each(data.guarantors,function (a,b) {
+                            $(".gtable2").append(`
+                            <span class="badge bg-danger">${b}</span>
+                            `);
+                        })
+                    }
+                }
+            })
+        })
 
     </script>
 @endsection

@@ -197,7 +197,7 @@
                                         <div class="col-lg-4 my-1">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control flatpickr-basic" name="date"
-                                                       value="{{ date('Y-m-d') }}" id="date">
+                                                       value="{{ date('Y-m-d') }}" id="date2">
                                                 <label class="font-small-2 fw-bold" for="date">DATE</label>
                                             </div>
                                         </div>
@@ -1181,7 +1181,7 @@
                 total -= parseInt(advance_return);
                 $(".table-collection-info").append(`
            <tr>
-                    <th>Advance Return</th>
+                    <th>Advance Adjustment</th>
                     <td>${advance_return}</td>
                 </tr>
             `);
@@ -1210,7 +1210,7 @@
                 total += parseInt(due_interest);
                 $(".table-collection-info").append(`
            <tr>
-                    <th>Due Interest</th>
+                    <th>Due Interest Payment</th>
                     <td>${due_interest}</td>
                 </tr>
             `);
@@ -1272,8 +1272,17 @@
             $("#collectionForm").trigger('reset');
             $("#formCollection").trigger('reset');
             $('#account_no').val(null).trigger('change');
-            $('#collector_id').val(null).trigger('change');
-            $('#saving_type').val(null).trigger('change');
+            $(".savings-info-list").empty();
+            $(".loan-info-list").empty();
+            $("#interestTable").empty();
+            $(".loan-list table").empty();
+            $("#interest").val("");
+            $(".flatpickr-basic").flatpickr({
+                defaultDate: "today",
+                altInput: true,
+                altFormat: 'd/m/Y',
+                dateFormat: 'Y-m-d',
+            })
         }
 
         $(document).on("click", ".loan-list table input[type=checkbox]", function () {
@@ -1389,7 +1398,16 @@
                 dataType: "JSON",
                 data: {account: account_no, date: date},
                 success: function (data) {
-                    console.log(data);
+                    //console.log(data);
+                    $("#date2").flatpickr({
+                        defaultDate: date,
+                    });
+                    $("#date2").flatpickr({
+                        altInput: true,
+                        altFormat: 'd/m/Y',
+                        dateFormat: 'Y-m-d',
+                        allowInput: true
+                    });
                     $("#dps_id").val(data.dpsInfo.id);
                     var loanInfo = data.loanInfo;
                     if (loanInfo != "") {
@@ -1469,6 +1487,16 @@
 <tr class="font-small-2">
                                         <td class="fw-bolder ">DPS DUE</td><td>:</td>
                                         <td class="total_withdraw px-1">${dps.package_amount} x ${data.dpsDue} = <span class="text-danger">${dps.package_amount * data.dpsDue}</span></td>
+                                    </tr>
+</tr>
+<tr class="font-small-2">
+                                        <td class="fw-bolder ">DUE</td><td>:</td>
+                                        <td class="total_due px-1">${data.due}</td>
+                                    </tr>
+</tr>
+<tr class="font-small-2">
+                                        <td class="fw-bolder ">WALLET</td><td>:</td>
+                                        <td class="total_due px-1">${data.user.wallet}</td>
                                     </tr>
                     `);
                     if (data.loan != "") {
@@ -1556,13 +1584,15 @@
                 success: function (data) {
                     $this.attr('disabled', false).html($caption);
                     $("#modalCollection").modal("hide");
+                    $(".datatables-basic").DataTable().destroy();
+                    loadSavingsCollection();
                     toastr['success']('👋 Submission has been saved successfully.', 'Success!', {
                         closeButton: true,
                         tapToDismiss: false,
                     });
 
                     resetForm();
-
+                    bsOffcanvas.hide();
                 },
                 error: function (data) {
                     $("#modalCollection").modal("hide");
@@ -1678,10 +1708,7 @@
                                 feather.icons['edit'].toSvg({class: 'font-small-4 me-50'}) +
                                 'Edit Loan</a>' +
                                 '</div>' +
-                                '</div>' +
-                                '<a href="javascript:;" class="item-edit" data-id="' + full['id'] + '">' +
-                                feather.icons['edit'].toSvg({class: 'font-small-4'}) +
-                                '</a>'
+                                '</div>'
                             );
                         }
                     }

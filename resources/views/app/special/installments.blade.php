@@ -37,6 +37,7 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/pickadate/pickadate.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
+    <link rel="stylesheet" href="{{asset('css/bootstrap-datepicker.css')}}" />
 
 @endsection
 
@@ -84,7 +85,7 @@
                                 </div>
                                 <div class="col-xl-3 col-md-6 col-12">
                                     <div class="mb-1">
-                                        <input type="text" id="date" class="form-control flatpickr-basic"
+                                        <input type="text" id="date" class="form-control check-date flatpickr-basic"
                                                value="{{date('Y-m-d')}}" placeholder="DD-MM-YYYY"/>
                                     </div>
                                 </div>
@@ -194,7 +195,7 @@
                                         <div class="col-lg-4 my-1">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control flatpickr-basic" name="date"
-                                                       value="{{ date('Y-m-d') }}" id="date">
+                                                       value="{{ date('Y-m-d') }}" id="date2">
                                                 <label class="font-small-2 fw-bold" for="date">DATE</label>
                                             </div>
                                         </div>
@@ -1060,6 +1061,7 @@
     <script src="{{ asset(mix('vendors/js/pickers/pickadate/legacy.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/flatpickr/flatpickr.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
+
 @endsection
 
 @section('page-script')
@@ -1068,13 +1070,18 @@
     <script src="{{ asset(mix('js/scripts/pages/app-user-view-account.js')) }}"></script>
     <script src="{{ asset(mix('js/scripts/pages/app-user-view.js')) }}"></script>
     <script src="{{ asset(mix('js/scripts/forms/pickers/form-pickers.js')) }}"></script>
-
     <script>
 
         var taken_loans = '';
         var total_interest = 0;
         var dps_amount = 0;
         var dpsInstallments = 0;
+        /*$(".flatpickr-basic").flatpickr({
+            altInput: true,
+            altFormat: 'd/m/Y',
+            dateFormat: 'Y-m-d',
+            allowInput: true
+        });*/
         $(".deposited_via_details").hide();
 
         $("#deposited_via").on("select2:select",function (e) {
@@ -1273,8 +1280,17 @@
             $("#collectionForm").trigger('reset');
             $("#formCollection").trigger('reset');
             $('#account_no').val(null).trigger('change');
-            $('#collector_id').val(null).trigger('change');
-            $('#saving_type').val(null).trigger('change');
+            $(".savings-info-list").empty();
+            $(".loan-info-list").empty();
+            $("#interestTable").empty();
+            $(".loan-list table").empty();
+            $("#interest").val("");
+            $(".flatpickr-basic").flatpickr({
+                defaultDate: "today",
+                altInput: true,
+                altFormat: 'd/m/Y',
+                dateFormat: 'Y-m-d',
+            })
         }
 
         $(document).on("click", ".loan-list table input[type=checkbox]", function () {
@@ -1415,6 +1431,15 @@
                 data: {account: account_no, date: date},
                 success: function (data) {
                     console.log(data);
+                    $("#date2").flatpickr({
+                        defaultDate: date,
+                    });
+                    $("#date2").flatpickr({
+                        altInput: true,
+                        altFormat: 'd/m/Y',
+                        dateFormat: 'Y-m-d',
+                        allowInput: true
+                    });
                     $("#dps_id").val(data.dpsInfo.id);
                     var loanInfo = data.loanInfo;
                     if (loanInfo != "") {
@@ -1492,8 +1517,17 @@
                                         <td class="total_withdraw px-1">${dps.balance}</td>
                                     </tr>
 <tr class="font-small-2">
-                                        <td class="fw-bolder ">DPS DUE</td><td>:</td>
+                                        <td class="fw-bolder ">DPS DUE PAYMENT</td><td>:</td>
                                         <td class="total_withdraw px-1">${dps.package_amount} x ${data.dpsDue} = <span class="text-danger">${dps.package_amount * data.dpsDue}</span></td>
+                                    </tr>
+<tr class="font-small-2">
+                                        <td class="fw-bolder ">DUE</td><td>:</td>
+                                        <td class="total_due px-1">${data.due}</td>
+                                    </tr>
+</tr>
+<tr class="font-small-2">
+                                        <td class="fw-bolder ">WALLET</td><td>:</td>
+                                        <td class="total_due px-1">${data.user.wallet}</td>
                                     </tr>
                     `);
                     if (data.loan != "") {

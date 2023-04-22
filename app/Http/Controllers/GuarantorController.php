@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DailySavings;
+use App\Models\Dps;
+use App\Models\DpsLoan;
+use App\Models\Fdr;
+use App\Models\SpecialDps;
+use App\Models\SpecialDpsLoan;
 use App\Models\User;
 use App\Models\Guarantor;
 use App\Models\DailyLoan;
@@ -124,5 +130,38 @@ class GuarantorController extends Controller
         return redirect()
             ->route('guarantors.index')
             ->withSuccess(__('crud.common.removed'));
+    }
+
+    public function getDetails($id)
+    {
+        $user = User::find($id);
+        $savings = Dps::where('user_id', $id)->first();
+        $dps = Dps::where('user_id', $id)->where('status','active')->sum('balance');
+        $daily_savings = DailySavings::where('user_id', $id)->sum('total');
+        $special_dps = SpecialDps::where('user_id', $id)->where('status','active')->sum('balance');
+        $daily_loans = DailyLoan::where('user_id', $id)->where('status','active')->sum('balance');
+        $fdr = Fdr::where('user_id', $id)->where('status','active')->sum('balance');
+        $dps_loans = DpsLoan::where('user_id', $id)->where('status','active')->sum('remain_loan');
+        $special_dps_loans = SpecialDpsLoan::where('user_id', $id)->where('status','active')->sum('remain_loan');
+
+        $guarantors = array();
+        $guarantorOff = Guarantor::where('user_id',$id)->get();
+        if ($guarantorOff)
+        {
+            foreach ($guarantorOff as $item)
+            {
+                $guarantors[] = $item->account_no;
+            }
+        }
+        $data['user'] = $user;
+        $data['guarantors'] = $guarantors;
+        $data['dps'] = $dps.' Tk.';
+        $data['fdr'] = $fdr.' Tk.';
+        $data['daily_savings'] = $daily_savings.' Tk.';
+        $data['special_dps'] = $special_dps.' Tk.';
+        $data['daily_loans'] = $daily_loans.' Tk.';
+        $data['dps_loans'] = $dps_loans.' Tk.';
+        $data['special_dps_loans'] = $special_dps_loans.' Tk.';
+        return json_encode($data);
     }
 }

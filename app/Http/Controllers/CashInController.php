@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cashout;
+use App\Models\DailyCollection;
 use App\Models\User;
 use App\Models\CashIn;
 use Illuminate\Http\Request;
@@ -18,6 +20,40 @@ class CashInController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view-any', CashIn::class);
+
+       /* DailyCollection::chunk(1000, function ($installments) {
+            foreach ($installments as $dailyCollection) {
+                switch ($dailyCollection->saving_type)
+                {
+                    case 'deposit':
+                        $cashin = CashIn::create([
+                            'user_id' => $dailyCollection->user_id,
+                            'cashin_category_id' => 3,
+                            'account_no' => $dailyCollection->account_no,
+                            'daily_collection_id' => $dailyCollection->id,
+                            'amount' => $dailyCollection->saving_amount,
+                            'date' => $dailyCollection->date,
+                            'created_by' => $dailyCollection->created_by,
+                            'trx_id' => $dailyCollection->trx_id,
+                        ]);
+                        break;
+                    case 'withdraw':
+                        $cashout = Cashout::create([
+                            'cashout_category_id' => 2,
+                            'account_no' => $dailyCollection->account_no,
+                            'daily_collection_id' => $dailyCollection->id,
+                            'amount' => $dailyCollection->saving_amount,
+                            'date' => $dailyCollection->date,
+                            'created_by' => $dailyCollection->created_by,
+                            'user_id' => $dailyCollection->user_id,
+                            'trx_id' => $dailyCollection->trx_id,
+                        ]);
+                        break;
+
+                    default:
+                }
+            }
+        });*/
 
         $breadcrumbs = [
             ['name' => 'List']
@@ -82,7 +118,18 @@ class CashInController extends Controller
 
     public function cashinByCategory(Request $request)
     {
-        $totalData = CashIn::whereBetween('date',[$request->from, $request->to])->where('cashin_category_id',$request->cashin_category_id)->count();
+        if (!empty($request->cashin_category_id) && !empty($request->from) && !empty($request->to))
+        {
+            $totalData = CashIn::whereBetween('date',[$request->from, $request->to])->where('cashin_category_id',$request->cashin_category_id)->count();
+        }elseif (!empty($request->from) && !empty($request->to))
+        {
+            $totalData = CashIn::whereBetween('date',[$request->from, $request->to])->count();
+        }elseif(!empty($request->cashin_category_id))
+        {
+            $totalData = CashIn::where('cashin_category_id',$request->cashin_category_id)->count();
+        }else{
+            $totalData = CashIn::count();
+        }
         $totalFiltered = $totalData;
 
         $limit = $request->input('length');
@@ -90,29 +137,60 @@ class CashInController extends Controller
 
         if(empty($request->input('search.value')))
         {
-            $posts = CashIn::with('cashinCategory')
+            /*$posts = CashIn::with('cashinCategory')
                 ->whereBetween('date',[$request->from, $request->to])
                 ->where('cashin_category_id',$request->cashin_category_id)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy('date','desc')
-                ->get();
+                ->get();*/
+            if (!empty($request->cashin_category_id) && !empty($request->from) && !empty($request->to))
+            {
+
+                $posts = CashIn::with('cashinCategory')
+                    ->whereBetween('date',[$request->from, $request->to])
+                    ->where('cashin_category_id',$request->cashin_category_id)
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('date','desc')
+                    ->get();
+
+            }elseif (!empty($request->from) && !empty($request->to))
+            {
+                $posts = CashIn::with('cashinCategory')
+                    ->whereBetween('date',[$request->from, $request->to])
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('date','desc')
+                    ->get();
+
+            }elseif(!empty($request->cashin_category_id))
+            {
+                $posts = CashIn::with('cashinCategory')
+                    ->where('cashin_category_id',$request->cashin_category_id)
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('date','desc')
+                    ->get();
+            }else{
+                $posts = CashIn::with('cashinCategory')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('date','desc')
+                    ->get();
+            }
         }
         else {
             $search = $request->input('search.value');
 
             $posts =  CashIn::with('cashinCategory')
-                ->whereBetween('date',[$request->from, $request->to])
-                ->where('cashin_category_id',$request->cashin_category_id)
                 ->where('account_no','LIKE',"%{$search}%")
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy('date','desc')
                 ->get();
 
-            $totalFiltered = CashIn::where('cashin_category_id',$request->cashin_category_id)
-                ->whereBetween('date',[$request->from, $request->to])
-                ->where('account_no','LIKE',"%{$search}%")
+            $totalFiltered = CashIn::where('account_no','LIKE',"%{$search}%")
                 ->count();
         }
 

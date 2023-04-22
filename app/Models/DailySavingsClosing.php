@@ -9,21 +9,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class DailySavingsClosing extends Model
 {
     use HasFactory;
-    use Searchable;
 
     protected $fillable = [
         'account_no',
         'daily_savings_id',
-        'total_deposit',
-        'total_withdraw',
-        'balance',
-        'interest',
-        'closing_by',
+        'daily_loan_id',
+        'deposit',
+        'profit',
+        'payable',
+        'loan',
+        'grace',
+        'receivable',
+        'total',
         'date',
-        'closing_fee',
+        'service_charge',
+        'closing_by',
+        'trx_id',
     ];
-
-    protected $searchableFields = ['*'];
 
     protected $table = 'daily_savings_closings';
 
@@ -36,8 +38,9 @@ class DailySavingsClosing extends Model
         return $this->belongsTo(DailySavings::class);
     }
 
-    public function closingBy()
+    public function closedBy()
     {
-        return $this->belongsTo(User::class, 'closing_by');
+        return $this->belongsTo(User::class,'closing_by','id');
     }
+
 }

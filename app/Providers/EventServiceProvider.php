@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\DailyCollection;
+use App\Models\DailyLoan;
+use App\Models\SavingsCollection;
+use App\Observers\DailyCollectionObserver;
+use App\Observers\DailyLoanObserver;
+use App\Observers\SavingsCollectionObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -27,6 +33,8 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        /*DailyCollection::observe(DailyCollectionObserver::class);
+        SavingsCollection::observe(SavingsCollectionObserver::class);
+        DailyLoan::observe(DailyLoanObserver::class);*/
     }
 }

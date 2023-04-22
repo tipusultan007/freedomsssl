@@ -12,6 +12,7 @@ use App\Http\Controllers\Accounts\SavingsAccount;
 use App\Models\Account;
 use App\Models\CashIn;
 use App\Models\Cashout;
+use App\Models\DailyInstallment;
 use App\Models\DailyLoanCollection;
 use App\Models\SavingsCollection;
 use App\Models\Transaction;
@@ -22,6 +23,7 @@ use App\Models\DailySavings;
 use App\Models\DailyCollection;
 use App\Http\Requests\DailyCollectionStoreRequest;
 use App\Http\Requests\DailyCollectionUpdateRequest;
+use Illuminate\Support\Facades\Auth;
 
 class DailyCollectionController extends Controller
 {
@@ -32,6 +34,63 @@ class DailyCollectionController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view-any', DailyCollection::class);
+
+        /*$installments = DailyInstallment::all();
+        foreach ($installments as $installment)
+        {
+            $savings = DailySavings::where('account_no',$installment->account_no)->first();
+            $dailyCollection = DailyCollection::create([
+               'account_no' => $installment->account_no,
+               'user_id' => $installment->customer_id,
+               'collector_id' => Auth::id(),
+               'saving_amount' => $installment->amount,
+               'saving_type' => $installment->type,
+               'daily_savings_id' => $savings->id,
+               'savings_balance' => 0,
+               'date' => $installment->date,
+               'collection_date' => $installment->collection_date,
+               'created_by' => Auth::id(),
+            ]);
+            if ($installment->saving_type=='deposit') {
+                SavingsAccount::create($data);
+            }elseif ($installment->saving_type=='withdraw')
+            {
+                DailyWithdrawAccount::create($data);
+            }
+        }*/
+
+       /* DailyCollection::chunk(2000, function ($installments) {
+        foreach ($installments as $dailyCollection) {
+            switch ($dailyCollection->saving_type)
+            {
+                case 'deposit':
+                    $cashin = CashIn::create([
+                        'user_id' => $dailyCollection->user_id,
+                        'cashin_category_id' => 3,
+                        'account_no' => $dailyCollection->account_no,
+                        'daily_collection_id' => $dailyCollection->id,
+                        'amount' => $dailyCollection->saving_amount,
+                        'date' => $dailyCollection->date,
+                        'created_by' => $dailyCollection->created_by,
+                        'trx_id' => $dailyCollection->trx_id,
+                    ]);
+                    break;
+                case 'withdraw':
+                    $cashout = Cashout::create([
+                        'cashout_category_id' => 2,
+                        'account_no' => $dailyCollection->account_no,
+                        'daily_collection_id' => $dailyCollection->id,
+                        'amount' => $dailyCollection->saving_amount,
+                        'date' => $dailyCollection->date,
+                        'created_by' => $dailyCollection->created_by,
+                        'user_id' => $dailyCollection->user_id,
+                        'trx_id' => $dailyCollection->trx_id,
+                    ]);
+                    break;
+                default:
+            }
+        }
+    });*/
 
         return view('app.daily_collections.index');
     }
@@ -69,7 +128,7 @@ class DailyCollectionController extends Controller
         $loan_other_fee = $request->loan_other_fee != "" ? $request->loan_other_fee : 0;
 
         $data = $request->all();
-        $data['trx_id'] = TransactionController::trxId();
+        $data['trx_id'] = TransactionController::trxId($request->date);
         //$data['user_id'] = $request->created_by;
         $dailyCollection = DailyCollection::create($data);
         if ($dailyCollection->saving_amount > 0) {
@@ -147,7 +206,6 @@ class DailyCollectionController extends Controller
                 'created_by' => $dailyCollection->created_by,
                 'trx_id' => $dailyCollection->trx_id,
             ]);
-
 
             $dailyCollection->loan_balance = $dailyLoan->balance;
             $dailyCollection->save();
@@ -402,12 +460,12 @@ class DailyCollectionController extends Controller
         }
 
         if ($collection->late_fee > 0) {
-            $data['collector_id'] = $collection->created_by;
+            $data['created_by'] = $collection->created_by;
             LateFeeAccount::create($data);
         }
         if ($collection->other_fee > 0) {
             {
-                $data['collector_id'] = $collection->created_by;
+                $data['created_by'] = $collection->created_by;
                 OtherFeeAccount::create($data);
             }
         }

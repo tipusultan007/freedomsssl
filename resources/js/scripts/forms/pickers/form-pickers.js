@@ -24,7 +24,8 @@
     basicPickr.flatpickr({
         altInput: true,
         altFormat: 'd/m/Y',
-        dateFormat: 'Y-m-d'
+        dateFormat: 'Y-m-d',
+        allowInput: true
     });
   }
 

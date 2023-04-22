@@ -17,7 +17,10 @@
 @php $configData = Helper::applClasses(); @endphp
 <style>
     span.select2-selection__clear {
-        font-size: 30px;
+        font-size: 15px;
+    }
+    table.closing-form input{
+        padding-right: 28px;
     }
 </style>
 <!-- BEGIN: Page CSS-->

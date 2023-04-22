@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdvanceAccount extends Controller
 {
@@ -20,6 +21,7 @@ class AdvanceAccount extends Controller
             'trx_id' => $data['trx_id'],
             'date' => $data['date'],
             'amount' => $data['advance'],
+            'user_id' => Auth::id(),
             'created_by' => $data['collector_id'],
             'account_no' => $data['account_no'],
             'name' => $data['name'],
@@ -29,22 +31,22 @@ class AdvanceAccount extends Controller
         switch ($transaction->type)
         {
             case "cash":
-                $cashAccount = Account::find(5);
+                $account = Account::find(5);
                 $account->balance += $transaction->amount;
                 $account->save();
                 break;
             case "bank":
-                $cashAccount = Account::find(3);
+                $account = Account::find(3);
                 $account->balance += $transaction->amount;
                 $account->save();
                 break;
             case "bkash":
-                $cashAccount = Account::find(4);
+                $account = Account::find(4);
                 $account->balance += $transaction->amount;
                 $account->save();
                 break;
             case "nagad":
-                $cashAccount = Account::find(23);
+                $account = Account::find(23);
                 $account->balance += $transaction->amount;
                 $account->save();
                 break;
@@ -61,22 +63,22 @@ class AdvanceAccount extends Controller
             $account->save();
             switch ($transaction->type) {
                 case "cash":
-                    $cashAccount = Account::find(5);
+                    $account = Account::find(5);
                     $account->balance -= $transaction->amount;
                     $account->save();
                     break;
                 case "bank":
-                    $cashAccount = Account::find(3);
+                    $account = Account::find(3);
                     $account->balance -= $transaction->amount;
                     $account->save();
                     break;
                 case "bkash":
-                    $cashAccount = Account::find(4);
+                    $account = Account::find(4);
                     $account->balance -= $transaction->amount;
                     $account->save();
                     break;
                 case "nagad":
-                    $cashAccount = Account::find(23);
+                    $account = Account::find(23);
                     $account->balance -= $transaction->amount;
                     $account->save();
                     break;
@@ -86,44 +88,40 @@ class AdvanceAccount extends Controller
             $transaction->delete();
         }
     }
-
-    public static function update($trxId,$amount)
+    public static function update($trxId, $amount)
     {
         $transaction = Transaction::where('account_id',1)->where('trx_id',$trxId)->first();
-        $oldAmount = $transaction->amount;
-        $transaction->amount = $amount;
-        $transaction->save();
         if ($transaction) {
             $account = Account::find(1);
-            $account->balance -= $oldAmount;
+            $account->balance -= $transaction->amount;
             $account->save();
             $account->balance += $amount;
             $account->save();
             switch ($transaction->type) {
                 case "cash":
                     $account = Account::find(5);
-                    $account->balance -= $oldAmount;
+                    $account->balance -= $transaction->amount;
                     $account->save();
                     $account->balance += $amount;
                     $account->save();
                     break;
                 case "bank":
                     $account = Account::find(3);
-                    $account->balance -= $oldAmount;
+                    $account->balance -= $transaction->amount;
                     $account->save();
                     $account->balance += $amount;
                     $account->save();
                     break;
                 case "bkash":
                     $account = Account::find(4);
-                    $account->balance -= $oldAmount;
+                    $account->balance -= $transaction->amount;
                     $account->save();
                     $account->balance += $amount;
                     $account->save();
                     break;
                 case "nagad":
                     $account = Account::find(23);
-                    $account->balance -= $oldAmount;
+                    $account->balance -= $transaction->amount;
                     $account->save();
                     $account->balance += $amount;
                     $account->save();
@@ -131,6 +129,8 @@ class AdvanceAccount extends Controller
                 default:
 
             }
+            $transaction->amount = $amount;
+            $transaction->save();
         }
     }
 }

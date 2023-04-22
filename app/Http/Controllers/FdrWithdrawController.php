@@ -145,7 +145,7 @@ class FdrWithdrawController extends Controller
         $fdr                = Fdr::find($request->fdr_id);
         $data['account_no'] = $fdr->account_no;
         $data['user_id']    = $fdr->user_id;
-        $data['trx_id']    = $this->trxId();
+        $data['trx_id']    = $this->trxId($request->date);
         $data['created_by'] = Auth::id();
 
         $fdr->balance -= $request->amount;
@@ -178,25 +178,24 @@ class FdrWithdrawController extends Controller
             ->route('fdr-withdraws.edit', $fdrWithdraw)
             ->withSuccess(__('crud.common.created'));*/
     }
-    public function trxId()
+    public function trxId($date)
     {
-        $record = Transaction::latest()->first();
-        $dateTime = Carbon::now('Asia/Dhaka');
-
+        $record = Transaction::latest('id')->first();
+        $dateTime = new Carbon($date);
+        $permitted_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $uid = substr(str_shuffle($permitted_chars), 0, 6);
         if ($record) {
-
             $expNum = explode('-', $record->trx_id);
-
             if ($dateTime->format('jny') == $expNum[1]) {
-                $s = str_pad($expNum[2] + 1, 4, "0", STR_PAD_LEFT);
-                $nextTxNumber = 'TRX-' . $expNum[1] . '-' . $s;
+                $s = str_pad($expNum[3]+1, 4, "0", STR_PAD_LEFT);
+                $nextTxNumber = 'TRX-' . $expNum[1] .'-'.$uid. '-' . $s;
             } else {
                 //increase 1 with last invoice number
-                $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+                $nextTxNumber = 'TRX-' . $dateTime->format('jny') .'-'.$uid. '-0001';
             }
         } else {
 
-            $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-0001';
+            $nextTxNumber = 'TRX-' . $dateTime->format('jny') .'-'.$uid. '-0001';
 
         }
 

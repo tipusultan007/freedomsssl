@@ -188,7 +188,7 @@ class PaidInterestAccount extends Controller
                 $unpaid->balance -= $amount;
                 $unpaid->save();
             }
-        }else{
+        }else if ($type=="special"){
             $transaction = Transaction::where('account_id', 34)->where('trx_id', $trxId)->first();
             if ($transaction) {
                 $account = Account::find(34);
@@ -196,6 +196,11 @@ class PaidInterestAccount extends Controller
                 $account->save();
                 $unpaid = Account::find(37);
                 $unpaid->balance += $transaction->amount;
+                $unpaid->save();
+
+                $account->balance += $amount;
+                $account->save();
+                $unpaid->balance -= $amount;
                 $unpaid->save();
             }
         }
@@ -206,26 +211,35 @@ class PaidInterestAccount extends Controller
                     $account = Account::find(5);
                     $account->balance -= $transaction->amount;
                     $account->save();
+                    $account->balance += $amount;
+                    $account->save();
                     break;
                 case "bank":
                     $account = Account::find(3);
                     $account->balance -= $transaction->amount;
+                    $account->save();
+                    $account->balance += $amount;
                     $account->save();
                     break;
                 case "bkash":
                     $account = Account::find(4);
                     $account->balance -= $transaction->amount;
                     $account->save();
+                    $account->balance += $amount;
+                    $account->save();
                     break;
                 case "nagad":
                     $account = Account::find(23);
                     $account->balance -= $transaction->amount;
                     $account->save();
+                    $account->balance += $amount;
+                    $account->save();
                     break;
                 default:
 
             }
-            $transaction->delete();
+            $transaction->amount = $amount;
+            $transaction->save();
         }
     }
 }

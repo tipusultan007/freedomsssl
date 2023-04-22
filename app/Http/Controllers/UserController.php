@@ -38,6 +38,19 @@ class UserController extends Controller
             ['name' => "List"]
         ];
 
+        $users = User::all();
+        foreach ($users as $user)
+        {
+            $user->name = ucwords($user->name);
+            $user->father_name = ucwords($user->father_name);
+            $user->mother_name = ucwords($user->mother_name);
+            $user->spouse_name = ucwords($user->spouse_name);
+            $user->present_address = ucwords($user->present_address);
+            $user->permanent_address = ucwords($user->permanent_address);
+            $user->nationality = ucwords($user->nationality);
+            $user->save();
+        }
+
         return view('app.users.index',compact('breadcrumbs'));
     }
 
@@ -91,6 +104,7 @@ class UserController extends Controller
                 $nestedData['father_name']     = $user->father_name;
                 $nestedData['present_address'] = $user->present_address;
                 $nestedData['join_date']       = $user->join_date;
+                $nestedData['profile_photo_path']   = $user->profile_photo_path??'';
                 $nestedData['status']          = $user->status;
                 $data[]                        = $nestedData;
 

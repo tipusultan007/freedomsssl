@@ -45,14 +45,19 @@ class DpsLoanController extends Controller
     {
         $this->authorize('view-any', DpsLoan::class);
 
-        $search = $request->get('search', '');
+      /* $loans = DpsLoan::all();
+        foreach ($loans as $loan)
+        {
+            $expNum = explode(' ', $loan->account_no);
 
-        $dpsLoans = DpsLoan::search($search)
-            ->latest()
-            ->paginate(5)
-            ->withQueryString();
+                $str = $loan->account_no;
+                $trim = str_replace(' ', '', $str);
+                $loan->account_no = $trim;
+                $loan->save();
 
-        return view('app.dps_loans.index', compact('dpsLoans', 'search'));
+        }*/
+
+        return view('app.dps_loans.index');
     }
 
     public function dataDpsLoans(Request $request)
@@ -153,7 +158,7 @@ class DpsLoanController extends Controller
     {
         $this->authorize('create', DpsLoan::class);
         $data = $request->all();
-        $data['trx_id'] = TransactionController::trxId();
+        $data['trx_id'] = TransactionController::trxId($request->opening_date);
         $loan = DpsLoan::where('account_no',$request->account_no)->first();
         if ($loan)
         {

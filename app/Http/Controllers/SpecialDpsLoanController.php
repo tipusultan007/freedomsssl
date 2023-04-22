@@ -151,7 +151,7 @@ class SpecialDpsLoanController extends Controller
     {
         $this->authorize('create', SpecialDpsLoan::class);
         $data = $request->all();
-        $data['trx_id'] = TransactionController::trxId();
+        $data['trx_id'] = TransactionController::trxId($request->opening_date);
         $loan = SpecialDpsLoan::where('account_no', $request->account_no)->first();
         $data['trx_type'] = "cash";
         if ($loan) {

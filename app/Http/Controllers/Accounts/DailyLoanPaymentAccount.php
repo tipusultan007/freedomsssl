@@ -20,13 +20,13 @@ class DailyLoanPaymentAccount extends Controller
 
         $transaction = Transaction::create([
             'account_id' => 11,
-            'trx_id' => $data->trx_id,
-            'date' => $data->date,
-            'amount' => $data->loan_installment,
-            'user_id' => $data->created_by,
-            'account_no' => $data->account_no,
-            'name' => $data->name,
-            'type' => $data->trx_type
+            'trx_id' => $data['trx_id'],
+            'date' => $data['date'],
+            'amount' => $data['loan_installment'],
+            'user_id' => $data['created_by'],
+            'account_no' => $data['account_no'],
+            'name' => $data['name'],
+            'type' => 'cash'
         ]);
         switch ($transaction->type)
         {

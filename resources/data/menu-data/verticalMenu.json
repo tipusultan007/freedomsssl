@@ -213,35 +213,15 @@
                     "icon": "arrow-down",
                     "slug": "cash-in"
                 }, {
-                    "url": "cashbook",
-                    "name": "Cashbook",
-                    "icon": "arrow-down",
-                    "slug": "cashbook"
-                },
-                {
                     "url": "cashouts",
                     "name": "Cash OUT",
                     "icon": "arrow-up",
                     "slug": "cashouts"
-                },
-                {
-                    "url": "cashin-categories",
-                    "name": "Cash IN Category",
-                    "icon": "file",
-                    "slug": "cash-report"
-                },
-                {
-                    "url": "cashout-categories",
-                    "name": "Cash OUT Category",
-                    "icon": "file",
-                    "slug": "raise-support",
-                    "newTab": true
-                },
-                {
-                    "url": "cash-report",
-                    "name": "Cash Report",
-                    "icon": "bar-chart-2",
-                    "slug": "cash-report"
+                }, {
+                    "url": "cashbook",
+                    "name": "Cashbook",
+                    "icon": "arrow-down",
+                    "slug": "cashbook"
                 }
             ]
         },

@@ -88,7 +88,19 @@ class CashoutController extends Controller
 
     public function cashoutByCategory(Request $request)
     {
-        $totalData = Cashout::whereBetween('date',[$request->from, $request->to])->where('cashout_category_id',$request->cashout_category_id)->count();
+        if (!empty($request->cashout_category_id) && !empty($request->from) && !empty($request->to))
+        {
+            $totalData = Cashout::whereBetween('date',[$request->from, $request->to])->where('cashout_category_id',$request->cashout_category_id)->count();
+        }elseif (!empty($request->from) && !empty($request->to))
+        {
+            $totalData = Cashout::whereBetween('date',[$request->from, $request->to])->count();
+        }elseif(!empty($request->cashout_category_id))
+        {
+            $totalData = Cashout::where('cashout_category_id',$request->cashout_category_id)->count();
+        }else{
+            $totalData = Cashout::count();
+        }
+
         $totalFiltered = $totalData;
 
         $limit = $request->input('length');
@@ -96,13 +108,48 @@ class CashoutController extends Controller
 
         if(empty($request->input('search.value')))
         {
-            $posts = Cashout::with('cashoutCategory')
+            /*$posts = Cashout::with('cashoutCategory')
                 ->whereBetween('date',[$request->from, $request->to])
                 ->where('cashout_category_id',$request->cashout_category_id)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy('date','desc')
-                ->get();
+                ->get();*/
+            if (!empty($request->cashout_category_id) && !empty($request->from) && !empty($request->to))
+            {
+
+                $posts = Cashout::with('cashoutCategory')
+                    ->whereBetween('date',[$request->from, $request->to])
+                    ->where('cashout_category_id',$request->cashout_category_id)
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('date','desc')
+                    ->get();
+
+            }elseif (!empty($request->from) && !empty($request->to))
+            {
+                $posts = Cashout::with('cashoutCategory')
+                    ->whereBetween('date',[$request->from, $request->to])
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('date','desc')
+                    ->get();
+
+            }elseif(!empty($request->cashout_category_id))
+            {
+                $posts = Cashout::with('cashoutCategory')
+                    ->where('cashout_category_id',$request->cashout_category_id)
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('date','desc')
+                    ->get();
+            }else{
+                $posts = Cashout::with('cashoutCategory')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('date','desc')
+                    ->get();
+            }
         }
         else {
             $search = $request->input('search.value');

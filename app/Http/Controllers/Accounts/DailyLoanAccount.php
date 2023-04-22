@@ -23,7 +23,7 @@ class DailyLoanAccount extends Controller
             'user_id' => $data['created_by'],
             'account_no' => $data['account_no'],
             'name' => $data['name'],
-            'type' => $data['trx_type']
+            'type' => 'cash'
         ]);
         switch ($transaction->type)
         {

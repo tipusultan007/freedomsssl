@@ -7,6 +7,8 @@ use App\Http\Controllers\Accounts\DailyLoanPaymentAccount;
 use App\Http\Controllers\Accounts\LateFeeAccount;
 use App\Http\Controllers\Accounts\OtherFeeAccount;
 use App\Http\Controllers\Accounts\PaidInterestAccount;
+use App\Imports\DailyLoanImport;
+use App\Imports\SavingsCollectionImport;
 use App\Models\Account;
 use App\Models\CashIn;
 use App\Models\Cashout;
@@ -23,6 +25,7 @@ use App\Models\DailyLoanPackage;
 use App\Http\Requests\DailyLoanStoreRequest;
 use App\Http\Requests\DailyLoanUpdateRequest;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DailyLoanController extends Controller
 {
@@ -34,12 +37,34 @@ class DailyLoanController extends Controller
     {
         $this->authorize('view-any', DailyLoan::class);
 
-        /* $search = $request->get('search', '');
+        $loans = DailyLoan::take(408)->get();
+        foreach ($loans as $loan)
+        {
+            /*$principal = $loan->loan_amount;
+            $package = DailyLoanPackage::find($loan->package_id);
+            $interest = $principal*($package->interest/100)*1;
+            $principalWithInterest = floatval($principal) + floatval($interest);
+            $installment = $principalWithInterest/$package->months;
 
-         $dailyLoans = DailyLoan::search($search)
-             ->latest()
-             ->paginate(5)
-             ->withQueryString();*/
+            $loan->interest = $interest;
+            $loan->total = $principalWithInterest;
+            $loan->balance = $principalWithInterest;
+            $loan->per_installment = $installment;
+            $loan->save();*/
+            $data = $loan;
+            $data['name'] = $loan->user->name;
+            DailyLoanAccount::create($data);
+            Cashout::create([
+                'cashout_category_id' => 1,
+                'account_no'          => $loan->account_no,
+                'daily_loan_id'       => $loan->id,
+                'amount'              => $loan->loan_amount,
+                'date'                => $loan->opening_date,
+                'created_by'          => $loan->created_by,
+                'user_id'             => $loan->user_id,
+                'trx_id' => $loan->trx_id
+            ]);
+        }
 
         return view('app.daily_loans.index');
     }
@@ -195,7 +220,7 @@ class DailyLoanController extends Controller
         //$validated = $request->validated();
 
         $data               = $request->all();
-        $data['trx_id'] = TransactionController::trxId();
+        $data['trx_id'] = TransactionController::trxId($request->opening_date);
       //  $savings = DailySavings::where('account_no',$request->account_no)->latest()->first();
         $data['created_by'] = Auth::id();
        // $data['user_id'] = $savings->user_id;
@@ -260,8 +285,8 @@ class DailyLoanController extends Controller
     {
         $this->authorize('update', $dailyLoan);
 
-        $users             = User::pluck('name', 'id');
-        $dailyLoanPackages = DailyLoanPackage::pluck('id', 'id');
+        $users             = User::all();
+        $dailyLoanPackages = DailyLoanPackage::all();
 
         return view(
             'app.daily_loans.edit',
@@ -362,7 +387,6 @@ class DailyLoanController extends Controller
             $item->delete();
         }
 
-
         Cashout::where('daily_loan_id',$id)->delete();
         //Transaction::whereIn('account_id',[10,11,32])->where('account_no',$loan->account_no)->delete();
         $loan->delete();
@@ -412,6 +436,13 @@ class DailyLoanController extends Controller
 
             $transaction->delete();
         }
+    }
+
+    public function import(Request $request)
+    {
+        Excel::import(new DailyLoanImport(),
+            $request->file('file')->store('files'));
+        return redirect()->back();
     }
 
 }
