@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'SolaimanLipi';
+  src: url('fonts/SolaimanLipiNormal.woff2') format('woff2'),
+  url('fonts/SolaimanLipiNormal.woff') format('woff'),
+  url('fonts/SolaimanLipiNormal.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+.switch-input:disabled ~ .switch-toggle-slider{
+  opacity: 1 !important;
+}
+.switch-input:disabled ~ .switch-label{
+  color: var(--bs-success) !important;
+}

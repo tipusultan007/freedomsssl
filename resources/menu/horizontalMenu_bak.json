@@ -1,0 +1,339 @@
+{
+  "menu": [
+    {
+      "url": "/",
+      "name": "ড্যাশবোর্ড",
+      "icon": "menu-icon tf-icons ti ti-user",
+      "slug": "dashboard"
+    },
+    {
+      "url": "/dashboards",
+      "name": "সদস্য",
+      "icon": "menu-icon tf-icons ti ti-user",
+      "slug": "dashboard",
+      "submenu": [
+        {
+          "url": "layouts/without-menu",
+          "name": "সকল সদস্য",
+          "icon": "menu-icon tf-icons ti ti-menu-2",
+          "slug": "layouts-without-menu"
+        },
+        {
+          "url": "layouts/vertical",
+          "name": "ঋণের তালিকা",
+          "icon": "menu-icon tf-icons ti ti-layout-distribute-vertical",
+          "slug": "layouts-vertical",
+          "target": "_blank"
+        },
+        {
+          "url": "layouts/fluid",
+          "name": "নতুন সঞ্চয়",
+          "icon": "menu-icon tf-icons ti ti-maximize",
+          "slug": "layouts-fluid"
+        },
+        {
+          "url": "layouts/container",
+          "name": "নতুন ঋণ",
+          "icon": "menu-icon tf-icons ti ti-arrows-maximize",
+          "slug": "layouts-container"
+        },
+        {
+          "url": "layouts/blank",
+          "name": "ঋণের প্যাকেজ",
+          "icon": "menu-icon tf-icons ti ti-square",
+          "slug": "layouts-blank",
+          "target": "_blank"
+        },
+        {
+          "url": "layouts/blank",
+          "name": "লভ্যাংশ প্রদান",
+          "icon": "menu-icon tf-icons ti ti-square",
+          "slug": "layouts-blank",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "name": "দৈনিক",
+      "icon": "menu-icon tf-icons ti ti-layout-sidebar",
+      "slug": "layouts",
+      "submenu": [
+        {
+          "url": "layouts/without-menu",
+          "name": "সঞ্চয় তালিকা",
+          "icon": "menu-icon tf-icons ti ti-menu-2",
+          "slug": "layouts-without-menu"
+        },
+        {
+          "url": "layouts/vertical",
+          "name": "ঋণের তালিকা",
+          "icon": "menu-icon tf-icons ti ti-layout-distribute-vertical",
+          "slug": "layouts-vertical",
+          "target": "_blank"
+        },
+        {
+          "url": "layouts/fluid",
+          "name": "নতুন সঞ্চয়",
+          "icon": "menu-icon tf-icons ti ti-maximize",
+          "slug": "layouts-fluid"
+        },
+        {
+          "url": "layouts/container",
+          "name": "নতুন ঋণ",
+          "icon": "menu-icon tf-icons ti ti-arrows-maximize",
+          "slug": "layouts-container"
+        },
+        {
+          "url": "layouts/blank",
+          "name": "ঋণের প্যাকেজ",
+          "icon": "menu-icon tf-icons ti ti-square",
+          "slug": "layouts-blank",
+          "target": "_blank"
+        },
+        {
+          "url": "layouts/blank",
+          "name": "লভ্যাংশ প্রদান",
+          "icon": "menu-icon tf-icons ti ti-square",
+          "slug": "layouts-blank",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "name": "মাসিক",
+      "icon": "menu-icon tf-icons ti ti-layout-grid-add",
+      "slug": "monthly",
+      "submenu": [
+        {
+          "url": "layouts/without-menu",
+          "name": "সঞ্চয় তালিকা",
+          "icon": "menu-icon tf-icons ti ti-menu-2",
+          "slug": "layouts-without-menu"
+        },
+        {
+          "url": "layouts/vertical",
+          "name": "ঋণের তালিকা",
+          "icon": "menu-icon tf-icons ti ti-layout-distribute-vertical",
+          "slug": "layouts-vertical",
+          "target": "_blank"
+        },
+        {
+          "url": "layouts/fluid",
+          "name": "নতুন সঞ্চয়",
+          "icon": "menu-icon tf-icons ti ti-maximize",
+          "slug": "layouts-fluid"
+        },
+        {
+          "url": "layouts/container",
+          "name": "নতুন ঋণ",
+          "icon": "menu-icon tf-icons ti ti-arrows-maximize",
+          "slug": "layouts-container"
+        },
+        {
+          "url": "layouts/blank",
+          "name": "সঞ্চয় প্যাকেজ",
+          "icon": "menu-icon tf-icons ti ti-square",
+          "slug": "layouts-blank",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "name": "স্পেশাল",
+      "icon": "menu-icon tf-icons ti ti-file",
+      "slug": "special",
+      "submenu": [
+        {
+          "url": "layouts/without-menu",
+          "name": "সঞ্চয় তালিকা",
+          "icon": "menu-icon tf-icons ti ti-menu-2",
+          "slug": "layouts-without-menu"
+        },
+        {
+          "url": "layouts/vertical",
+          "name": "ঋণের তালিকা",
+          "icon": "menu-icon tf-icons ti ti-layout-distribute-vertical",
+          "slug": "layouts-vertical",
+          "target": "_blank"
+        },
+        {
+          "url": "layouts/fluid",
+          "name": "নতুন সঞ্চয়",
+          "icon": "menu-icon tf-icons ti ti-maximize",
+          "slug": "layouts-fluid"
+        },
+        {
+          "url": "layouts/container",
+          "name": "নতুন ঋণ",
+          "icon": "menu-icon tf-icons ti ti-arrows-maximize",
+          "slug": "layouts-container"
+        },
+        {
+          "url": "layouts/blank",
+          "name": "সঞ্চয় প্যাকেজ",
+          "icon": "menu-icon tf-icons ti ti-square",
+          "slug": "layouts-blank",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "name": "FDR",
+      "icon": "menu-icon tf-icons ti ti-toggle-left",
+      "slug": "fdr",
+      "submenu": [
+        {
+          "url": "layouts/without-menu",
+          "name": "FDR সঞ্চয় তালিকা",
+          "icon": "menu-icon tf-icons ti ti-menu-2",
+          "slug": "layouts-without-menu"
+        },
+        {
+          "url": "layouts/vertical",
+          "name": "FDR জমা",
+          "icon": "menu-icon tf-icons ti ti-layout-distribute-vertical",
+          "slug": "layouts-vertical",
+          "target": "_blank"
+        },
+        {
+          "url": "layouts/fluid",
+          "name": "FDR উত্তোলন",
+          "icon": "menu-icon tf-icons ti ti-maximize",
+          "slug": "layouts-fluid"
+        },
+        {
+          "url": "layouts/container",
+          "name": "মুনাফা উত্তোলন",
+          "icon": "menu-icon tf-icons ti ti-arrows-maximize",
+          "slug": "layouts-container"
+        },
+        {
+          "url": "layouts/blank",
+          "name": "FDR সঞ্চয় প্যাকেজ",
+          "icon": "menu-icon tf-icons ti ti-square",
+          "slug": "layouts-blank",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "name": "ক্যাশ",
+      "icon": "menu-icon tf-icons ti ti-forms",
+      "slug": "cash",
+      "submenu": [
+        {
+          "name": "নগদ গ্রহণ",
+          "icon": "menu-icon tf-icons ti ti-toggle-left",
+          "slug": "forms"
+        },
+        {
+          "name": "নগদ প্রদান",
+          "icon": "menu-icon tf-icons ti ti-toggle-left",
+          "slug": "forms"
+        },
+        {
+          "name": "দৈনিক ক্যাশ রিপোর্ট",
+          "icon": "menu-icon tf-icons ti ti-toggle-left",
+          "slug": "forms"
+        },
+        {
+          "name": "সকল লেনদেন",
+          "icon": "menu-icon tf-icons ti ti-toggle-left",
+          "slug": "forms"
+        }
+      ]
+    },
+    {
+      "name": "রিপোর্ট",
+      "icon": "menu-icon tf-icons ti ti-layout-grid",
+      "slug": [
+        "tables",
+        "tables-datatables"
+      ],
+      "submenu": [
+        {
+          "url": "tables/basic",
+          "name": "Tables",
+          "icon": "menu-icon tf-icons ti ti-table",
+          "slug": "tables-basic"
+        },
+        {
+          "name": "Datatables",
+          "icon": "menu-icon tf-icons ti ti-layout-grid",
+          "slug": "tables-datatables",
+          "submenu": [
+            {
+              "url": "tables/datatables-basic",
+              "name": "Basic",
+              "slug": "tables-datatables-basic"
+            },
+            {
+              "url": "tables/datatables-advanced",
+              "name": "Advanced",
+              "slug": "tables-datatables-advanced"
+            },
+            {
+              "url": "tables/datatables-extensions",
+              "name": "Extensions",
+              "slug": "tables-datatables-extensions"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Charts & Maps",
+      "icon": "menu-icon tf-icons ti ti-chart-bar",
+      "slug": [
+        "charts",
+        "maps"
+      ],
+      "submenu": [
+        {
+          "name": "Charts",
+          "icon": "menu-icon tf-icons ti ti-chart-pie",
+          "slug": "charts",
+          "submenu": [
+            {
+              "url": "charts/apex",
+              "name": "Apex Charts",
+              "slug": "charts-apex"
+            },
+            {
+              "url": "charts/chartjs",
+              "name": "ChartJS",
+              "slug": "charts-chartjs"
+            }
+          ]
+        },
+        {
+          "url": "maps/leaflet",
+          "icon": "menu-icon tf-icons ti ti-map",
+          "name": "Leaflet Maps",
+          "slug": "maps-leaflet"
+        }
+      ]
+    },
+    {
+      "name": "Misc",
+      "icon": "menu-icon tf-icons ti ti-box-multiple",
+      "slug": "misc",
+      "submenu": [
+        {
+          "url": "https://pixinvent.ticksy.com/",
+          "icon": "menu-icon tf-icons ti ti-lifebuoy",
+          "name": "Support",
+          "slug": "support",
+          "target": "_blank"
+        },
+        {
+          "url": "https://demos.pixinvent.com/vuexy-html-admin-template/documentation/laravel-introduction.html",
+          "icon": "menu-icon tf-icons ti ti-file-description",
+          "name": "Documentation",
+          "slug": "documentation",
+          "target": "_blank"
+        }
+      ]
+    }
+  ]
+}

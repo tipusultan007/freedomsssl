@@ -1,0 +1,273 @@
+{
+  "menu": [
+    {
+      "name": "সদস্য",
+      "icon": "menu-icon tf-icons ti ti-users",
+      "slug": "users",
+      "submenu": [
+        {
+          "url": "users",
+          "name": "সদস্য তালিকা",
+          "icon": "menu-icon tf-icons ti ti-users",
+          "slug": "users.index"
+        },
+        {
+          "url": "users/create",
+          "name": "নতুন সদস্য",
+          "icon": "menu-icon tf-icons ti ti-user-plus",
+          "slug": "users.create",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "name": "দৈনিক সঞ্চয়",
+      "icon": "menu-icon tf-icons ti ti-layout-grid-add",
+      "slug": [
+        "daily-savings",
+        "daily-loans",
+        "daily-loan-packages",
+        "add-profits"
+      ],
+      "submenu": [
+        {
+          "url": "daily-savings",
+          "name": "সঞ্চয় তালিকা",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "daily-savings.index"
+        },
+        {
+          "url": "daily-loans",
+          "name": "ঋণ তালিকা",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "daily-loans.index"
+        },{
+          "url": "daily-loan-packages",
+          "name": "ঋণ প্যাকেজ",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "daily-loan-packages.index"
+        },
+        {
+          "url": "daily-savings/create",
+          "name": "নতুন সঞ্চয় হিসাব",
+          "icon": "menu-icon tf-icons ti ti-plus",
+          "slug": "daily-savings.create"
+        },
+        {
+          "url": "daily-loans/create",
+          "name": "নতুন ঋণ প্রদান",
+          "icon": "menu-icon tf-icons ti ti-plus",
+          "slug": "daily-loans.create"
+        },
+        {
+          "url": "add-profits",
+          "name": "সঞ্চয়ের লাভ প্রদান",
+          "icon": "menu-icon tf-icons ti ti-plus",
+          "slug": "add-profits.index"
+        }
+      ]
+    },
+    {
+      "name": "মাসিক সঞ্চয়",
+      "icon": "menu-icon tf-icons ti ti-layout-grid-add",
+      "slug": [
+        "dps",
+        "dps-loans",
+        "dps-packages"
+      ],
+      "submenu": [
+        {
+          "url": "dps",
+          "name": "সঞ্চয় তালিকা",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "dps.index"
+        },
+        {
+          "url": "dps-loans",
+          "name": "ঋণ তালিকা",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "dps-loans.index"
+        },{
+          "url": "dps-packages",
+          "name": "প্যাকেজ তালিকা",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "dps-packages.index"
+        },
+        {
+          "url": "dps/create",
+          "name": "নতুন সঞ্চয় হিসাব",
+          "icon": "menu-icon tf-icons ti ti-plus",
+          "slug": "dps.create"
+        },
+        {
+          "url": "dps-loans/create",
+          "name": "নতুন ঋণ প্রদান",
+          "icon": "menu-icon tf-icons ti ti-plus",
+          "slug": "dps-loans.create"
+        }
+      ]
+    },
+    {
+      "name": "বিশেষ সঞ্চয়",
+      "icon": "menu-icon tf-icons ti ti-layout-grid-add",
+      "slug": [
+        "special-dps",
+        "special-dps-loans",
+        "special-dps-packages"
+      ],
+      "submenu": [
+        {
+          "url": "special-dps",
+          "name": "সঞ্চয় তালিকা",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "special-dps.index"
+        },
+        {
+          "url": "special-dps-loans",
+          "name": "ঋণ তালিকা",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "special-dps-loans.index"
+        },{
+          "url": "special-dps-packages",
+          "name": "প্যাকেজ তালিকা",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "special-dps-packages.index"
+        },
+        {
+          "url": "special-dps/create",
+          "name": "নতুন সঞ্চয় হিসাব",
+          "icon": "menu-icon tf-icons ti ti-plus",
+          "slug": "special-dps.create"
+        },
+        {
+          "url": "special-dps-loans/create",
+          "name": "নতুন ঋণ প্রদান",
+          "icon": "menu-icon tf-icons ti ti-plus",
+          "slug": "special-dps-loans.create"
+        }
+      ]
+    },
+    {
+      "name": "স্থায়ী সঞ্চয় (FDR)",
+      "icon": "menu-icon tf-icons ti ti-coins",
+      "slug": [
+        "fdrs",
+        "fdr-deposits",
+        "fdr-withdraws",
+        "fdr-packages"
+      ],
+      "submenu": [
+        {
+          "url": "fdrs",
+          "name": "FDR সঞ্চয় তালিকা",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "fdrs.index"
+        },
+        {
+          "url": "fdr-deposits",
+          "name": "FDR জমা",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "fdr-deposits.index"
+        },{
+          "url": "fdr-withdraws",
+          "name": "FDR উত্তোলন",
+          "icon": "menu-icon tf-icons ti ti-list",
+          "slug": "fdr-withdraws.index"
+        },
+        {
+          "url": "fdr-packages",
+          "name": "প্যাকেজ",
+          "icon": "menu-icon tf-icons ti ti-plus",
+          "slug": "fdr-packages.index"
+        }
+      ]
+    },
+    {
+      "name": "আয়-ব্যয়",
+      "icon": "menu-icon tf-icons ti ti-arrows-down-up",
+      "slug": [
+        "incomes",
+        "expenses"
+      ],
+      "submenu": [
+        {
+          "url": "incomes",
+          "name": "সকল আয়",
+          "icon": "menu-icon tf-icons ti ti-arrow-narrow-down",
+          "slug": "incomes.index"
+        },
+        {
+          "url": "expenses",
+          "name": "সকল ব্যয়",
+          "icon": "menu-icon tf-icons ti ti-arrow-narrow-up",
+          "slug": "expenses.index"
+        }
+      ]
+    },
+    {
+      "name": "ক্যাশ রিপোর্ট",
+      "icon": "menu-icon tf-icons ti ti-report",
+      "slug": [
+        "cashin",
+        "cashout",
+        "cash",
+        "manager.cash"
+      ],
+      "submenu": [
+        {
+          "url": "cashin",
+          "name": "নগদ গ্রহণ",
+          "icon": "menu-icon tf-icons ti ti-arrow-narrow-down",
+          "slug": "cashin"
+        },
+        {
+          "url": "cashout",
+          "name": "নগদ প্রদান",
+          "icon": "menu-icon tf-icons ti ti-arrow-narrow-up",
+          "slug": "cashout"
+        },
+        {
+          "url": "cash-report",
+          "name": "ক্যাশ রিপোর্ট",
+          "icon": "menu-icon tf-icons ti ti-report",
+          "slug": "cash.report"
+        },
+        {
+          "url": "cash-report-manager",
+          "name": "কর্মীর ক্যাশ রিপোর্ট",
+          "icon": "menu-icon tf-icons ti ti-report",
+          "slug": "manager.cash.report"
+        }
+      ]
+    },
+    {
+      "name": "রিপোর্ট",
+      "icon": "menu-icon tf-icons ti ti-device-analytics",
+      "slug": [
+        "activity-log",
+        "summary",
+        "transactions"
+      ],
+      "submenu": [
+        {
+          "url": "activity-log",
+          "name": "Activities Log",
+          "icon": "menu-icon tf-icons ti ti-id",
+          "slug": "activity-log.index"
+        },
+        {
+          "url": "summary-report",
+          "name": "Summary Report",
+          "icon": "menu-icon tf-icons ti ti-id",
+          "slug": "summary.report"
+        },
+        {
+          "url": "transactions",
+          "name": "সকল লেনদেন",
+          "icon": "menu-icon tf-icons ti ti-id",
+          "slug": "transactions.index"
+        }
+      ]
+    }
+  ]
+}
