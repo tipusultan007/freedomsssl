@@ -42,6 +42,7 @@ class ResetController extends Controller
         ->delete();
       SavingsCollection::whereIn('id', $savingsCollectionIds)->delete();
     }
+    $dailySavings->balance = 0;
     $dailySavings->total = 0;
     $dailySavings->profit = 0;
     $dailySavings->deposit = 0;
@@ -105,6 +106,7 @@ class ResetController extends Controller
       $complete->delete();
     }
     $dailySavings->balance = 0;
+    $dailySavings->deposited = 0;
     $dailySavings->profit = 0;
     $dailySavings->total = 0;
     $dailySavings->withdraw = 0;
@@ -169,6 +171,7 @@ class ResetController extends Controller
       $complete->delete();
     }
     $dailySavings->balance = 0;
+    $dailySavings->deposited = 0;
     $dailySavings->profit = 0;
     $dailySavings->total = 0;
     $dailySavings->withdraw = 0;

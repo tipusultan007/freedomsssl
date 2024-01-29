@@ -97,37 +97,126 @@ class ReportController extends Controller
       $endDate = Carbon::now()->endOfDay();
     }
 
-    $dpsLoans = TakenLoan::whereBetween('date', [$startDate, $endDate])->get();
-    $installments = DpsInstallment::whereBetween('date', [$startDate, $endDate])->get();
-    $dpsCompletes = DpsComplete::whereBetween('date', [$startDate, $endDate])->get();
 
-    $specialDpsLoans = SpecialLoanTaken::whereBetween('date', [$startDate, $endDate])->get();
-    $specialDps = SpecialDps::whereBetween('opening_date', [$startDate, $endDate])->get();
-    $specialInstallments = SpecialInstallment::whereBetween('date', [$startDate, $endDate])->get();
-    $specialDpsCompletes = SpecialDpsComplete::whereBetween('date', [$startDate, $endDate])->get();
+//    $dpsLoans = TakenLoan::whereBetween('date', [$startDate, $endDate])->get();
+//    $installments = DpsInstallment::whereBetween('date', [$startDate, $endDate])->get();
+//    $dpsCompletes = DpsComplete::whereBetween('date', [$startDate, $endDate])->get();
+//
+//    $specialDpsLoans = SpecialLoanTaken::whereBetween('date', [$startDate, $endDate])->get();
+//    $specialDps = SpecialDps::whereBetween('opening_date', [$startDate, $endDate])->get();
+//    $specialInstallments = SpecialInstallment::whereBetween('date', [$startDate, $endDate])->get();
+//    $specialDpsCompletes = SpecialDpsComplete::whereBetween('date', [$startDate, $endDate])->get();
+//
+//    $dailyLoans = DailyLoan::whereBetween('opening_date', [$startDate, $endDate])->get();
+//    $savingsCollections = SavingsCollection::whereBetween('date', [$startDate, $endDate])->get();
+//    $dailyLoanCollections = DailyLoanCollection::whereBetween('date', [$startDate, $endDate])->get();
+//    $dailySavingsCompletes = DailySavingsComplete::whereBetween('date', [$startDate, $endDate])->get();
+//
+//    $fdrDeposits = FdrDeposit::whereBetween('date', [$startDate, $endDate])->get();
+//    $fdrWithdraws = FdrWithdraw::whereBetween('date', [$startDate, $endDate])->get();
+//    $fdrProfits = FdrProfit::whereBetween('date', [$startDate, $endDate])->get();
 
-    $dailyLoans = DailyLoan::whereBetween('opening_date', [$startDate, $endDate])->get();
-    $savingsCollections = SavingsCollection::whereBetween('date', [$startDate, $endDate])->get();
-    $dailyLoanCollections = DailyLoanCollection::whereBetween('date', [$startDate, $endDate])->get();
-    $dailySavingsCompletes = DailySavingsComplete::whereBetween('date', [$startDate, $endDate])->get();
+    $dpsLoans = TakenLoan::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(loan_amount) as loan_amount')
+      ->first();
 
-    $fdrDeposits = FdrDeposit::whereBetween('date', [$startDate, $endDate])->get();
-    $fdrWithdraws = FdrWithdraw::whereBetween('date', [$startDate, $endDate])->get();
-    $fdrProfits = FdrProfit::whereBetween('date', [$startDate, $endDate])->get();
+    // DPS Installments
+    $dpsInstallments = DpsInstallment::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(loan_installment) as loan_installment,
+                 SUM(interest) as interest,
+                 SUM(dps_amount) as dps_amount,
+                 SUM(late_fee) as late_fee,
+                 SUM(loan_late_fee) as loan_late_fee,
+                 SUM(other_fee) as other_fee,
+                 SUM(loan_other_fee) as loan_other_fee,
+                 SUM(loan_grace) as loan_grace,
+                 SUM(advance) as advance,
+                 SUM(due) as due,
+                 SUM(due_return) as due_return,
+                 SUM(due_interest) as due_interest,
+                 SUM(advance_return) as advance_return')
+      ->first();
+
+    // DPS Completes
+    $dpsCompletes = DpsComplete::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(withdraw) as withdraw, SUM(profit) as profit')
+      ->first();
+
+    // Special DPS Loans
+    $specialDpsLoans = SpecialLoanTaken::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(loan_amount) as loan_amount')
+      ->first();
+
+    // Special DPS Installments
+    $specialInstallments = SpecialInstallment::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(loan_installment) as loan_installment,
+                 SUM(interest) as interest,
+                 SUM(dps_amount) as dps_amount,
+                 SUM(late_fee) as late_fee,
+                 SUM(loan_late_fee) as loan_late_fee,
+                 SUM(other_fee) as other_fee,
+                 SUM(loan_other_fee) as loan_other_fee,
+                 SUM(loan_grace) as loan_grace,
+                 SUM(advance) as advance,
+                 SUM(due) as due,
+                 SUM(due_return) as due_return,
+                 SUM(due_interest) as due_interest,
+                 SUM(advance_return) as advance_return')
+      ->first();
+
+    // Special DPS Completes
+    $specialDpsCompletes = SpecialDpsComplete::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(withdraw) as withdraw, SUM(profit) as profit')
+      ->first();
+
+    // Daily Loans
+    $dailyLoans = DailyLoan::whereBetween('opening_date', [$startDate, $endDate])
+      ->selectRaw('SUM(loan_amount) as loan_amount')
+      ->first();
+
+    // Savings Collections
+    $savingsCollections = SavingsCollection::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(CASE WHEN type = "deposit" THEN saving_amount ELSE 0 END) as deposit_amount, SUM(CASE WHEN type = "withdraw" THEN saving_amount ELSE 0 END) as withdraw_amount,SUM(late_fee) as late_fee,SUM(other_fee) as other_fee')
+      ->first();
+
+    // Daily Loan Collections
+    $dailyLoanCollections = DailyLoanCollection::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(loan_installment) as loan_installment,
+      SUM(loan_other_fee) as loan_other_fee,SUM(loan_late_fee) as loan_late_fee')
+      ->first();
+
+    // Daily Savings Completes
+    $dailySavingsCompletes = DailySavingsComplete::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(profit) as profit, SUM(withdraw) as withdraw')
+      ->first();
+
+    // FDR Deposits
+    $fdrDeposits = FdrDeposit::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(amount) as amount')
+      ->first();
+
+    // FDR Withdraws
+    $fdrWithdraws = FdrWithdraw::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(amount) as amount')
+      ->first();
+
+    // FDR Profits
+    $fdrProfits = FdrProfit::whereBetween('date', [$startDate, $endDate])
+      ->selectRaw('SUM(profit) as profit, SUM(grace) as grace, SUM(other_fee) as other_fee')
+      ->first();
 
     if ($request->ajax()) {
       return view('app.reports.summary_ajax', compact(
         'dpsLoans',
+        'dpsInstallments',
         'dpsCompletes',
-        'specialDpsCompletes',
-        'dailySavingsCompletes',
-        'installments',
-        'dailyLoans',
-        'dailyLoanCollections',
-        'savingsCollections',
         'specialDpsLoans',
         'specialInstallments',
-        'specialDps',
+        'specialDpsCompletes',
+        'dailyLoans',
+        'savingsCollections',
+        'dailyLoanCollections',
+        'dailySavingsCompletes',
         'fdrDeposits',
         'fdrWithdraws',
         'fdrProfits',
@@ -138,16 +227,15 @@ class ReportController extends Controller
 
     return view('app.reports.summary', compact(
       'dpsLoans',
+      'dpsInstallments',
       'dpsCompletes',
-      'specialDpsCompletes',
-      'dailySavingsCompletes',
-      'installments',
-      'dailyLoans',
-      'dailyLoanCollections',
-      'savingsCollections',
       'specialDpsLoans',
       'specialInstallments',
-      'specialDps',
+      'specialDpsCompletes',
+      'dailyLoans',
+      'savingsCollections',
+      'dailyLoanCollections',
+      'dailySavingsCompletes',
       'fdrDeposits',
       'fdrWithdraws',
       'fdrProfits',

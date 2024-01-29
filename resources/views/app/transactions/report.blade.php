@@ -9,8 +9,7 @@
   <link rel="stylesheet" href="{{asset('assets/vendor/libs/@form-validation/umd/styles/index.min.css')}}"/>
   <link rel="stylesheet" href="{{asset('assets/vendor/libs/animate-css/animate.css')}}"/>
   <link rel="stylesheet" href="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.css')}}"/>
-  <link rel="stylesheet" href="{{asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css')}}" />
-  <link rel="stylesheet" href="{{asset('assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css')}}" />
+
 @endsection
 
 @section('vendor-script')
@@ -23,8 +22,7 @@
   <script src="{{asset('assets/vendor/libs/cleavejs/cleave.js')}}"></script>
   <script src="{{asset('assets/vendor/libs/cleavejs/cleave-phone.js')}}"></script>
   <script src="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.js')}}"></script>
-  <script src="{{asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js')}}"></script>
-  <script src="{{asset('assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.js')}}"></script>
+
 @endsection
 @section('content')
   @php

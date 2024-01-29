@@ -46,9 +46,9 @@ class DailyLoanCollection extends Model
     return $this->belongsTo(DailyLoan::class);
   }
 
-  public function transactions()
+  public function transaction()
   {
-    return $this->morphMany(Transaction::class, 'transactionable');
+    return $this->morphOne(Transaction::class, 'transactionable');
   }
 
   public function collector()
@@ -86,7 +86,7 @@ class DailyLoanCollection extends Model
 
     // Define the deleting event callback
     static::deleting(function ($loanCollection) {
-      $loanCollection->transactions()->delete();
+      $loanCollection->transaction->delete();
     });
   }
 

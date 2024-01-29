@@ -118,7 +118,7 @@ class DpsInstallment extends Model
     static::deleting(function ($installment) {
       $installment->transactions()->delete();
     });
-    static::updated(function ($installment) {
+    /*static::updated(function ($installment) {
       $transaction = Transaction::where('transactionable_id', $installment->id)
         ->where('transactionable_type', DpsInstallment::class)
         ->first();
@@ -129,7 +129,18 @@ class DpsInstallment extends Model
           'date' => $installment->date,
           'manager_id' => Auth::id()
         ]);
+      }else{
+        Transaction::create([
+          'account_no' => $installment->account_no,
+          'user_id' => $installment->user_id,
+          'amount' => $installment->total,
+          'type' => 'cashin',
+          'transactionable_id' => $installment->id,
+          'transactionable_type' => DpsInstallment::class,
+          'date' => $installment->date,
+          'manager_id' => $installment->manager_id
+        ]);
       }
-    });
+    });*/
   }
 }

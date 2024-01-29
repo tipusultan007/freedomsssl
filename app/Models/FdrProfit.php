@@ -84,7 +84,7 @@ class FdrProfit extends Model
       ]);
     });
 
-    static::updated(function ($loan) {
+    /*static::updated(function ($loan) {
       $transaction = Transaction::where('transactionable_id', $loan->id)
         ->where('transactionable_type', FdrProfit::class)
         ->first();
@@ -106,7 +106,7 @@ class FdrProfit extends Model
           'date' => $loan->date
         ]);
       }
-    });
+    });*/
 
     // Define the deleting event callback
     static::deleting(function ($loan) {

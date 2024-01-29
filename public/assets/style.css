@@ -15,3 +15,8 @@
 .switch-input:disabled ~ .switch-label{
   color: var(--bs-success) !important;
 }
+.dash-font {
+  font-family: Helvetica, serif;
+  font-weight: 900;
+  font-size: 14px;
+}

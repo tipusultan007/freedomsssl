@@ -52,6 +52,8 @@
       $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
     }
     $('#date_filter').daterangepicker({
+      showDropdowns: true,
+      minYear: 2015,
       startDate: start,
       endDate: end,
       ranges: {

@@ -30,6 +30,7 @@ class DailyLoan extends Model
     'commencement',
     'loan_amount',
     'total',
+    'balance',
     'application_date',
     'created_by',
     'approved_by',

@@ -30,21 +30,27 @@ class ProcessDailyLoanCollections implements ShouldQueue
     public function handle(): void
     {
       foreach ($this->collections as $collection) {
-        /*$collection->dailyLoan->balance -= $collection->loan_installment;
-        $collection->dailyLoan->save();
-        $collection->loan_balance = $collection->dailyLoan->balance;
-        $collection->save();
+//        $expNum = explode('-', $collection->account_no);
+//        if (count($expNum) == 2) {
+//          $collection->account_no = 'DS' . str_pad($expNum[1], 4, '0', STR_PAD_LEFT);
+//          $collection->save();
+//        }
+
+//        $collection->dailyLoan->balance -= $collection->loan_installment;
+//        $collection->dailyLoan->save();
+//          $collection->user_id = $collection->dailyLoan->user_id;
+//          $collection->save();
 
         Transaction::create([
           'account_no' => $collection->account_no,
           'user_id' => $collection->user_id,
-          'amount' => $collection->loan_installment,
+          'amount' => $collection->loan_installment + $collection->loan_late_fee + $collection->loan_other_fee,
           'type' => 'cashin',
           'transactionable_id' => $collection->id,
           'transactionable_type' => DailyLoanCollection::class,
           'date' => $collection->date,
           'manager_id' => $collection->manager_id
-        ]);*/
+        ]);
 
       }
     }

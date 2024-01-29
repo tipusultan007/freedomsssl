@@ -23,6 +23,7 @@ class DailySavings extends Model
     'profit',
     'remain_profit',
     'total',
+    'balance',
     'is_sms_sent',
     'manager_id'
   ];

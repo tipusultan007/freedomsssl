@@ -68,10 +68,12 @@ class DailyCollectionController extends Controller
         if ($data['saving_type'] === 'deposit') {
           $dailySaving->deposit += $data['saving_amount'];
           $dailySaving->total += $data['saving_amount'];
+          $dailySaving->balance += $data['saving_amount'];
           $data['total'] = $data['saving_amount'] + $late_fee + $other_fee;
         } else {
           $dailySaving->withdraw += $data['saving_amount'];
           $dailySaving->total -= $data['saving_amount'];
+          $dailySaving->balance -= $data['saving_amount'];
           $data['total'] = $data['saving_amount'] - $late_fee - $other_fee;
         }
         $dailySaving->save();

@@ -95,8 +95,10 @@ class SavingsCollection extends Model
       if ($savingCollection->type == 'deposit') {
         $saving->total -= $savingCollection->saving_amount;
         $saving->deposit -= $savingCollection->saving_amount;
+        $saving->balance -= $savingCollection->saving_amount;
       } elseif ($savingCollection->type == 'withdraw') {
         $saving->total += $savingCollection->saving_amount;
+        $saving->balance += $savingCollection->saving_amount;
         $saving->withdraw -= $savingCollection->saving_amount;
       }
       $saving->save();

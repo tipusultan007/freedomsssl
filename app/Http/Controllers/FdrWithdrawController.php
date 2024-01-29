@@ -131,13 +131,13 @@ class FdrWithdrawController extends Controller
         $nestedData['user_id'] = $post->user_id;
         $nestedData['phone'] = $post->user->phone1 ?? '';
         $nestedData['account_no'] = $post->account_no;
-        $nestedData['name'] = $post->user->name;
+        $nestedData['name'] = $post->user->name??'-';
         $nestedData['package'] = $fdrDeposit->fdrPackage->name??'-';
         $nestedData['created_by'] = $post->manager->name;
         $nestedData['amount'] = $post->amount;
         $nestedData['date'] = date('d/m/Y', strtotime($post->date));
         $nestedData['note'] = $post->note;
-        $nestedData['image'] = $post->user->image;
+        $nestedData['image'] = $post->user->image??'';
         $nestedData['balance'] = $post->balance;
         $data[] = $nestedData;
 

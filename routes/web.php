@@ -224,8 +224,8 @@ Route::post('logout', [ManagerLoginController::class, 'logout'])->name('logout')
   Route::post('login', [ManagerLoginController::class, 'login']);
   Route::post('logout', [ManagerLoginController::class, 'logout'])->name('manager.logout');
 });*/
-Route::get('/', [Crm::class, 'index'])->name('dashboard');
-Route::get('/dashboard', [Crm::class, 'index'])->name('dashboard-crm');
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard-crm');
 // Admin routes
 // Manager routes
 Route::middleware(['web', 'manager'])->group(function () {
@@ -493,6 +493,7 @@ Route::middleware(['web', 'manager'])->group(function () {
   Route::get('/dps-chart-data', [Crm::class, 'getDpsChartData'])->name('dpsChartData');
 
 
+  Route::get('dpsImport',[\App\Http\Controllers\ImportController::class,'dpsInstallment']);
 });
 
 

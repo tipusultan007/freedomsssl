@@ -64,7 +64,6 @@
         </tr>
         </thead>
         <tbody>
-ata)
         @foreach ($managers as $manager)
           @php
             $managerSummary = $transactionSummary->where('manager_id', $manager->id)->first();

@@ -108,19 +108,19 @@ class TakenLoan extends Model
       ]);
     });
 
-    static::updated(function ($loan) {
-      $transaction = Transaction::where('transactionable_id', $loan->id)
-        ->where('transactionable_type', TakenLoan::class)
-        ->first();
-
-      if ($transaction) {
-        $transaction->update([
-          'amount' => $loan->loan_amount,
-          'manager_id' => Auth::id(),
-          'date' => $loan->date
-        ]);
-      }
-    });
+//    static::updated(function ($loan) {
+//      $transaction = Transaction::where('transactionable_id', $loan->id)
+//        ->where('transactionable_type', TakenLoan::class)
+//        ->first();
+//
+//      if ($transaction) {
+//        $transaction->update([
+//          'amount' => $loan->loan_amount,
+//          'manager_id' => Auth::id(),
+//          'date' => $loan->date
+//        ]);
+//      }
+//    });
 
     // Define the deleting event callback
     static::deleting(function ($loan) {

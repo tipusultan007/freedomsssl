@@ -22,7 +22,7 @@ class Fdr extends Model
         'note',
         'status',
         'introducer_id',
-      'manager_id'
+         'manager_id'
     ];
 
   public static $rules = [

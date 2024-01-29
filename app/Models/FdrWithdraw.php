@@ -75,7 +75,7 @@ class FdrWithdraw extends Model
       $installment->transactions()->delete();
     });
 
-    static::updated(function ($installment) {
+    /*static::updated(function ($installment) {
       $transaction = Transaction::where('transactionable_id', $installment->id)
         ->where('transactionable_type', FdrWithdraw::class)
         ->first();
@@ -87,6 +87,6 @@ class FdrWithdraw extends Model
           'manager_id' => Auth::id()
         ]);
       }
-    });
+    });*/
   }
 }

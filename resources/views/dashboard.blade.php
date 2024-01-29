@@ -29,7 +29,7 @@
               <div class="d-flex align-items-center">
                 <div class="badge rounded-pill bg-label-primary me-3 p-2"><i class="ti ti-chart-pie-2 ti-sm"></i></div>
                 <div class="card-info">
-                  <h5 class="mb-0">230k</h5>
+                  <h5 class="mb-0 dash-font">{{ $data['totalDeposit'] }}</h5>
                   <small>সঞ্চয় জমা</small>
                 </div>
               </div>
@@ -38,7 +38,7 @@
               <div class="d-flex align-items-center">
                 <div class="badge rounded-pill bg-label-info me-3 p-2"><i class="ti ti-users ti-sm"></i></div>
                 <div class="card-info">
-                  <h5 class="mb-0">8.549k</h5>
+                  <h5 class="mb-0 dash-font">{{ $data['totalWithdraw'] }}</h5>
                   <small>সঞ্চয় উত্তোলন</small>
                 </div>
               </div>
@@ -47,7 +47,7 @@
               <div class="d-flex align-items-center">
                 <div class="badge rounded-pill bg-label-danger me-3 p-2"><i class="ti ti-shopping-cart ti-sm"></i></div>
                 <div class="card-info">
-                  <h5 class="mb-0">1.423k</h5>
+                  <h5 class="mb-0 dash-font">{{ $data['totalProfit'] }}</h5>
                   <small>লভ্যাংশ প্রদান</small>
                 </div>
               </div>
@@ -56,7 +56,7 @@
               <div class="d-flex align-items-center">
                 <div class="badge rounded-pill bg-label-success me-3 p-2"><i class="ti ti-currency-dollar ti-sm"></i></div>
                 <div class="card-info">
-                  <h5 class="mb-0">$9745</h5>
+                  <h5 class="mb-0 dash-font">{{ $data['totalRemainSavings'] }}</h5>
                   <small>অবশিষ্ট জমা</small>
                 </div>
               </div>
@@ -71,7 +71,7 @@
       <div class="card h-100">
         <div class="card-body text-center">
           <div class="badge rounded-pill p-2 bg-label-danger mb-2"><i class="ti ti-briefcase ti-sm"></i></div>
-          <h5 class="card-title mb-2">97.8k</h5>
+          <h5 class="card-title dash-font mb-2">{{ $data['total_loan'] }}</h5>
           <small>ঋণ প্রদান</small>
         </div>
       </div>
@@ -82,7 +82,7 @@
       <div class="card h-100">
         <div class="card-body text-center">
           <div class="badge rounded-pill p-2 bg-label-success mb-2"><i class="ti ti-message-dots ti-sm"></i></div>
-          <h5 class="card-title mb-2">3.4k</h5>
+          <h5 class="card-title mb-2 dash-font">{{ $data['total_loan_return'] }}</h5>
           <small>ঋণ ফেরত</small>
         </div>
       </div>
@@ -198,11 +198,11 @@
             <div class="avatar me-2">
               <span class="avatar-initial rounded bg-label-primary"><i class="ti ti-truck ti-md"></i></span>
             </div>
-            <h4 class="ms-1 mb-0">42</h4>
+            <h4 class="ms-1 mb-0">{{ number_format($data['daily_loan'],0) }}</h4>
           </div>
           <p class="mb-1">দৈনিক ঋণ প্রদান</p>
           <p class="mb-0">
-            <span class="fw-medium me-1">+18.2%</span>
+            <span class="fw-medium me-1 text-success">+{{ number_format($data['daily_loan_return'],0) }}</span>
             <small class="text-muted">ঋণ ফেরত</small>
           </p>
         </div>
@@ -215,11 +215,11 @@
             <div class="avatar me-2">
               <span class="avatar-initial rounded bg-label-warning"><i class='ti ti-alert-triangle ti-md'></i></span>
             </div>
-            <h4 class="ms-1 mb-0">8</h4>
+            <h4 class="ms-1 mb-0">{{ number_format($data['monthly_loan'],0) }}</h4>
           </div>
           <p class="mb-1">মাসিক ঋণ প্রদান</p>
           <p class="mb-0">
-            <span class="fw-medium me-1">-8.7%</span>
+            <span class="fw-medium me-1 text-success">+{{ number_format($data['monthly_loan_return'],0) }}</span>
             <small class="text-muted">ঋণ ফেরত</small>
           </p>
         </div>
@@ -232,11 +232,11 @@
             <div class="avatar me-2">
               <span class="avatar-initial rounded bg-label-danger"><i class='ti ti-git-fork ti-md'></i></span>
             </div>
-            <h4 class="ms-1 mb-0">27</h4>
+            <h4 class="ms-1 mb-0">{{ number_format($data['special_loan'],0) }}</h4>
           </div>
           <p class="mb-1">বিশেষ ঋণ প্রদান</p>
           <p class="mb-0">
-            <span class="fw-medium me-1">+4.3%</span>
+            <span class="fw-medium me-1 text-success">+{{ number_format($data['special_loan_return'],0) }}</span>
             <small class="text-muted">ঋণ ফেরত</small>
           </p>
         </div>
@@ -249,9 +249,9 @@
             <div class="avatar me-2">
               <span class="avatar-initial rounded bg-label-info"><i class='ti ti-clock ti-md'></i></span>
             </div>
-            <h4 class="ms-1 mb-0">13</h4>
+            <h4 class="ms-1 mb-0">{{ number_format($data['fdr_profit_withdraw']) }}</h4>
           </div>
-          <p class="mb-1">Late vehicles</p>
+          <p class="mb-1">FDR মুনাফা উত্তোলন</p>
           <p class="mb-0">
             <span class="fw-medium me-1">-2.5%</span>
             <small class="text-muted">than last week</small>
@@ -265,7 +265,7 @@
       <div class="card h-100">
         <div class="card-body d-flex justify-content-between align-items-center">
           <div class="card-title mb-0">
-            <h5 class="mb-0 me-2">86%</h5>
+            <h5 class="mb-0 me-2">{{ number_format($data['daily_savings_remain']) }}</h5>
             <small>অবশিষ্ট দৈনিক সঞ্চয়</small>
           </div>
           <div class="card-icon">
@@ -280,7 +280,7 @@
       <div class="card h-100">
         <div class="card-body d-flex justify-content-between align-items-center">
           <div class="card-title mb-0">
-            <h5 class="mb-0 me-2">1.24gb</h5>
+            <h5 class="mb-0 me-2">{{ number_format($data['monthly_savings_remain']) }}</h5>
             <small>অবশিষ্ট মাসিক সঞ্চয়</small>
           </div>
           <div class="card-icon">
@@ -295,7 +295,7 @@
       <div class="card h-100">
         <div class="card-body d-flex justify-content-between align-items-center">
           <div class="card-title mb-0">
-            <h5 class="mb-0 me-2">0.2%</h5>
+            <h5 class="mb-0 me-2">{{ number_format($data['special_savings_remain']) }}</h5>
             <small>অবশিষ্ট বিশেষ সঞ্চয়</small>
           </div>
           <div class="card-icon">
@@ -310,7 +310,7 @@
       <div class="card h-100">
         <div class="card-body d-flex justify-content-between align-items-center">
           <div class="card-title mb-0">
-            <h5 class="mb-0 me-2">128</h5>
+            <h5 class="mb-0 me-2">{{ number_format($data['fdr_savings_remain']) }}</h5>
             <small>অবশিষ্ট স্থায়ী সঞ্চয়</small>
           </div>
           <div class="card-icon">

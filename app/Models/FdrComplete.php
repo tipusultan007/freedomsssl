@@ -18,7 +18,7 @@ class FdrComplete extends Model
     'withdraw',
     'profit',
     'remain',
-    'service_charge',
+    'service_fee',
     'date',
     'manager_id',
   ];
@@ -34,9 +34,9 @@ class FdrComplete extends Model
     return $this->belongsTo(Manager::class);
   }
 
-  public function transactions()
+  public function transaction()
   {
-    return $this->morphMany(Transaction::class, 'transactionable');
+    return $this->morphOne(Transaction::class, 'transactionable');
   }
 
   protected static function boot()
@@ -75,7 +75,7 @@ class FdrComplete extends Model
 
     // Define the deleting event callback
     static::deleting(function ($dpsComplete) {
-      $dpsComplete->transactions()->delete();
+      $dpsComplete->transaction->delete();
     });
   }
 

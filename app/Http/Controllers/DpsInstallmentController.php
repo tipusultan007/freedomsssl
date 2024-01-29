@@ -207,6 +207,7 @@ class DpsInstallmentController extends Controller
           $date = Carbon::createFromFormat("Y-m-d", $dps->commencement);
           $date->addMonthsNoOverflow($dpsCollections);
           $dps->balance += $installment->dps_amount;
+          $dps->deposited += $installment->dps_amount;
           $dps->save();
           $dpsCollection = DpsCollection::create([
             'account_no' => $installment->account_no,
@@ -225,6 +226,7 @@ class DpsInstallmentController extends Controller
         } else {
           $date = Carbon::createFromFormat("Y-m-d", $dps->commencement);
           $dps->balance += $installment->dps_amount;
+          $dps->deposited += $installment->dps_amount;
           $dps->save();
           $dpsCollection = DpsCollection::create([
             'account_no' => $installment->account_no,
@@ -248,6 +250,7 @@ class DpsInstallmentController extends Controller
           $dpsCollections = DpsCollection::where('dps_id', $dps->id)->count();
           if ($dpsCollections == 0) {
             $dps->balance += $dps->package_amount;
+            $dps->deposited += $dps->package_amount;
             $dps->save();
             $dpsCollection = DpsCollection::create([
               'account_no' => $installment->account_no,
@@ -268,6 +271,7 @@ class DpsInstallmentController extends Controller
             $date->addMonthsNoOverflow($dpsCollections);
 
             $dps->balance += $dps->package_amount;
+            $dps->deposited += $dps->package_amount;
             $dps->save();
             $dpsCollection = DpsCollection::create([
               'account_no' => $installment->account_no,
@@ -573,6 +577,7 @@ class DpsInstallmentController extends Controller
 
       $dps = Dps::find($dpsInstallment->dps_id);
       $dps->balance -= $dpsInstallment->dps_amount;
+      $dps->deposited -= $dpsInstallment->dps_amount;
       $dps->save();
 
 
@@ -594,6 +599,7 @@ class DpsInstallmentController extends Controller
             $date = Carbon::createFromFormat("Y-m-d", $dps->commencement);
             $date->addMonthsNoOverflow($dpsCollections);
             $dps->balance += $dpsInstallment->dps_amount;
+            $dps->deposited += $dpsInstallment->dps_amount;
             $dps->save();
             $dpsCollection = DpsCollection::create([
               'account_no' => $dpsInstallment->account_no,
@@ -610,6 +616,7 @@ class DpsInstallmentController extends Controller
           } else {
             $date = Carbon::createFromFormat("Y-m-d", $dps->commencement);
             $dps->balance += $dpsInstallment->dps_amount;
+            $dps->deposited += $dpsInstallment->dps_amount;
             $dps->save();
             $dpsCollection = DpsCollection::create([
               'account_no' => $dpsInstallment->account_no,
@@ -631,6 +638,7 @@ class DpsInstallmentController extends Controller
             $dpsCollections = DpsCollection::where('dps_id', $dps->id)->count();
             if ($dpsCollections == 0) {
               $dps->balance += $dps->package_amount;
+              $dps->deposited += $dps->package_amount;
               $dps->save();
               $dpsCollection = DpsCollection::create([
                 'account_no' => $dpsInstallment->account_no,
@@ -649,6 +657,7 @@ class DpsInstallmentController extends Controller
               $date->addMonthsNoOverflow($dpsCollections);
 
               $dps->balance += $dps->package_amount;
+              $dps->deposited += $dps->package_amount;
               $dps->save();
               $dpsCollection = DpsCollection::create([
                 'account_no' => $dpsInstallment->account_no,
@@ -886,6 +895,7 @@ class DpsInstallmentController extends Controller
     //$this->authorize('delete', $dpsInstallment);
     $dps = Dps::find($dpsInstallment->dps_id);
     $dps->balance -= $dpsInstallment->dps_amount;
+    $dps->deposited -= $dpsInstallment->dps_amount;
     $dps->save();
     DpsCollection::where('dps_installment_id', $dpsInstallment->id)->delete();
     if ($dpsInstallment->loan_installment > 0 || $dpsInstallment->interest > 0) {

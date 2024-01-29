@@ -31,10 +31,21 @@ class ProcessSavingsCollections implements ShouldQueue
     public function handle(): void
     {
       foreach ($this->collections as $collection) {
+//        $expNum = explode('-', $collection->account_no);
+//        if (count($expNum) > 0) {
+//          $collection->account_no = 'DS' . str_pad($expNum[1], 4, '0', STR_PAD_LEFT);
+//          $collection->save();
+//        }
+//        $saving = DailySavings::where('account_no',$collection->account_no)->first();
+//        if ($saving){
+//          $collection->daily_savings_id = $saving->id;
+//          $collection->save();
+//        }
         switch ($collection->type){
           case 'deposit':
             $collection->dailySavings->deposit += $collection->saving_amount;
             $collection->dailySavings->total += $collection->saving_amount;
+            $collection->dailySavings->balance += $collection->saving_amount;
             $collection->dailySavings->save();
             $collection->total = $collection->saving_amount;
             $collection->balance = $collection->dailySavings->total;
@@ -55,6 +66,7 @@ class ProcessSavingsCollections implements ShouldQueue
           case 'withdraw':
             $collection->dailySavings->withdraw += $collection->saving_amount;
             $collection->dailySavings->total -= $collection->saving_amount;
+            $collection->dailySavings->balance -= $collection->saving_amount;
             $collection->dailySavings->save();
             $collection->total = $collection->saving_amount;
             $collection->balance = $collection->dailySavings->total;

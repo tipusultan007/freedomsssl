@@ -40,9 +40,9 @@ class DpsComplete extends Model
     return $this->belongsTo(Manager::class);
   }
 
-  public function transactions()
+  public function transaction()
   {
-    return $this->morphMany(Transaction::class, 'transactionable');
+    return $this->morphOne(Transaction::class, 'transactionable');
   }
 
   protected static function boot()
@@ -92,7 +92,7 @@ class DpsComplete extends Model
 
     // Define the deleting event callback
     static::deleting(function ($dpsComplete) {
-      $dpsComplete->transactions()->delete();
+      $dpsComplete->transaction->delete();
     });
   }
 
