@@ -30,6 +30,9 @@ return [
     'solaimanlipi' => [ // must be lowercase and snake_case
       'R'  => 'SolaimanLipi.ttf',    // regular font
       'useOTL' => 0xFF,
+    ],
+    'monotype' => [ // must be lowercase and snake_case
+      'R'  => 'MTCORSVA.TTF',    // regular font
     ]
   ],
   'auto_language_detection'  => false,
