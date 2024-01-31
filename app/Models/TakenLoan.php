@@ -86,9 +86,9 @@ class TakenLoan extends Model
   {
     return $this->hasOne(Guarantor::class);
   }
-  public function transactions()
+  public function transaction()
   {
-    return $this->morphMany(Transaction::class, 'transactionable');
+    return $this->morphOne(Transaction::class, 'transactionable');
   }
   protected static function boot()
   {
@@ -108,23 +108,23 @@ class TakenLoan extends Model
       ]);
     });
 
-//    static::updated(function ($loan) {
-//      $transaction = Transaction::where('transactionable_id', $loan->id)
-//        ->where('transactionable_type', TakenLoan::class)
-//        ->first();
-//
-//      if ($transaction) {
-//        $transaction->update([
-//          'amount' => $loan->loan_amount,
-//          'manager_id' => Auth::id(),
-//          'date' => $loan->date
-//        ]);
-//      }
-//    });
+    static::updated(function ($loan) {
+      $transaction = Transaction::where('transactionable_id', $loan->id)
+        ->where('transactionable_type', TakenLoan::class)
+        ->first();
+
+      if ($transaction) {
+        $transaction->update([
+          'amount' => $loan->loan_amount,
+          'manager_id' => Auth::id(),
+          'date' => $loan->date
+        ]);
+      }
+    });
 
     // Define the deleting event callback
     static::deleting(function ($loan) {
-      $loan->transactions()->delete();
+      $loan->transaction->delete();
     });
   }
 }

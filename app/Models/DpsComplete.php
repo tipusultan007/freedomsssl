@@ -75,7 +75,7 @@ class DpsComplete extends Model
       ]);
     });
 
-    /*static::updated(function ($dpsComplete) {
+    static::updated(function ($dpsComplete) {
       $total = $dpsComplete->withdraw + $dpsComplete->profit;
       $transaction = Transaction::where('transactionable_id', $dpsComplete->id)
         ->where('transactionable_type', DpsComplete::class)
@@ -88,7 +88,7 @@ class DpsComplete extends Model
           'date' => $dpsComplete->date
         ]);
       }
-    });*/
+    });
 
     // Define the deleting event callback
     static::deleting(function ($dpsComplete) {

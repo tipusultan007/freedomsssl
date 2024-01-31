@@ -82,9 +82,9 @@ class SpecialInstallment extends Model
     return $this->hasOne(SpecialLoanCollection::class);
   }
 
-  public function transactions()
+  public function transaction()
   {
-    return $this->morphMany(Transaction::class, 'transactionable');
+    return $this->morphOne(Transaction::class, 'transactionable');
   }
   protected static function boot()
   {
@@ -105,10 +105,10 @@ class SpecialInstallment extends Model
     });
 
     static::deleting(function ($installment) {
-      $installment->transactions()->delete();
+      $installment->transaction->delete();
     });
 
-    /*static::updated(function ($installment) {
+    static::updated(function ($installment) {
       $transaction = Transaction::where('transactionable_id', $installment->id)
         ->where('transactionable_type', SpecialInstallment::class)
         ->first();
@@ -120,6 +120,6 @@ class SpecialInstallment extends Model
           'date' => $installment->date
         ]);
       }
-    });*/
+    });
   }
 }

@@ -50,9 +50,9 @@ class FdrWithdraw extends Model
     {
         return $this->belongsTo(Manager::class);
     }
-  public function transactions()
+  public function transaction()
   {
-    return $this->morphMany(Transaction::class, 'transactionable');
+    return $this->morphOne(Transaction::class, 'transactionable');
   }
   protected static function boot()
   {
@@ -72,10 +72,10 @@ class FdrWithdraw extends Model
     });
 
     static::deleting(function ($installment) {
-      $installment->transactions()->delete();
+      $installment->transaction->delete();
     });
 
-    /*static::updated(function ($installment) {
+    static::updated(function ($installment) {
       $transaction = Transaction::where('transactionable_id', $installment->id)
         ->where('transactionable_type', FdrWithdraw::class)
         ->first();
@@ -87,6 +87,6 @@ class FdrWithdraw extends Model
           'manager_id' => Auth::id()
         ]);
       }
-    });*/
+    });
   }
 }

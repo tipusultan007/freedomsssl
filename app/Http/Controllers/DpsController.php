@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\DpsComplete;
 use App\Models\DpsLoanCollection;
-use App\Imports\DpsImport;
 use App\Models\Account;
 use App\Models\CashIn;
 use App\Models\Cashout;
@@ -30,13 +29,12 @@ use App\Models\User;
 use App\Models\DpsPackage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Requests\DpsStoreRequest;
-use App\Http\Requests\DpsUpdateRequest;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;
+use PDF;
 
 class DpsController extends Controller
 {
@@ -519,5 +517,16 @@ class DpsController extends Controller
     $dps->save();
 
     return redirect()->back()->with('success', 'সঞ্চয় হিসাব চালু করা হয়েছে!');
+  }
+
+  public function print($id)
+  {
+    $deposit = Dps::with('user','nominee')->find($id);
+    $data = [
+      'deposit' => $deposit,
+    ];
+
+    $pdf = PDF::loadView('app.all_dps.form', $data);
+    return $pdf->download('হিসাব নং-'.$deposit->account_no.'-মাসিক সঞ্চয় (DPS) আবেদন পত্র.pdf');
   }
 }

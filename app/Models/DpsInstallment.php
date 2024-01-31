@@ -64,9 +64,9 @@ class DpsInstallment extends Model
     return $this->hasOne(LoanPayment::class, 'dps_installment_id');
   }
 
-  public function transactions()
+  public function transaction()
   {
-    return $this->morphMany(Transaction::class, 'transactionable');
+    return $this->morphOne(Transaction::class, 'transactionable');
   }
 
   public function user()
@@ -115,9 +115,11 @@ class DpsInstallment extends Model
         'manager_id' => Auth::id()
       ]);
     });
+
     static::deleting(function ($installment) {
-      $installment->transactions()->delete();
+      $installment->transaction->delete();
     });
+
     /*static::updated(function ($installment) {
       $transaction = Transaction::where('transactionable_id', $installment->id)
         ->where('transactionable_type', DpsInstallment::class)

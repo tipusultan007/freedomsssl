@@ -65,9 +65,9 @@ class FdrDeposit extends Model
     return $this->hasMany(ProfitCollection::class);
   }
 
-  public function transactions()
+  public function transaction()
   {
-    return $this->morphMany(Transaction::class, 'transactionable');
+    return $this->morphOne(Transaction::class, 'transactionable');
   }
 
   protected static function boot()
@@ -88,10 +88,10 @@ class FdrDeposit extends Model
     });
 
     static::deleting(function ($installment) {
-      $installment->transactions()->delete();
+      $installment->transaction->delete();
     });
 
-    /*static::updated(function ($installment) {
+    static::updated(function ($installment) {
       $transaction = Transaction::where('transactionable_id', $installment->id)
         ->where('transactionable_type', FdrDeposit::class)
         ->first();
@@ -103,6 +103,6 @@ class FdrDeposit extends Model
           'manager_id' => Auth::id()
         ]);
       }
-    });*/
+    });
   }
 }

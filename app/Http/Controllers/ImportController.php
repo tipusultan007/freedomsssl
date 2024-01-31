@@ -33,19 +33,46 @@ class ImportController extends Controller
 {
     public function dpsInstallment()
     {
+      $data = [];
+      /*$uniqueInstallments = DpsInstallment::groupBy(['account_no','date'])
+        ->select('trx_id', \DB::raw('MAX(id) as max_id'),\DB::raw('COUNT(id) as installments'))
+        ->get();*/
+      $installments = DpsInstallment::groupBy('account_no', 'date')
+        ->select('account_no', 'date', \DB::raw('MAX(id) as max_id'), \DB::raw('COUNT(id) as installments'))
+        ->get();
+      foreach ($installments as $installment) {
+        $ins = DpsInstallment::find($installment->max_id);
+        if ($ins->dps_amount>0) {
+          $ins->dps_installments = $installment->installments;
+        }else{
+          $ins->loan_installments = $installment->installments;
+        }
+        $ins->save();
+      }
 
-//      $chunkSize = 5000;
-//      $page = 1;
-//      do {
-//        $collections = DailyLoanCollection::skip(($page - 1) * $chunkSize)
-//          ->take($chunkSize)
-//          ->get();
-//
-//        if ($collections->isNotEmpty()) {
-//          ProcessDailyLoanCollections::dispatch($collections);
-//        }
-//
-//        $page++;
-//      } while ($collections->count() === $chunkSize);
+
+      /*$uniqueInstallments = DpsInstallment::where('due','>',0)->groupBy('trx_id')
+        ->select('trx_id', \DB::raw('MIN(id) as id'))
+        ->get();
+
+      foreach ($uniqueInstallments as $installment) {
+        DpsInstallment::where('trx_id', $installment->trx_id)
+          ->where('id', '!=', $installment->id)
+          ->update(['due' => null]);
+      }*/
+
+      /*$chunkSize = 100;
+      $page = 1;
+      do {
+        $collections = DpsInstallment::skip(($page - 1) * $chunkSize)
+          ->take($chunkSize)
+          ->get();
+
+        if ($collections->isNotEmpty()) {
+          ProcessDpsInstallments::dispatch($collections);
+        }
+
+        $page++;
+      } while ($collections->count() === $chunkSize);*/
     }
 }

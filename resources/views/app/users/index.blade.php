@@ -25,6 +25,30 @@
 @endsection
 
 @section('content')
+  <style>
+    #user-list-table {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    #user-list-table td, #user-list-table th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    #user-list-table tr:nth-child(even){background-color: #f2f2f2;}
+
+    #user-list-table tr:hover {background-color: #f2f2f2;}
+
+    #user-list-table th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: center;
+      background-color: #7367f0;
+      color: white;
+    }
+  </style>
     <!-- users list start -->
     <section class="container-fluid">
       <div class="d-flex justify-content-between mb-3">
@@ -40,14 +64,13 @@
       </div>
         <div class="card">
             <div class="card-datatable table-responsive pt-0">
-                <table class="user-list-table table table-sm">
+                <table id="user-list-table" class="user-list-table table table-bordered">
                     <thead class="table-light">
                     <tr>
-                        <th class="fw-bolder py-2">নাম</th>
-                        <th class="fw-bolder py-2">মোবাইল নং</th>
-                        <th class="fw-bolder py-2">পিতা</th>
-                        <th class="fw-bolder py-2">মাতা</th>
+                        <th class="fw-bolder py-2">ছবি</th>
+                        <th class="fw-bolder py-2">ব্যক্তিগত তথ্য</th>
                         <th class="fw-bolder py-2">ঠিকানা</th>
+                        <th class="fw-bolder py-2">হিসাব তথ্য</th>
                         <th class="fw-bolder py-2">তারিখ</th>
                         <th class="fw-bolder py-2">স্ট্যাটাস</th>
                         <th class="fw-bolder py-2"></th>
@@ -98,64 +121,19 @@
                 columns: [
                     // columns according to JSON
 
-                    { data: 'name' },
-                    { data: 'phone' },
-                    { data: 'father_name' },
-                    { data: 'mother_name' },
-                    { data: 'present_address' },
+                    { data: 'image' },
+                    { data: 'bio' },
+                    { data: 'address' },
+                    { data: 'ac_details' },
                     { data: 'join_date' },
                     { data: 'status' },
                     { data: '' }
                 ],
                 columnDefs: [
-                    {
-                        // User full name and username
-                        targets: 0,
-                        render: function (data, type, full, meta) {
-                            var $name = full['name'],
-                                $email = full['email'],
-                                $id = full['id'],
-                                $image = full['image'];
-                            if ($image) {
-                                // For Avatar image
-                                var $output =
-                                    '<img src="{{ asset('storage/images/profile') }}/' + $image + '" alt="Avatar" height="32" width="32">';
-                            } else {
-                                // For Avatar badge
-                                var stateNum = Math.floor(Math.random() * 6) + 1;
-                                var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
-                                var $state = states[stateNum],
-                                    $name = full['name'],
-                                    $initials = $name.match(/\b\w/g) || [];
-                                $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-                                $output = '<span class="avatar-content">' + $initials + '</span>';
-                            }
-                            var colorClass = $image === '' ? ' bg-light-' + $state + ' ' : '';
-                            // Creates full output for row
-                            var $row_output =
-                                '<div class="d-flex justify-content-left align-items-center">' +
-                                '<div class="avatar-wrapper">' +
-                                '<div class="avatar ' +
-                                colorClass +
-                                ' me-1">' +
-                                $output +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="d-flex flex-column">' +
-                                '<a href="/users/' +$id +
-                                '" class="user_name text-truncate"><span class="fw-bolder">' +
-                                $name +
-                                '</span></a>' +
-
-                                '</div>' +
-                                '</div>';
-                            return $row_output;
-                        }
-                    },
 
                   {
                     // User Status
-                    targets: 6,
+                    targets: 5,
                     render: function (data, type, full, meta) {
                       var $status = full['status'];
 
@@ -170,7 +148,7 @@
                   },
                     {
                         // Actions
-                        targets: 7,
+                        targets: 6,
 
                         orderable: false,
                       render: function(data, type, full, meta) {

@@ -494,6 +494,9 @@ Route::middleware(['web', 'manager'])->group(function () {
 
 
   Route::get('dpsImport',[\App\Http\Controllers\ImportController::class,'dpsInstallment']);
+
+
+  Route::get('print-dps-form/{id}',[DpsController::class,'print'])->name('print.dps.form');
 });
 
 

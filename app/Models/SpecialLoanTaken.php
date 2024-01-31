@@ -76,9 +76,9 @@ class SpecialLoanTaken extends Model
     return $this->hasOne(Guarantor::class, 'special_taken_loan_id', 'id');
   }
 
-  public function transactions()
+  public function transaction()
   {
-    return $this->morphMany(Transaction::class, 'transactionable');
+    return $this->morphOne(Transaction::class, 'transactionable');
   }
 
   protected static function boot()
@@ -115,7 +115,7 @@ class SpecialLoanTaken extends Model
 
     // Define the deleting event callback
     static::deleting(function ($loan) {
-      $loan->transactions()->delete();
+      $loan->transaction->delete();
     });
   }
 }

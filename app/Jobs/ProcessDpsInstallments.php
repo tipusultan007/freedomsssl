@@ -10,6 +10,7 @@ use App\Models\DpsInstallment;
 use App\Models\DpsLoan;
 use App\Models\DpsLoanCollection;
 use App\Models\DpsLoanInterest;
+use App\Models\Due;
 use App\Models\LoanPayment;
 use App\Models\SpecialDps;
 use App\Models\SpecialDpsCollection;
@@ -49,6 +50,37 @@ class ProcessDpsInstallments implements ShouldQueue
     {
       foreach ($this->collections as $installment)
       {
+       /* if ($installment->due > 0) {
+
+          $due = Due::create([
+            'account_no' => $installment->account_no,
+            'user_id' => $installment->user_id,
+            'due' => $installment->due,
+            'return' => 0,
+            'balance' => $installment->due + $installment->user->due,
+            'date' => $installment->date,
+            'dps_installment_id' => $installment->id,
+          ]);
+
+          $installment->user->due += $installment->due;
+          $installment->user->save();
+
+        }
+        if ($installment->due_return > 0) {
+          $due = Due::create([
+            'account_no' => $installment->account_no,
+            'user_id' => $installment->user_id,
+            'due' => 0,
+            'return' => $installment->due_return,
+            'balance' =>  $installment->user->due - $installment->due_return,
+            'date' => $installment->date,
+            'dps_installment_id' => $installment->id,
+          ]);
+
+          $installment->user->due -= $installment->due_return;
+          $installment->user->save();
+
+        }*/
        /* if ($installment->dps_amount>0){
           $dps = SpecialDps::find($installment->special_dps_id);
           $dpsCollections = SpecialDpsCollection::where('special_dps_id', $dps->id)->count();

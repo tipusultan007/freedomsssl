@@ -12,8 +12,15 @@ class Due extends Model
     protected $fillable = [
         'account_no',
         'user_id',
-        'total_due',
-        'remain',
-        'status'
+        'due',
+        'return',
+        'balance',
+        'dps_installment_id',
+        'date'
     ];
+
+    public function user()
+    {
+      return $this->belongsTo(User::class);
+    }
 }

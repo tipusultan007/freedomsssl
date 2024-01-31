@@ -40,17 +40,17 @@ class UserController extends Controller
       ['name' => "List"]
     ];
 
-    $users = User::all();
-    foreach ($users as $user) {
-      $user->name = ucwords($user->name);
-      $user->father_name = ucwords($user->father_name);
-      $user->mother_name = ucwords($user->mother_name);
-      $user->spouse_name = ucwords($user->spouse_name);
-      $user->present_address = ucwords($user->present_address);
-      $user->permanent_address = ucwords($user->permanent_address);
-      $user->nationality = ucwords($user->nationality);
-      $user->save();
-    }
+//    $users = User::all();
+//    foreach ($users as $user) {
+//      $user->name = ucwords($user->name);
+//      $user->father_name = ucwords($user->father_name);
+//      $user->mother_name = ucwords($user->mother_name);
+//      $user->spouse_name = ucwords($user->spouse_name);
+//      $user->present_address = ucwords($user->present_address);
+//      $user->permanent_address = ucwords($user->permanent_address);
+//      $user->nationality = ucwords($user->nationality);
+//      $user->save();
+//    }
 
     return view('app.users.index', compact('breadcrumbs'));
   }
@@ -74,14 +74,16 @@ class UserController extends Controller
     // $dir = $request->input('order.0.dir');
 
     if (empty($request->input('search.value'))) {
-      $users = User::offset($start)
+      $users = User::with('dailySavings','dpsSavings','specialDpsSavings','dailyLoans','dpsLoans','specialLoans','fdrs')
+        ->offset($start)
         ->limit($limit)
         ->orderBy('name', 'asc')
         ->get();
     } else {
       $search = $request->input('search.value');
 
-      $users = User::where('name', 'LIKE', "%{$search}%")
+      $users = User::with('dailySavings','dpsSavings','specialDpsSavings','dailyLoans','dpsLoans','specialLoans','fdrs')
+        ->where('name', 'LIKE', "%{$search}%")
         ->orWhere('phone1', 'LIKE', "%{$search}%")
         ->offset($start)
         ->limit($limit)
@@ -98,15 +100,63 @@ class UserController extends Controller
       foreach ($users as $user) {
         $show = route('users.show', $user->id);
         $edit = route('users.edit', $user->id);
+
+        $dailyLoans = $user->dailyLoans->sum('balance');
+        $dpsLoans = $user->dpsLoans->sum('remain_loan');
+        $specialLoans = $user->specialLoans->sum('remain_loan');
+        $dailySavings = $user->dailySavings->sum('balance');
+        $dpsSavings = $user->dpsSavings->sum('balance');
+        $specialSavings = $user->specialDpsSavings->sum('balance');
+        $fdrSavings = $user->fdrs->sum('balance');
+
+        $total_loan = $dailyLoans + $dpsLoans + $specialLoans;
+        $total_savings = $dailySavings + $dpsSavings + $specialSavings;
+        $total_fdr = $fdrSavings;
+
+        $nestedData['ac_details'] = '<div class="ac_details">';
+        if ($total_savings>0){
+          $nestedData['ac_details'] .= '<p><strong>সঞ্চয়ঃ </strong>'.$total_savings.'</p>';
+        }
+        if ($total_fdr>0){
+          $nestedData['ac_details'] .= '<p><strong>স্থায়ী সঞ্চয়ঃ </strong>'.$total_fdr.'</p>';
+        }
+        if ($total_loan>0){
+          $nestedData['ac_details'] .= '<p><strong>ঋনঃ </strong>'.$total_loan.'</p>';
+        }
+        if ($user->due>0){
+          $nestedData['ac_details'] .= '<p><strong>বকেয়াঃ </strong>'.$user->due.'</p>';
+        }
+        $nestedData['ac_details'] .= '</div>';
+
+
+        $nestedData['bio'] = '<div class="bio"><p><strong>নামঃ </strong>'.$user->name.'</p>';
+        if ($user->father_name!=""){
+          $nestedData['bio'] .= '<p><strong>পিতাঃ </strong>'.$user->father_name.'</p>';
+        }
+        if ($user->mother_name!=""){
+          $nestedData['bio'] .= '<p><strong>মাতাঃ </strong>'.$user->mother_name.'</p>';
+        }
+        if ($user->phone1!=""){
+          $nestedData['bio'] .= '<p><strong>মোবাইলঃ </strong>'.$user->phone1.'</p>';
+        }
+        $nestedData['bio'] .= '</div>';
+
+        $nestedData['address'] = '<div class="address">';
+        if ($user->present_address!=""){
+          $nestedData['address'] .= '<p><strong>বর্তমান ঠিকানাঃ </strong>'.$user->present_address.'</p>';
+        }
+        if ($user->permanent_address!=""){
+          $nestedData['address'] .= '<p><strong>স্থায়ী ঠিকানাঃ </strong>'.$user->permanent_address.'</p>';
+        }
+        $nestedData['address'] .= '</div>';
+
         $nestedData['id'] = $user->id;
         $nestedData['name'] = $user->name;
         $nestedData['email'] = $user->email;
         $nestedData['phone'] = $user->phone1 ?? 'n/a';
         $nestedData['father_name'] = $user->father_name;
-        $nestedData['mother_name'] = $user->father_name;
-        $nestedData['present_address'] = $user->present_address;
-        $nestedData['join_date'] = date('d/m/Y', strtotime($user->join_date));
-        $nestedData['image'] = $user->image ?? '';
+        $nestedData['mother_name'] = $user->mother_name;
+        $nestedData['image'] =  '<img width="110" height="120" src="'.asset('storage/images/profile/'.$user->image).'" class="user-list-image">';
         $nestedData['status'] = $user->status;
         $nestedData['join_date'] = date('d/m/Y',strtotime($user->join_date));
         $data[] = $nestedData;

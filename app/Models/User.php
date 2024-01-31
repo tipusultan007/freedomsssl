@@ -48,7 +48,8 @@ class User extends Authenticatable
         'join_date',
         'profile_photo_path',
         'image',
-      'manager_id'
+      'manager_id',
+      'due'
     ];
 
     /**

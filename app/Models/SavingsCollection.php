@@ -50,9 +50,9 @@ class SavingsCollection extends Model
     return $this->belongsTo(Manager::class);
   }
 
-  public function transactions()
+  public function transaction()
   {
-    return $this->morphMany(Transaction::class, 'transactionable');
+    return $this->morph(Transaction::class, 'transactionable');
   }
 
   public function dailySavings()
@@ -102,7 +102,8 @@ class SavingsCollection extends Model
         $saving->withdraw -= $savingCollection->saving_amount;
       }
       $saving->save();
-      $savingCollection->transactions()->delete();
+
+      $savingCollection->transaction->delete();
     });
   }
 

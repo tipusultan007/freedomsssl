@@ -450,33 +450,37 @@ class DpsInstallmentController extends Controller
     $installment->save();
 
     if ($installment->due > 0) {
-      $due = Due::firstOrCreate(
-        ['account_no' => $installment->account_no],
-        ['user_id' => $installment->user_id],
-      );
-      $due->remain += $installment->due;
-      $due->status = 'unpaid';
-      $due->save();
 
-      //DueAccount::create($data);
+      $due = Due::create([
+        'account_no' => $installment->account_no,
+        'user_id' => $installment->user_id,
+        'due' => $installment->due,
+        'return' => 0,
+        'balance' => $installment->due + $installment->user->due,
+        'date' => $installment->date
+      ]);
+
+      $installment->user->due += $installment->due;
+      $installment->user->save();
+
     }
     if ($installment->due_return > 0) {
-      $due = Due::where('account_no', $installment->account_no)->first();
-      $due->remain -= $installment->due_return;
-      if ($due->remain == 0) {
-        $due->status = 'paid';
-      } else {
-        $due->status = 'unpaid';
-      }
-      $due->save();
+      $due = Due::create([
+        'account_no' => $installment->account_no,
+        'user_id' => $installment->user_id,
+        'due' => 0,
+        'return' => $installment->due_return,
+        'balance' =>  $installment->user->due - $installment->due_return,
+        'date' => $installment->date
+      ]);
 
-      //DueReturnAccount::create($data);
+      $installment->user->due -= $installment->due_return;
+      $installment->user->save();
+
+
     }
 
-    //$transactions = $this->accountTransaction($installment);
-
     return "success";
-
   }
 
   /**
@@ -923,6 +927,16 @@ class DpsInstallmentController extends Controller
       }
       DpsLoanCollection::where('dps_installment_id', $id)->delete();
     }
+    if ($dpsInstallment->due>0){
+      $dpsInstallment->user->due -= $dpsInstallment->due;
+      $dpsInstallment->user->save();
+    }
+
+    if ($dpsInstallment->due_return>0){
+      $dpsInstallment->user->due += $dpsInstallment->due_return;
+      $dpsInstallment->user->save();
+    }
+
     $dpsInstallment->delete();
     echo "success";
   }

@@ -170,6 +170,8 @@
                 'বিস্তারিত</a>' +
                 '<a href="javascript:;" data-id="'+full['id']+'" class="dropdown-item text-warning item-reset">' +
                 'রিসেট</a>' +
+                '<a href="javascript:;" data-id="'+full['id']+'" class="dropdown-item text-info item-status">' +
+                'স্ট্যাটাস আপডেট</a>' +
                 '<a href="javascript:;" data-id="' + full['id'] + '" class="dropdown-item fw-bolder text-danger delete-record">' +
                 'ডিলেট</a>' +
                 '</div>' +
