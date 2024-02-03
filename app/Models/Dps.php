@@ -43,6 +43,11 @@ class Dps extends Model
     return $this->belongsTo(User::class);
   }
 
+  public function loan()
+  {
+    return $this->hasOne(DpsLoan::class,'account_no','account_no');
+  }
+
   public function dpsPackage()
   {
     return $this->belongsTo(DpsPackage::class);
@@ -80,5 +85,10 @@ class Dps extends Model
   public function nominee()
   {
     return $this->hasOne(Nominees::class,'account_no','account_no');
+  }
+
+  public function dpsCompletes()
+  {
+    return $this->hasMany(DpsComplete::class);
   }
 }

@@ -111,7 +111,7 @@ class SpecialDpsComplete extends Model
       'loan_payment' => 'ঋণ পরিশোধ',
       'interest' => 'ঋণের লভ্যাংশ',
       'grace' => 'ঋণ মওকুফ',
-      'service_charge' => 'ফি',
+      'service_fee' => 'ফি',
       'date' => 'তারিখ',
     ];
 

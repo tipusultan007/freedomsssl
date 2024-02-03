@@ -17,6 +17,7 @@ class SpecialLoanPayment extends Model
         'balance',
         'date',
         'is_completed',
+      'special_dps_complete_id',
     ];
 
     public function installment()

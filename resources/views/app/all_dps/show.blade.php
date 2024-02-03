@@ -109,13 +109,23 @@
                 <td>
                   @if($dps->status=='active')
                     <span class="badge bg-success">চলমান</span>
-                    <button class="btn rounded-pill btn-sm btn-warning waves-effect waves-light mt-2"
+                  @else
+                    <span class="badge bg-danger">বন্ধ</span>
+                  @endif
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  @if($dps->status=='active')
+                    <button class="btn rounded-pill btn-sm btn-warning waves-effect waves-light"
                             id="btn-complete">হিসাব সম্পন্ন করুণ
                     </button>
                   @else
-                    <span class="badge bg-danger">বন্ধ</span>
                     <a href="{{ route('active.dps',$dps->id) }}" class="btn-btn-success">চালু করুন</a>
                   @endif
+                    <button data-id="{{ $dps->id }}" class="btn rounded-pill btn-sm btn-danger waves-effect waves-light"
+                            id="item-reset">হিসাব রিসেট করুণ
+                    </button>
                 </td>
               </tr>
             </table>
@@ -216,6 +226,18 @@
               <span class="fw-bold">মাসিক ঋণের তালিকা</span></a>
           </li>
 
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="closing-transactions-tab"
+              data-bs-toggle="tab"
+              href="#closingTransactions"
+              aria-controls="home"
+              role="tab"
+              aria-selected="true">
+              <span class="fw-bold">উত্তোলন</span></a>
+          </li>
+
         </ul>
 
         <div class="tab-content">
@@ -263,13 +285,53 @@
                     <i class="ti ti-dots-vertical font-medium-3 text-primary cursor-pointer" data-bs-toggle="dropdown"></i>
                     <div class="dropdown-menu dropdown-menu-end">
                       <a class="dropdown-item" href="{{ route('taken-loans.show',$loan->id) }}">বিস্তারিত দেখুন</a>
-                      <a class="dropdown-item" href="{{ route('taken-loans.edit',$loan->id) }}">এডিট করুন </a>
-                      <a class="dropdown-item reset-taken-loan" data-id="{{ $loan->id }}" href="javascript:;">রিসেট করুণ</a>
-                      <a class="dropdown-item delete-taken-loan" data-id="{{ $loan->id }}" href="javascript:;">ডিলেট</a>
+                      <a class="dropdown-item text-info" href="{{ route('taken-loans.edit',$loan->id) }}">এডিট করুন </a>
+                      <a class="dropdown-item text-danger delete-taken-loan" data-id="{{ $loan->id }}" href="javascript:;">ডিলেট</a>
                     </div>
                   </div>
                 </td>
               </tr>
+              @empty
+
+              @endforelse
+            </table>
+          </div>
+          <div class="tab-pane " id="closingTransactions" aria-labelledby="homeIcon-tab" role="tabpanel">
+            <table class="table table-sm table-bordered">
+              <thead class="table-light py-0">
+              <tr>
+                <th class="fs-6 fw-bolder py-1">তারিখ</th>
+                <th class="fs-6 fw-bolder py-1">সঞ্চয় উত্তোলন</th>
+                <th class="fs-6 fw-bolder py-1">মুনাফা উত্তোলন</th>
+                <th class="fs-6 fw-bolder py-1">ঋন ফেরত</th>
+                <th class="fs-6 fw-bolder py-1">ঋণের লভ্যাংশ</th>
+                <th class="fs-6 fw-bolder py-1">ছাড়</th>
+                <th class="fs-6 fw-bolder py-1">উত্তোলন ফি</th>
+                <th class="fs-6 fw-bolder py-1">কর্মীর নাম</th>
+                <th class="fs-6 fw-bolder py-1">#</th>
+              </tr>
+              </thead>
+
+              @forelse($dps->dpsCompletes as $complete)
+                <tr>
+                  <td>{{ date('d/m/Y',strtotime($complete->date))}}</td>
+                  <td>{{ $complete->withdraw??"-"}}</td>
+                  <td>{{ $complete->profit??'-' }}</td>
+                  <td>{{ $complete->loan_payment??'-' }}</td>
+                  <td>{{ $complete->interest??'-' }}</td>
+                  <td>{{ $complete->grace??'-' }}</td>
+                  <td>{{ $complete->service_fee??'-' }}</td>
+                  <td>{{ $complete->manager->name??'-' }}</td>
+                  <td>
+                    <div class="dropdown chart-dropdown">
+                      <i class="ti ti-dots-vertical font-medium-3 text-primary cursor-pointer" data-bs-toggle="dropdown"></i>
+                      <div class="dropdown-menu dropdown-menu-end">
+                        <a class="dropdown-item text-info edit-dps-complete" href="javascript:;" data-id="{{ $complete->id }}">এডিট করুন </a>
+                        <a class="dropdown-item text-danger delete-dps-complete" data-id="{{ $complete->id }}" href="javascript:;">ডিলেট</a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
               @empty
 
               @endforelse
@@ -1460,6 +1522,49 @@
         }
       });
     })
+    $(document).on("click", ".delete-dps-complete", function () {
+      var id = $(this).attr('data-id');
+      var token = $("meta[name='csrf-token']").attr("content");
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ms-1'
+        },
+        buttonsStyling: false
+      }).then(function (result) {
+        if (result.value) {
+          $.ajax(
+            {
+              url: "{{ url('dps-complete') }}/" + id, //or you can use url: "company/"+id,
+              type: 'DELETE',
+              data: {
+                _token: token,
+                id: id
+              },
+              success: function (response) {
+
+                //$("#success").html(response.message)
+                toastr['success']('👋 Installment has been deleted successfully.', 'Success!', {
+                  closeButton: true,
+                  tapToDismiss: false,
+                });
+                window.location.reload();
+              },
+              error: function (data) {
+                toastr['error']('👋 Installment delete failed.', 'Failed!', {
+                  closeButton: true,
+                  tapToDismiss: false,
+                });
+              }
+            });
+        }
+      });
+    })
     $(document).on("click", ".item-edit", function () {
       var id = $(this).attr('data-id');
       $.ajax({
@@ -1884,6 +1989,56 @@
       })
     })
 
+    function resetMonthlyDPS(id) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "{{ url('reset-monthly-dps') }}/" + id,
+          success: function () {
+            resolve();
+          },
+          error: function (data) {
+            reject();
+          }
+        });
+      });
+    }
+    $('#item-reset').on('click', function () {
+      var id = $(this).data("id");
+      var token = $("meta[name='csrf-token']").attr("content");
+
+      Swal.fire({
+        title: 'আপনি কি নিশ্চিত?',
+        text: 'এটি আপনি পুনরায় পাবেন না!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'হ্যাঁ, এটি রিসেট করুন!',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ms-1'
+        },
+        buttonsStyling: false,
+        allowOutsideClick: () => !Swal.isLoading(),
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          // Return the promise from the AJAX request function
+          return resetMonthlyDPS(id)
+            .catch(() => {
+              Swal.showValidationMessage('DPS একাউন্ট রিসেট ব্যর্থ হয়েছে।');
+            });
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          toastr.success('DPS একাউন্টটি সফলভাবে রিসেট হয়েছে।', 'রিসেট!', {
+            closeButton: true,
+            tapToDismiss: false
+          });
+
+          window.location.reload();
+        }
+      });
+    });
 
   </script>
 @endsection

@@ -61,7 +61,7 @@
               </div>
               <div class="col-xl-3 col-md-6 col-12">
                 <div class="mb-1">
-                  <input type="date" id="date" class="form-control"
+                  <input type="text" id="date" class="form-control datepicker"
                          value="{{date('Y-m-d')}}" placeholder="DD-MM-YYYY"/>
                 </div>
               </div>
@@ -161,7 +161,7 @@
                   </div>
                   <div class="col-lg-4 my-1">
                     <label class="font-small-2 fw-bold" for="date">তারিখ</label>
-                    <input type="date" class="form-control" name="date"
+                    <input type="text" class="form-control datepicker" name="date"
                            value="{{ date('Y-m-d') }}" id="date2">
 
                   </div>
@@ -630,11 +630,7 @@ $managers = \App\Models\Manager::all();
   </div>
 @endsection
 @section('page-script')
-  <script>
-    $(document).ready(function () {
-      $("select").select2();
-    });
-  </script>
+
   <script>
 
     var taken_loans = '';
@@ -1192,6 +1188,7 @@ $managers = \App\Models\Manager::all();
     $('.btn-dps-info').on('click', function (e) {
       var account_no = $("#account_no option:selected").val();
       var date = $("#date").val();
+
       total_interest = 0;
       $("#info").html("");
       $(".savings-info-list").empty();

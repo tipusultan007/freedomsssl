@@ -14,6 +14,7 @@ class DpsLoanInterest extends Model
         'account_no',
         'installments',
         'dps_installment_id',
+        'dps_complete_id',
         'interest',
         'total',
         'month',

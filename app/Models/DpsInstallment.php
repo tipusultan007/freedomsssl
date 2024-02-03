@@ -7,12 +7,14 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class DpsInstallment extends Model
 {
   use HasFactory;
   use Searchable;
-
+  use LogsActivity;
   protected $fillable = [
     'account_no',
     'user_id',
@@ -144,5 +146,49 @@ class DpsInstallment extends Model
         ]);
       }
     });*/
+  }
+
+  public function getActivitylogOptions(): LogOptions
+  {
+    return LogOptions::defaults()->logAll();
+  }
+  public function getDescriptionForEvent(string $eventName): string
+  {
+    // Define custom property names based on the event
+    $customPropertyNames = [
+      'account_no' => 'হিসাব নং',
+      'loan_installment' => 'ঋন ফেরত',
+      'dps_amount' => 'সঞ্চয় জমা',
+      'date' => 'তারিখ',
+    ];
+
+    // Get the original description
+    $description = "";
+
+    switch ($eventName) {
+      case 'created':
+        $description = "মাসিক সঞ্চয়/ঋণ আদায় নতুন এন্ট্রি করা হয়েছে";
+        break;
+      case 'updated':
+        $description = "মাসিক সঞ্চয়/ঋণ এন্ট্রি আপডেট করা হয়েছে";
+        break;
+      case 'deleted':
+        $description = "মাসিক সঞ্চয়/ঋণ থেকে এন্ট্রি ডিলেট করা হয়েছে";
+        break;
+      default:
+        $description = "মাসিক সঞ্চয়/ঋণ {$eventName}";
+    }
+
+    // Add custom property names to the description
+    foreach ($customPropertyNames as $property => $propertyName) {
+
+      $value = match ($property) {
+        'date' => date('d/m/Y', strtotime($this->$property)),
+        default => $this->$property ?? null,
+      };
+
+      $description .= " | {$propertyName}: {$value}";
+    }
+    return $description;
   }
 }

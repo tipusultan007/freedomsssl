@@ -76,7 +76,18 @@ class DpsComplete extends Model
     });
 
     static::updated(function ($dpsComplete) {
-      $total = $dpsComplete->withdraw + $dpsComplete->profit;
+      $cashout = $dpsComplete->withdraw + $dpsComplete->profit;
+      $cashIn = $dpsComplete->loan_payment + $dpsComplete->interest - $dpsComplete->grace;
+      $total = 0;
+      $type = '';
+      if ($cashout>$cashIn)
+      {
+        $total = $cashout - $cashIn;
+        $type = 'cashout';
+      }else{
+        $total = $cashIn - $cashout;
+        $type = 'cashin';
+      }
       $transaction = Transaction::where('transactionable_id', $dpsComplete->id)
         ->where('transactionable_type', DpsComplete::class)
         ->first();
@@ -84,6 +95,7 @@ class DpsComplete extends Model
       if ($transaction) {
         $transaction->update([
           'amount' => $total,
+          'type' => $type,
           'manager_id' => $dpsComplete->manager_id,
           'date' => $dpsComplete->date
         ]);

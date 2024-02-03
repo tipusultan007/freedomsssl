@@ -50,6 +50,10 @@ class SpecialDps extends Model
   {
     return $this->belongsTo(User::class);
   }
+public function loan()
+  {
+    return $this->hasOne(SpecialDpsLoan::class,'account_no','account_no');
+  }
 
   public function installments()
   {
@@ -117,5 +121,10 @@ class SpecialDps extends Model
     static::deleting(function ($dps) {
       $dps->transactions()->delete();
     });
+  }
+
+  public function dpsCompletes()
+  {
+    return $this->hasMany(SpecialDpsComplete::class);
   }
 }

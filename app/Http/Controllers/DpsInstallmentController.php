@@ -1081,4 +1081,5 @@ class DpsInstallmentController extends Controller
     $installment = DpsInstallment::with('user')->find($id);
     return response()->json($installment);
   }
+
 }

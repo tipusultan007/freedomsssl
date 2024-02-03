@@ -21,6 +21,7 @@ class SpecialLoanInterest extends Model
         'date',
         'status',
         'is_completed',
+        'special_dps_complete_id',
 
     ];
 

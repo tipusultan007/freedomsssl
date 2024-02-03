@@ -11,16 +11,23 @@
 <script src="{{asset('assets/jquery-ui.min.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/select2/select2.js')}}"></script>
+<script src="{{asset('assets/vendor/libs/flatpickr/flatpickr.js')}}"></script>
 @yield('vendor-script')
 <!-- END: Page Vendor JS-->
 <!-- BEGIN: Theme JS-->
 <script src="{{ asset(mix('assets/js/main.js')) }}"></script>
 <script>
-  $(".datepicker").datepicker({
+  /*$(".datepicker").datepicker({
     changeMonth: true,
     changeYear: true,
     dateFormat: "yy-mm-dd"
-  });
+  });*/
+  $(".datepicker").flatpickr({
+    altInput: true,
+    allowInput: true,
+    altFormat: "d-m-Y",
+    dateFormat: "Y-m-d",
+  })
   $(".select2").select2();
   $('.select2').each(function() {
     $(this).select2({ dropdownParent: $(this).parent()});

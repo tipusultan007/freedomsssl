@@ -16,6 +16,7 @@ use App\Models\FdrComplete;
 use App\Models\FdrDeposit;
 use App\Models\FdrProfit;
 use App\Models\FdrWithdraw;
+use App\Models\Nominees;
 use App\Models\ProfitCollection;
 use App\Models\SavingsCollection;
 use App\Models\SpecialDps;
@@ -33,21 +34,27 @@ class ImportController extends Controller
 {
     public function dpsInstallment()
     {
-      $data = [];
-      /*$uniqueInstallments = DpsInstallment::groupBy(['account_no','date'])
-        ->select('trx_id', \DB::raw('MAX(id) as max_id'),\DB::raw('COUNT(id) as installments'))
-        ->get();*/
-      $installments = DpsInstallment::groupBy('account_no', 'date')
-        ->select('account_no', 'date', \DB::raw('MAX(id) as max_id'), \DB::raw('COUNT(id) as installments'))
-        ->get();
-      foreach ($installments as $installment) {
-        $ins = DpsInstallment::find($installment->max_id);
-        if ($ins->dps_amount>0) {
-          $ins->dps_installments = $installment->installments;
-        }else{
-          $ins->loan_installments = $installment->installments;
+      $nominees = Nominees::all();
+      foreach ($nominees as $nominee) {
+        $expNum = explode('-', $nominee->account_no);
+        if (count($expNum) == 2) {
+          switch ($expNum[0]){
+            case 'DS':
+              $nominee->account_no = 'DS' . str_pad($expNum[1], 4, '0', STR_PAD_LEFT);
+              $nominee->save();
+              break;
+            case 'DPS':
+              $nominee->account_no = 'DPS' . str_pad($expNum[1], 4, '0', STR_PAD_LEFT);
+              $nominee->save();
+              break;
+            case 'FDR':
+              $nominee->account_no = 'FDR' . str_pad($expNum[1], 4, '0', STR_PAD_LEFT);
+              $nominee->save();
+              break;
+            default:
+          }
+
         }
-        $ins->save();
       }
 
 

@@ -555,7 +555,6 @@
         });
       });
     }
-
     $('.datatables-basic tbody').on('click', '.item-reset', function () {
       var id = $(this).data("id");
       var token = $("meta[name='csrf-token']").attr("content");

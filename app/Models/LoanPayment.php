@@ -17,6 +17,7 @@ class LoanPayment extends Model
         'balance',
         'date',
         'is_completed',
+        'dps_complete_id',
     ];
 
   public function dpsInstallment()
