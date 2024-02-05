@@ -31,16 +31,16 @@
             <div class="col-12">
                 <div class="card">
                     <table class="datatables-basic table table-sm">
-                        <thead>
+                        <thead class="table-dark">
                         <tr>
-                            <th>Name</th>
-                            <th>A/C</th>
-                            <th>Before</th>
-                            <th>Loan</th>
-                            <th>Interest</th>
-                            <th>Remain</th>
-                            <th>Commencement</th>
-                            <th>Action</th>
+                            <th class="fw-bolder">নাম</th>
+                            <th class="fw-bolder">হিসাব নং</th>
+                            <th class="fw-bolder">পুর্বের ব্যালেন্স</th>
+                            <th class="fw-bolder">ঋনের পরিমান</th>
+                            <th class="fw-bolder">সুদের হার</th>
+                            <th class="fw-bolder">বর্তমান ব্যালেন্স</th>
+                            <th class="fw-bolder">তারিখ</th>
+                            <th class="fw-bolder">#</th>
                         </tr>
                         </thead>
                     </table>
@@ -220,14 +220,13 @@
                                 '</a>' +
                                 '<div class="dropdown-menu dropdown-menu-end">' +
                                 '<a href="{{url('taken-loans')}}/'+full['id']+'" class="dropdown-item">' +
-                                'Details</a>' +
-                                '<a href="javascript:;" data-id="'+full['id']+'" class="dropdown-item delete-record">' +
-                                'Delete</a>' +
+                                'দেখুন</a>' +
+                                '<a href="{{url('takens-loans')}}/'+full['id']+'/edit" class="dropdown-item">' +
+                                'এডিট</a>' +
+                                '<a href="javascript:;" data-id="'+full['id']+'" class="dropdown-item text-danger delete-record">' +
+                                'ডিলেট</a>' +
                                 '</div>' +
-                                '</div>' +
-                                '<a href="javascript:;" class="item-edit">' +
-                                '<i class="ti ti-edit"></i>' +
-                                '</a>'
+                                '</div>'
                             );
                         }
                     }

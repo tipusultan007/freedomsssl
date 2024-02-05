@@ -107,7 +107,7 @@ class SpecialDpsLoanController extends Controller
         $nestedData['total_paid'] = $post->total_paid;
         $nestedData['remain_loan'] = $post->remain_loan;
         $nestedData['phone'] = $post->user->phone1 ?? '';
-        $nestedData['photo'] = $post->user->image;
+        $nestedData['image'] = $post->user->image;
         $nestedData['status'] = $post->status;
         $data[] = $nestedData;
 

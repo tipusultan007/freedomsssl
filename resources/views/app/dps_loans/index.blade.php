@@ -179,7 +179,7 @@
                         if ($image != null || $image != "") {
                             // For Avatar image
                             var $output =
-                                '<img src="/images/' + $image + '" alt="Avatar" height="32" width="32">';
+                                '<img src="{{ asset('storage/images/profile') }}/' + $image + '" alt="Avatar" height="32" width="32">';
                         } else {
                             // For Avatar badge
                             var stateNum = Math.floor(Math.random() * 6) + 1;

@@ -658,7 +658,7 @@ $managers = \App\Models\Manager::all();
 
     }
 
-    function modalData() {
+    /*function modalData() {
       let account_no = $("#account_no option:selected").val();
       let dps_amount = $("#dps_amount").val();
       let dps_installments = $("#dps_installments").val();
@@ -683,9 +683,7 @@ $managers = \App\Models\Manager::all();
       $(".table-collection-info").empty();
       var total = 0;
 
-      if (dps_amount != 0) {
-        total += parseInt(dps_amount);
-        $(".table-collection-info").append(`
+      $(".table-collection-info").append(`
 
 <tr>
                     <th class="py-1">নাম</th>
@@ -703,6 +701,11 @@ $managers = \App\Models\Manager::all();
                     <th class="py-1">রিসিপ্ট নং</th>
                     <td>${receipt_no}</td>
                 </tr>
+            `);
+
+      if (dps_amount > 0) {
+        total += parseInt(dps_amount);
+        $(".table-collection-info").append(`
            <tr>
                     <th class="py-1">জমা</th>
                     <td class="text-end">${dps_amount}</td>
@@ -710,7 +713,7 @@ $managers = \App\Models\Manager::all();
             `);
       }
 
-      if (late_fee != "") {
+      if (late_fee > 0) {
         total += parseInt(late_fee);
         $(".table-collection-info").append(`
            <tr>
@@ -719,7 +722,7 @@ $managers = \App\Models\Manager::all();
                 </tr>
             `);
       }
-      if (other_fee != "") {
+      if (other_fee > 0) {
         total += parseInt(other_fee);
         $(".table-collection-info").append(`
            <tr>
@@ -729,7 +732,7 @@ $managers = \App\Models\Manager::all();
             `);
       }
 
-      if (due != "") {
+      if (due > 0) {
         total -= parseInt(due);
         $(".table-collection-info").append(`
            <tr>
@@ -738,7 +741,7 @@ $managers = \App\Models\Manager::all();
                 </tr>
             `);
       }
-      if (due_return != "") {
+      if (due_return > 0) {
         total += parseInt(due_return);
         $(".table-collection-info").append(`
            <tr>
@@ -748,7 +751,7 @@ $managers = \App\Models\Manager::all();
             `);
       }
 
-      if (advance != "") {
+      if (advance > 0) {
         total += parseInt(advance);
         $(".table-collection-info").append(`
            <tr>
@@ -757,7 +760,7 @@ $managers = \App\Models\Manager::all();
                 </tr>
             `);
       }
-      if (advance_return != "") {
+      if (advance_return > 0) {
         total -= parseInt(advance_return);
         $(".table-collection-info").append(`
            <tr>
@@ -768,7 +771,7 @@ $managers = \App\Models\Manager::all();
       }
 
 
-      if (grace != "") {
+      if (grace > 0) {
         total -= parseInt(grace);
         $(".table-collection-info").append(`
            <tr>
@@ -778,7 +781,7 @@ $managers = \App\Models\Manager::all();
             `);
       }
 
-      if (loan_installment != "") {
+      if (loan_installment > 0) {
         total += parseInt(loan_installment);
         $(".table-collection-info").append(`
            <tr>
@@ -787,7 +790,7 @@ $managers = \App\Models\Manager::all();
                 </tr>
             `);
       }
-      if (interest != "") {
+      if (interest > 0) {
         total += parseInt(interest);
         $(".table-collection-info").append(`
            <tr>
@@ -797,7 +800,7 @@ $managers = \App\Models\Manager::all();
             `);
       }
 
-      if (due_interest != "") {
+      if (due_interest > 0) {
         total += parseInt(due_interest);
         $(".table-collection-info").append(`
            <tr>
@@ -807,7 +810,7 @@ $managers = \App\Models\Manager::all();
             `);
       }
 
-      if (loan_late_fee != "") {
+      if (loan_late_fee > 0) {
         total += parseInt(loan_late_fee);
         $(".table-collection-info").append(`
            <tr>
@@ -817,7 +820,7 @@ $managers = \App\Models\Manager::all();
             `);
       }
 
-      if (loan_other_fee != "") {
+      if (loan_other_fee > 0) {
         total += parseInt(loan_other_fee);
         $(".table-collection-info").append(`
            <tr>
@@ -826,7 +829,7 @@ $managers = \App\Models\Manager::all();
                 </tr>
             `);
       }
-      if (loan_grace != "") {
+      if (loan_grace > 0) {
         total -= parseInt(loan_grace);
         $(".table-collection-info").append(`
            <tr>
@@ -847,7 +850,65 @@ $managers = \App\Models\Manager::all();
             `);
 
       $("#modalCollection").modal("show");
+    }*/
+    function modalData() {
+      const acc_holder = account_holder;
+      const date = $("#date").val();
+      const receipt_no = $("#receipt_no").val();
+
+      $(".table-collection-info").empty();
+      let total = 0;
+
+      const appendTableRow = (label, value, divider= false) => {
+        $(".table-collection-info").append(`
+            <tr>
+                <th class="py-1 ${ divider? 'border-bottom border-dashed' : ''}">${label}</th>
+                <td class="text-end ${ divider? 'border-bottom border-dashed' : ''}">${value}</td>
+            </tr>
+        `);
+      };
+
+      appendTableRow("নাম", acc_holder);
+      appendTableRow("হিসাব নং", $("#account_no option:selected").val());
+      appendTableRow("তারিখ", date);
+      appendTableRow("রিসিপ্ট নং", receipt_no, true);
+
+      const addToTotal = (label, value) => {
+        if ( value != 0) {
+          total += parseInt(value);
+          appendTableRow(label, value);
+        }
+      };
+
+      addToTotal("জমা", $("#dps_amount").val());
+      addToTotal("বিলম্ব ফি", $("#late_fee").val());
+      addToTotal("অন্যান্য ফি", $("#other_fee").val());
+      addToTotal("বকেয়া", -$("#due").val());
+      addToTotal("বকেয়া ফেরত", $("#due_return").val());
+      addToTotal("অগ্রিম", $("#advance").val());
+      addToTotal("অগ্রিম সমন্বয়", -$("#advance_return").val());
+      addToTotal("ছাড়", -$("#grace").val());
+      addToTotal("ঋণ ফেরত", $("#loan_installment").val());
+      addToTotal("ঋণের লভ্যাংশ", $("#interest").val());
+      addToTotal("বকেয়া লভ্যাংশ", $("#due_interest").val());
+      addToTotal("ঋণের বিলম্ব ফি", $("#loan_late_fee").val());
+      addToTotal("ঋণের অন্যান্য ফি", $("#loan_other_fee").val());
+      addToTotal("ঋণের ছাড়", -$("#loan_grace").val());
+
+      $("#total").val(total);
+
+      $(".table-collection-info").append(`
+        <tfoot>
+            <tr>
+                <td class="fw-bolder text-end">সর্বমোট</td>
+                <td class="text-dark total fw-bolder text-end p-0">${total}</td>
+            </tr>
+        </tfoot>
+    `);
+
+      $("#modalCollection").modal("show");
     }
+
 
 
     $(".btn-confirm").on("click", function () {
@@ -1189,6 +1250,14 @@ $managers = \App\Models\Manager::all();
       var account_no = $("#account_no option:selected").val();
       var date = $("#date").val();
 
+      $("#date2").flatpickr({
+        altInput: true,
+        allowInput: true,
+        altFormat: "d-m-Y",
+        dateFormat: "Y-m-d",
+        defaultDate: date
+      });
+
       total_interest = 0;
       $("#info").html("");
       $(".savings-info-list").empty();
@@ -1202,9 +1271,9 @@ $managers = \App\Models\Manager::all();
         dataType: "JSON",
         data: {account: account_no, date: date},
         success: function (data) {
+          //console.log(data);
           $(".loan-list").html('');
           total_interest = 0;
-          //console.log(data);
           $("#info").html(`
           <div id="savings-info">
         <div class="info-container">
@@ -1319,7 +1388,7 @@ $managers = \App\Models\Manager::all();
 </tr>
 <tr class="font-small-2">
                                         <td class="fw-bolder ">বকেয়া</td><td>:</td>
-                                        <td class="total_due px-1" colspan="2">${data.due}</td>
+                                        <td class="total_due px-1" colspan="2">${data.user.due}</td>
                                     </tr>
 </tr>
 <tr class="font-small-2">
@@ -1369,7 +1438,7 @@ $managers = \App\Models\Manager::all();
           if (data.loan != "") {
             $("#loan-info").show();
             $(".loan-balance").show();
-            console.log(data.loan)
+            //console.log(data.loan)
             var loan = data.loan;
             $(".loan-balance h4").text(loan.remain_loan);
           } else {
@@ -1526,7 +1595,7 @@ $managers = \App\Models\Manager::all();
         }
       })
     })
-    $(document).on("click", ".item-details", function () {
+    /*$(document).on("click", ".item-details", function () {
       var id = $(this).data('id');
       $.ajax({
         url: "{{ url('getDpsCollectionData') }}/"+id,
@@ -1727,7 +1796,80 @@ $managers = \App\Models\Manager::all();
           $("#modalCollectionDetails").modal("show");
         }
       })
-    })
+    })*/
+    $(document).on("click", ".item-details", function () {
+      var id = $(this).data('id');
+      $.ajax({
+        url: "{{ url('getDpsCollectionData') }}/"+id,
+        dataType: "JSON",
+        success: function (data) {
+          let dpsInstallment = data.dpsInstallment;
+          let acc_holder = dpsInstallment.user.name;
+          let account_no = dpsInstallment.account_no;
+          let date = dpsInstallment.date;
+          let receipt_no = dpsInstallment.receipt_no;
+
+          $(".table-collection-details").empty();
+          var total = 0;
+
+          const appendRowHeader = (label, value, divider= false) => {
+              $(".table-collection-details").append(`
+                        <tr>
+                            <th class="py-1 ${ divider? 'border-bottom border-dashed' : ''}">${label}</th>
+                            <td class="text-end ${ divider? 'border-bottom border-dashed' : ''}">${value}</td>
+                        </tr>
+                    `);
+
+          };
+
+          const appendRow = (label, value, isNegative = false, isDanger = false) => {
+            if (value >0) {
+              const numericValue = parseInt(value);
+              total += isNegative ? -numericValue : numericValue;
+              $(".table-collection-details").append(`
+                        <tr>
+                            <th class="py-1">${label}</th>
+                            <td class="text-end ${isDanger ? 'text-danger' : ''}">${value}</td>
+                        </tr>
+                    `);
+            }
+          };
+
+          appendRowHeader("নাম", acc_holder);
+          appendRowHeader("হিসাব নং", account_no);
+          appendRowHeader("তারিখ", date);
+          appendRowHeader("রিসিপ্ট নং", receipt_no, true);
+
+          appendRow("জমা", dpsInstallment.dps_amount);
+          appendRow("বিলম্ব ফি", dpsInstallment.late_fee);
+          appendRow("অন্যান্য ফি", dpsInstallment.other_fee);
+          appendRow("বকেয়া", dpsInstallment.due, true);
+          appendRow("বকেয়া ফেরত", dpsInstallment.due_return);
+          appendRow("অগ্রিম", dpsInstallment.advance);
+          appendRow("অগ্রিম সমন্বয়", dpsInstallment.advance_return, true, true);
+          appendRow("ছাড়", dpsInstallment.grace, true, true);
+          appendRow("ঋণ ফেরত", dpsInstallment.loan_installment);
+          appendRow("ঋণের লভ্যাংশ", dpsInstallment.interest);
+          appendRow("বকেয়া লভ্যাংশ", dpsInstallment.due_interest);
+          appendRow("ঋণের বিলম্ব ফি", dpsInstallment.loan_late_fee);
+          appendRow("ঋণের অন্যান্য ফি", dpsInstallment.loan_other_fee);
+          appendRow("ঋণের ছাড়", dpsInstallment.loan_grace, true, true);
+
+          $("#total").val(total);
+          $(".table-collection-details").append(`
+                <tfoot>
+                    <tr>
+                        <td class="fw-bolder text-end">সর্বমোট</td>
+                        <td class="text-dark total fw-bolder text-end p-0">${total}</td>
+                    </tr>
+                </tfoot>
+            `);
+
+          $("#modalCollectionDetails").modal("show");
+        }
+      });
+    });
+
     $(document).on("click", ".edit-dps", function () {
       var id = $(this).attr('data-id');
       $("#editDpsInstallmentForm").trigger("reset");

@@ -28,75 +28,7 @@ class TakenLoanController extends Controller
      */
     public function index(Request $request)
     {
-        //$this->authorize('view-any', TakenLoan::class);
-
-        $search = $request->get('search', '');
-
-        $takenLoans = TakenLoan::search($search)
-            ->latest()
-            ->paginate(5)
-            ->withQueryString();
-       /* $takenLoans = TakenLoan::all();
-        foreach ($takenLoans as  $loan)
-        {
-            $dpsLoan = DpsLoan::where('account_no',$loan->account_no)->first();
-            $dpsLoan->loan_amount += $loan->loan_amount;
-            $dpsLoan->remain_loan += $loan->loan_amount;
-            $dpsLoan->save();
-        }*/
-        /*$installments = DpsInstallment::where('loan_installment','>',0)->orWhere('interest','>',0)->get();
-        $data = [];
-        foreach ($installments as $row)
-        {
-            $loan = TakenLoan::where('account_no',$row->account_no)->count();
-            if ($loan>1)
-            {
-                $row->delete();
-            }
-        }*/
-        //dd($data);
-        /*$loans = TakenLoan::orderBy('date','asc')->get();
-        foreach ($loans as $loan)
-        {
-            $loan->trx_id = Str::uuid();
-            $loan->save();
-            $data = $loan;
-            $data['trx_type'] = 'cash';
-            $data['name'] = $loan->user->name;
-            DpsLoanAccount::create($data);
-            $cashout = Cashout::create([
-                'cashout_category_id' => 3,
-                'account_no'          => $loan->account_no,
-                'dps_loan_id'         => $loan->id,
-                'amount'              => $loan->loan_amount,
-                'date'                => $loan->date,
-                'created_by'          => $loan->created_by,
-                'user_id'             => $loan->user_id,
-                'trx_id'             => $loan->trx_id,
-            ]);
-        }*/
-      /*  $installments = TakenLoan::all();
-        foreach ($installments as $installment)
-        {
-            $expNum = explode(' ', $installment->account_no);
-            if (count($expNum)>0) {
-                $trim = str_replace(' ', '', $installment->account_no);
-                //$installment->account_no = $trim;
-                //$installment->save();
-
-                $expNum = explode('-', $trim);
-                $s = str_pad($expNum[1], 4, "0", STR_PAD_LEFT);
-                $installment->account_no = 'DPS'.$s;
-                $installment->save();
-            }else{
-                $expNum = explode('-', $installment->account_no);
-                $s = str_pad($expNum[1], 4, "0", STR_PAD_LEFT);
-                $installment->account_no = 'DPS'.$s;
-                $installment->save();
-            }
-        }*/
-
-        return view('app.taken_loans.index', compact('takenLoans', 'search'));
+        return view('app.taken_loans.index');
     }
 
     public function dataTakenLoans(Request $request)
@@ -163,15 +95,19 @@ class TakenLoanController extends Controller
                 $show = route('taken-loans.show', $post->id);
                 $edit = route('taken-loans.edit', $post->id);
 
-                //$loan = DpsLoan::find($post->dps_loan_id);
-                $date                     = new Carbon($post->date);
-                $commencement             = new Carbon($post->commencement);
+                $loanDate = date('d/m/Y',strtotime($post->date));
+                $loanCommencementDate = date('d/m/Y',strtotime($post->commencement));
+
+                $date = "<span class='text-danger'>ঋণ প্রদানঃ {$loanDate} </span><br>";
+                $date .= "<span class='text-success'>হিসাব শুরুঃ {$loanCommencementDate} </span>";
+
+
                 $nestedData['id']         = $post->id;
                 $nestedData['name']       = $post->user->name;
                 $nestedData['history']    =  $post->before_loan??'-';
                 $nestedData['account_no'] = $post->account_no;
-                $nestedData['date']       = date('d-m-Y',strtotime($post->date));
-                $nestedData['commencement'] = date('d-m-Y',strtotime($post->commencement));
+                $nestedData['date']       = $date;
+                //$nestedData['commencement'] = date('d-m-Y',strtotime($post->commencement));
                 $nestedData['loan_amount'] = $post->loan_amount;
                 //$nestedData['interest'] = $post->interest1.'%';
                 if ($post->interest2 > 0) {

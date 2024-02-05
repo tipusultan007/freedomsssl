@@ -16,6 +16,7 @@
     "laravel/tinker": "^2.8",
     "laravel/ui": "^4.3",
     "nesbot/carbon": "^2.72",
+    "qcod/laravel-app-settings": "^1.6",
     "spatie/laravel-activitylog": "*",
     "spatie/laravel-permission": "^6.3"
   },

@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'Given Loan')
+@section('title', $takenLoan->account_no.' - মাসিক (DPS) ঋণ')
 
 @section('vendor-style')
   <link rel="stylesheet" href="{{asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css')}}">
@@ -39,7 +39,7 @@
                             <div class="d-flex align-items-center flex-column">
                                 <img
                                     class="img-fluid rounded mt-3 mb-2"
-                                    src="/images/{{ $takenLoan->user->image??'' }}"
+                                    src="{{ asset('storage/images/profile/'.$takenLoan->user->image) }}"
                                     height="110"
                                     width="110"
                                     alt="User avatar"

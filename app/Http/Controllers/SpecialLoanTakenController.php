@@ -48,10 +48,10 @@ class SpecialLoanTakenController extends Controller
 
   public function dataSpecialTakenLoans(Request $request)
   {
-    if (!empty($request->dps_loan_id)) {
-      $totalData = SpecialLoanTaken::where('special_dps_loan_id', $request->dps_loan_id)->count();
+    if (!empty($request->special_dps_loan_id)) {
+      $totalData = SpecialLoanTaken::where('dps_loan_id', $request->special_dps_loan_id)->count();
     } elseif (!empty($request->account_no)) {
-      $totalData = SpecialLoanTaken::where('special_dps_loan_id', $request->account_no)->count();
+      $totalData = SpecialLoanTaken::where('account_no', $request->account_no)->count();
     } else {
       $totalData = SpecialLoanTaken::count();
     }
@@ -63,67 +63,64 @@ class SpecialLoanTakenController extends Controller
     $start = $request->input('start');
 
     if (empty($request->input('search.value'))) {
-      if (!empty($request->dps_loan_id)) {
-        $posts = SpecialLoanTaken::leftJoin('users', 'users.id', '=', 'special_loan_takens.user_id')
-          ->leftJoin('users as c', 'c.id', '=', 'special_loan_takens.created_by')
-          ->select('special_loan_takens.*', 'users.name as name', 'users.phone1', 'users.profile_photo_path', 'c.name as createdBy')
+      if (!empty($request->special_dps_loan_id)) {
+        $posts = SpecialLoanTaken::with('user','manager')
+          ->where('special_dps_loan_id',$request->dps_loan_id)
           ->offset($start)
           ->limit($limit)
-          ->orderBy('special_loan_takens.account_no', 'asc')
-          ->where('special_loan_takens.special_dps_loan_id', $request->dps_loan_id)
+          ->orderBy('date', 'desc')
           ->get();
       } elseif (!empty($request->account_no)) {
-        $posts = SpecialLoanTaken::leftJoin('users', 'users.id', '=', 'special_loan_takens.user_id')
-          ->leftJoin('users as c', 'c.id', '=', 'special_loan_takens.created_by')
-          ->select('special_loan_takens.*', 'users.name as name', 'users.phone1', 'users.profile_photo_path', 'c.name as createdBy')
+        $posts = SpecialLoanTaken::with('user','manager')
+          ->where('account_no',$request->account_no)
           ->offset($start)
           ->limit($limit)
-          ->orderBy('special_loan_takens.id', 'asc')
-          ->where('special_loan_takens.account_no', $request->account_no)
+          ->orderBy('date', 'desc')
           ->get();
       } else {
-        $posts = SpecialLoanTaken::leftJoin('users', 'users.id', '=', 'special_loan_takens.user_id')
-          ->leftJoin('users as c', 'c.id', '=', 'special_loan_takens.created_by')
-          ->select('special_loan_takens.*', 'users.name as name', 'users.phone1', 'users.profile_photo_path', 'c.name as createdBy')
-          ->offset($start)
+        $posts = SpecialLoanTaken::with('user','manager')->offset($start)
           ->limit($limit)
-          ->orderBy('special_loan_takens.account_no', 'asc')
+          ->orderBy('date', 'desc')
           ->get();
       }
     } else {
       $search = $request->input('search.value');
 
-      $posts = SpecialLoanTaken::leftJoin('users', 'users.id', '=', 'special_loan_takens.user_id')
-        ->leftJoin('users as c', 'c.id', '=', 'special_loan_takens.created_by')
-        ->select('special_loan_takens.*', 'users.name as name', 'users.phone1', 'users.profile_photo_path', 'c.name as createdBy')
-        ->where('special_loan_takens.account_no', 'LIKE', "%{$search}%")
-        ->where('users.name', 'LIKE', "%{$search}%")
+      $posts = SpecialLoanTaken::with('user','manager')
+        ->where('account_no', 'LIKE', "%{$search}%")
+        ->orWhereHas('users', function ($query) use ($search){
+          $query->where('name','LIKE', "%{$search}%");
+        })
         ->offset($start)
         ->limit($limit)
-        ->orderBy('special_loan_takens.account_no', 'asc')
+        ->orderBy('date', 'desc')
         ->get();
 
-      $totalFiltered = SpecialLoanTaken::leftJoin('users', 'users.id', '=', 'special_loan_takens.user_id')
-        ->leftJoin('users as c', 'c.id', '=', 'special_loan_takens.created_by')
-        ->where('special_loan_takens.account_no', 'LIKE', "%{$search}%")
-        ->where('users.name', 'LIKE', "%{$search}%")
+      $totalFiltered = SpecialLoanTaken::with('user')
+        ->where('account_no', 'LIKE', "%{$search}%")
+        ->orWhereHas('users', function ($query) use ($search){
+          $query->where('name','LIKE', "%{$search}%");
+        })
         ->count();
     }
 
     $data = array();
     if (!empty($posts)) {
       foreach ($posts as $post) {
-        $show = route('taken-loans.show', $post->id);
-        $edit = route('taken-loans.edit', $post->id);
 
-        $date                     = new Carbon($post->date);
-        $commencement             = new Carbon($post->commencement);
+        $loanDate = date('d/m/Y',strtotime($post->date));
+        $loanCommencementDate = date('d/m/Y',strtotime($post->commencement));
+
+        $date = "<span class='text-danger'>ঋণ প্রদানঃ {$loanDate} </span><br>";
+        $date .= "<span class='text-success'>হিসাব শুরুঃ {$loanCommencementDate} </span>";
+
+
         $nestedData['id']         = $post->id;
-        $nestedData['name']       = $post->name;
-        $nestedData['history']    = $post->before_loan;
+        $nestedData['name']       = $post->user->name;
+        $nestedData['history']    =  $post->before_loan??'-';
         $nestedData['account_no'] = $post->account_no;
-        $nestedData['date']       = $date->format('d/m/Y');
-        //$nestedData['commencement'] = $post->commencement;
+        $nestedData['date']       = $date;
+        //$nestedData['commencement'] = date('d-m-Y',strtotime($post->commencement));
         $nestedData['loan_amount'] = $post->loan_amount;
         //$nestedData['interest'] = $post->interest1.'%';
         if ($post->interest2 > 0) {
@@ -134,8 +131,8 @@ class SpecialLoanTakenController extends Controller
         $nestedData['upto_amount'] = $post->upto_amount ?? 'N/A';
         $nestedData['remain']      = $post->remain;
         $nestedData['phone']       = $post->phone1;
-        $nestedData['createdBy']   = $post->createdBy;
-        $nestedData['photo']       = $post->profile_photo_path;
+        $nestedData['createdBy']   = $post->manager->name;
+        $nestedData['photo']       = $post->image;
         $data[]                    = $nestedData;
 
       }

@@ -414,26 +414,32 @@ class SpecialInstallmentController extends Controller
     }
 
     if ($installment->due > 0) {
-      $due = Due::firstOrCreate(
-        ['account_no' => $installment->account_no],
-        ['user_id' => $installment->user_id],
-      );
-      $due->remain += $installment->due;
-      $due->status = 'unpaid';
-      $due->save();
-      //DueAccount::create($data);
+      $due = Due::create([
+        'account_no' => $installment->account_no,
+        'user_id' => $installment->user_id,
+        'due' => $installment->due,
+        'return' => 0,
+        'balance' => $installment->due + $installment->user->due,
+        'date' => $installment->date,
+        'special_installment_id' => $installment->id
+      ]);
+
+      $installment->user->due += $installment->due;
+      $installment->user->save();
     }
     if ($installment->due_return > 0) {
-      $due = Due::where('account_no', $installment->account_no)->first();
-      $due->remain -= $installment->due_return;
-      if ($due->remain == 0) {
-        $due->status = 'paid';
-      } else {
-        $due->status = 'unpaid';
-      }
-      $due->save();
+      $due = Due::create([
+        'account_no' => $installment->account_no,
+        'user_id' => $installment->user_id,
+        'due' => 0,
+        'return' => $installment->due_return,
+        'balance' =>  $installment->user->due - $installment->due_return,
+        'date' => $installment->date,
+        'special_installment_id' => $installment->id
+      ]);
 
-      //DueReturnAccount::create($data);
+      $installment->user->due -= $installment->due_return;
+      $installment->user->save();
     }
 
     //$total_extra = $installment->late_fee + $installment->other_fee + $installment->loan_late_fee + $installment->loan_other_fee;

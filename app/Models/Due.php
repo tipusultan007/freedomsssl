@@ -16,6 +16,7 @@ class Due extends Model
         'return',
         'balance',
         'dps_installment_id',
+        'special_installment_id',
         'date'
     ];
 

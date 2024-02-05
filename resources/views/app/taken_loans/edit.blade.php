@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'ঋণ বিতরণ ফরম')
+@section('title', 'ঋণ বিতরণ ফরম আপডেট')
 
 @section('vendor-style')
   <link rel="stylesheet" href="{{asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css')}}">
@@ -25,6 +25,19 @@
 @endsection
 
 @section('content')
+  <div class="d-flex justify-content-between mb-3">
+    <nav aria-label="breadcrumb" class="d-flex align-items-center">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url('/') }}">ড্যাশবোর্ড</a>
+        </li>
+        <li class="breadcrumb-item"><a href="{{ url('taken-loans') }}">ঋনের তালিকা</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('taken-loans.show', $loan->id) }}">হিসাব নং - {{ $loan->account_no }}</a></li>
+        <li class="breadcrumb-item active">ঋণ ফরম আপডেট</li>
+      </ol>
+    </nav>
+    <a class="btn rounded-pill btn-primary waves-effect waves-light" href="{{ route('dps-loans.create') }}" target="_blank">নতুন ঋণ প্রদান</a>
+  </div>
   <div class="row">
     <div class="col-md-8">
       <form action="{{ route('taken-loans.update',$loan->id) }}" method="POST" enctype="multipart/form-data">
@@ -156,7 +169,7 @@
           <div class="user-data">
             <div class="user-avatar-section">
               <div class="d-flex align-items-center flex-column">
-                <img class="img-fluid rounded mb-2" src="http://127.0.0.1:8000/images/user.png" height="110" width="110" alt="User avatar">
+                <img class="img-fluid rounded user-avatar mb-2" src="{{ asset('storage/images/profile/'.$loan->user->image) }}" height="110" width="110" alt="User avatar">
                 <div class="user-info text-center">
                   <h4>{{ $user->name }}</h4>
                  মোবাইল নং- <span class="text-success">{{ $user->phone1 }}</span>
@@ -226,7 +239,7 @@
                 <div class="user-avatar-section">
                   <div class="d-flex align-items-center flex-column">
                     @if($guarantor->image != "")
-                    <img class="img-fluid rounded mt-3 mb-2" src="/images/{{ $guarantor->image }}" height="110" width="110" alt="User avatar">
+                    <img class="img-fluid rounded mt-3 mb-2" src="{{ asset('storage/images/profile/'.$guarantor->image) }}" height="110" width="110" alt="User avatar">
                     @endif
                     <div class="user-info text-center mb-2">
                       <h4>{{ $guarantor->user->name??"" }}</h4>

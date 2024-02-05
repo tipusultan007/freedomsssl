@@ -182,7 +182,7 @@ class DpsInstallmentController extends Controller
 
   /**
    * @param \App\Http\Requests\DpsInstallmentStoreRequest $request
-   * @return \Illuminate\Http\Response
+   * @return string
    */
   public function store(Request $request)
   {
@@ -450,14 +450,14 @@ class DpsInstallmentController extends Controller
     $installment->save();
 
     if ($installment->due > 0) {
-
       $due = Due::create([
         'account_no' => $installment->account_no,
         'user_id' => $installment->user_id,
         'due' => $installment->due,
         'return' => 0,
         'balance' => $installment->due + $installment->user->due,
-        'date' => $installment->date
+        'date' => $installment->date,
+        'dps_installment_id' => $installment->id
       ]);
 
       $installment->user->due += $installment->due;
@@ -471,13 +471,12 @@ class DpsInstallmentController extends Controller
         'due' => 0,
         'return' => $installment->due_return,
         'balance' =>  $installment->user->due - $installment->due_return,
-        'date' => $installment->date
+        'date' => $installment->date,
+        'dps_installment_id' => $installment->id
       ]);
 
       $installment->user->due -= $installment->due_return;
       $installment->user->save();
-
-
     }
 
     return "success";
@@ -814,15 +813,6 @@ class DpsInstallmentController extends Controller
       $dpsInstallment->loan_balance = $loan->remain_loan;
       $dpsInstallment->unpaid_interest = $unpaid_interest;
       $dpsInstallment->save();
-
-      $cashinTotal = 0;
-      if ($dpsLoanCollection->loan_installment > 0) {
-        $cashinTotal += $dpsLoanCollection->loan_installment;
-      }
-      if ($dpsLoanCollection->interest > 0) {
-        $cashinTotal += $dpsLoanCollection->interest;
-      }
-
     }
 
     echo "success";
@@ -979,9 +969,7 @@ class DpsInstallmentController extends Controller
         $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-' . $uid . '-0001';
       }
     } else {
-
       $nextTxNumber = 'TRX-' . $dateTime->format('jny') . '-' . $uid . '-0001';
-
     }
 
     return $nextTxNumber;

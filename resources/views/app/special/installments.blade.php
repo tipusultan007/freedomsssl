@@ -62,7 +62,7 @@
                 </div>
                 <div class="col-xl-3 col-md-6 col-12">
                   <div class="mb-1">
-                    <input type="date" id="date" class="form-control check-date flatpickr-basic"
+                    <input type="text" id="date" class="form-control check-date datepicker"
                            value="{{date('Y-m-d')}}" placeholder="DD-MM-YYYY"/>
                   </div>
                 </div>
@@ -182,7 +182,7 @@
                     <div class="col-lg-4 my-1">
                       <div class="form-group">
                         <label class="font-small-2 fw-bold" for="date">তারিখ</label>
-                        <input type="date" class="form-control flatpickr-basic" name="date"
+                        <input type="text" class="form-control datepicker" name="date"
                                value="{{ date('Y-m-d') }}" id="date2">
 
                       </div>
@@ -919,7 +919,6 @@
 @section('page-script')
   <script>
 
-    $(".select2").select2();
     var taken_loans = '';
     var total_interest = 0;
     var dps_amount = 0;
@@ -940,192 +939,59 @@
     //modalData();
 
     function modalData() {
-      let account_no = $("#account_no option:selected").val();
-      let dps_amount = $("#dps_amount").val();
-      let dps_installments = $("#dps_installments").val();
-      let receipt_no = $("#receipt_no").val();
-      let late_fee = $("#late_fee").val();
-      let other_fee = $("#other_fee").val();
-      let due = $("#due").val();
-      let due_return = $("#due_return").val();
-      let advance = $("#advance").val();
-      let advance_return = $("#advance_return").val();
-      let date = $("#date").val();
-      let dps_note = $("#dps_note").val();
-      let grace = $("#grace").val();
-      let acc_holder = account_holder;
-      let loan_installment = $("#loan_installment").val();
-      let interest = $("#interest").val();
-      let due_interest = $("#due_interest").val();
-      let loan_late_fee = $("#loan_late_fee").val();
-      let loan_other_fee = $("#loan_other_fee").val();
-      let loan_grace = $("#loan_grace").val();
+      const acc_holder = account_holder;
+      const date = $("#date").val();
+      const receipt_no = $("#receipt_no").val();
 
       $(".table-collection-info").empty();
-      var total = 0;
+      let total = 0;
 
-      if (dps_amount != 0) {
-        total += parseInt(dps_amount);
+      const appendTableRow = (label, value, divider= false) => {
         $(".table-collection-info").append(`
+            <tr>
+                <th class="py-1 ${ divider? 'border-bottom border-dashed' : ''}">${label}</th>
+                <td class="text-end ${ divider? 'border-bottom border-dashed' : ''}">${value}</td>
+            </tr>
+        `);
+      };
 
-<tr>
-                    <th class="py-1">নাম</th>
-                    <td>${acc_holder}</td>
-                </tr>
-<tr>
-                    <th class="py-1">হিসাব নং</th>
-                    <td>${account_no}</td>
-                </tr>
-<tr>
-                    <th class="py-1">তারিখ</th>
-                    <td>${date}</td>
-                </tr>
-<tr>
-                    <th class="py-1">রিসিপ্ট নং</th>
-                    <td>${receipt_no}</td>
-                </tr>
-           <tr>
-                    <th class="py-1">জমা</th>
-                    <td class="text-end">${dps_amount}</td>
-                </tr>
-            `);
-      }
+      appendTableRow("নাম", acc_holder);
+      appendTableRow("হিসাব নং", $("#account_no option:selected").val());
+      appendTableRow("তারিখ", date);
+      appendTableRow("রিসিপ্ট নং", receipt_no, true);
 
-      if (late_fee != "") {
-        total += parseInt(late_fee);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">বিলম্ব ফি</th>
-                    <td class="text-end">${late_fee}</td>
-                </tr>
-            `);
-      }
-      if (other_fee != "") {
-        total += parseInt(other_fee);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">অন্যান্য ফি</th>
-                    <td class="text-end">${other_fee}</td>
-                </tr>
-            `);
-      }
+      const addToTotal = (label, value) => {
+        if ( value != 0) {
+          total += parseInt(value);
+          appendTableRow(label, value);
+        }
+      };
 
-      if (due != "") {
-        total -= parseInt(due);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">বকেয়া</th>
-                    <td class="text-end">${due}</td>
-                </tr>
-            `);
-      }
-      if (due_return != "") {
-        total += parseInt(due_return);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">বকেয়া ফেরত</th>
-                    <td class="text-end">${due_return}</td>
-                </tr>
-            `);
-      }
-
-      if (advance != "") {
-        total += parseInt(advance);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">অগ্রিম</th>
-                    <td class="text-end">${advance}</td>
-                </tr>
-            `);
-      }
-      if (advance_return != "") {
-        total -= parseInt(advance_return);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">অগ্রিম সমন্বয়</th>
-                    <td class="text-end">${advance_return}</td>
-                </tr>
-            `);
-      }
-
-
-      if (grace != "") {
-        total -= parseInt(grace);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">ছাড়</th>
-                    <td class="text-end">${grace}</td>
-                </tr>
-            `);
-      }
-
-      if (loan_installment != "") {
-        total += parseInt(loan_installment);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">ঋণ ফেরত</th>
-                    <td class="text-end">${loan_installment}</td>
-                </tr>
-            `);
-      }
-      if (interest != "") {
-        total += parseInt(interest);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">ঋণের লভ্যাংশ</th>
-                    <td class="text-end">${interest}</td>
-                </tr>
-            `);
-      }
-
-      if (due_interest != "") {
-        total += parseInt(due_interest);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">বকেয়া লভ্যাংশ</th>
-                    <td class="text-end">${due_interest}</td>
-                </tr>
-            `);
-      }
-
-      if (loan_late_fee != "") {
-        total += parseInt(loan_late_fee);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">ঋণের বিলম্ব ফি</th>
-                    <td class="text-end">${loan_late_fee}</td>
-                </tr>
-            `);
-      }
-
-      if (loan_other_fee != "") {
-        total += parseInt(loan_other_fee);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">ঋণের অন্যান্য ফি</th>
-                    <td class="text-end">${loan_other_fee}</td>
-                </tr>
-            `);
-      }
-      if (loan_grace != "") {
-        total -= parseInt(loan_grace);
-        $(".table-collection-info").append(`
-           <tr>
-                    <th class="py-1">ঋণের ছাড়</th>
-                    <td class="text-end">${loan_grace}</td>
-                </tr>
-            `);
-      }
+      addToTotal("জমা", $("#dps_amount").val());
+      addToTotal("বিলম্ব ফি", $("#late_fee").val());
+      addToTotal("অন্যান্য ফি", $("#other_fee").val());
+      addToTotal("বকেয়া", -$("#due").val());
+      addToTotal("বকেয়া ফেরত", $("#due_return").val());
+      addToTotal("অগ্রিম", $("#advance").val());
+      addToTotal("অগ্রিম সমন্বয়", -$("#advance_return").val());
+      addToTotal("ছাড়", -$("#grace").val());
+      addToTotal("ঋণ ফেরত", $("#loan_installment").val());
+      addToTotal("ঋণের লভ্যাংশ", $("#interest").val());
+      addToTotal("বকেয়া লভ্যাংশ", $("#due_interest").val());
+      addToTotal("ঋণের বিলম্ব ফি", $("#loan_late_fee").val());
+      addToTotal("ঋণের অন্যান্য ফি", $("#loan_other_fee").val());
+      addToTotal("ঋণের ছাড়", -$("#loan_grace").val());
 
       $("#total").val(total);
+
       $(".table-collection-info").append(`
-            <tfoot>
+        <tfoot>
             <tr>
                 <td class="fw-bolder text-end">সর্বমোট</td>
                 <td class="text-dark total fw-bolder text-end p-0">${total}</td>
             </tr>
-            </tfoot>
-            `);
+        </tfoot>
+    `);
 
       $("#modalCollection").modal("show");
     }
@@ -1261,6 +1127,13 @@
     $('.btn-dps-info').on('click', function (e) {
       var account_no = $("#account_no option:selected").val();
       var date = $("#date").val();
+      $("#date2").flatpickr({
+        altInput: true,
+        allowInput: true,
+        altFormat: "d-m-Y",
+        dateFormat: "Y-m-d",
+        defaultDate: date
+      });
       total_interest = 0;
       $("#info").html("");
       $(".savings-info-list").empty();
@@ -1387,7 +1260,7 @@
 </tr>
 <tr class="font-small-2">
                                         <td class="fw-bolder ">বকেয়া</td><td>:</td>
-                                        <td class="total_due px-1" colspan="2">${data.due}</td>
+                                        <td class="total_due px-1" colspan="2">${data.user.due}</td>
                                     </tr>
 </tr>
 <tr class="font-small-2">
@@ -1744,196 +1617,66 @@
         url: "{{ url('getSpecialDpsCollectionData') }}/"+id,
         dataType: "JSON",
         success: function (data) {
-          let acc_holder = data.dpsInstallment.user.name;
-          let account_no = data.dpsInstallment.account_no;
-          let dps_amount = data.dpsInstallment.dps_amount;
-          let receipt_no = data.dpsInstallment.receipt_no;
-          let late_fee = data.dpsInstallment.late_fee;
-          let other_fee = data.dpsInstallment.other_fee;
-          let due = data.dpsInstallment.due;
-          let due_return = data.dpsInstallment.due_return;
-          let advance = data.dpsInstallment.advance;
-          let advance_return = data.dpsInstallment.advance_return;
-          let date = data.dpsInstallment.date;
-          let dps_note = data.dpsInstallment.dps_note;
-          let grace = data.dpsInstallment.grace;
-          let loan_installment = data.dpsInstallment.loan_installment;
-          let interest = data.dpsInstallment.interest;
-          let due_interest = data.dpsInstallment.due_interest;
-          let loan_late_fee = data.dpsInstallment.loan_late_fee;
-          let loan_other_fee = data.dpsInstallment.loan_other_fee;
-          let loan_grace = data.dpsInstallment.loan_grace;
+          let dpsInstallment = data.dpsInstallment;
+          let acc_holder = dpsInstallment.user.name;
+          let account_no = dpsInstallment.account_no;
+          let date = dpsInstallment.date;
+          let receipt_no = dpsInstallment.receipt_no;
 
           $(".table-collection-details").empty();
           var total = 0;
-          $(".table-collection-details").append(`
 
-<tr>
-                    <th class="py-1">নাম</th>
-                    <td>${acc_holder}</td>
-                </tr>
-<tr>
-                    <th class="py-1">হিসাব নং</th>
-                    <td>${account_no}</td>
-                </tr>
-<tr>
-                    <th class="py-1">তারিখ</th>
-                    <td>${date}</td>
-                </tr>
-<tr>
-                    <th class="py-1">রিসিপ্ট নং</th>
-                    <td>${receipt_no}</td>
-                </tr>
-
-            `);
-          if (dps_amount !== null && dps_amount !== "" && dps_amount != 0) {
-            total += parseInt(dps_amount);
+          const appendRowHeader = (label, value, divider= false) => {
             $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">জমা</th>
-      <td class="text-end">${dps_amount}</td>
-    </tr>
-  `);
-          }
+                        <tr>
+                            <th class="py-1 ${ divider? 'border-bottom border-dashed' : ''}">${label}</th>
+                            <td class="text-end ${ divider? 'border-bottom border-dashed' : ''}">${value}</td>
+                        </tr>
+                    `);
 
-          if (late_fee !== null && late_fee !== "") {
-            total += parseInt(late_fee);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">বিলম্ব ফি</th>
-      <td class="text-end">${late_fee}</td>
-    </tr>
-  `);
-          }
+          };
 
-          if (other_fee !== null && other_fee !== "") {
-            total += parseInt(other_fee);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">অন্যান্য ফি</th>
-      <td class="text-end">${other_fee}</td>
-    </tr>
-  `);
-          }
+          const appendRow = (label, value, isNegative = false, isDanger = false) => {
+            if (value >0) {
+              const numericValue = parseInt(value);
+              total += isNegative ? -numericValue : numericValue;
+              $(".table-collection-details").append(`
+                        <tr>
+                            <th class="py-1">${label}</th>
+                            <td class="text-end ${isDanger ? 'text-danger' : ''}">${value}</td>
+                        </tr>
+                    `);
+            }
+          };
 
-          if (due !== null && due !== "") {
-            total -= parseInt(due);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">বকেয়া</th>
-      <td class="text-end">${due}</td>
-    </tr>
-  `);
-          }
+          appendRowHeader("নাম", acc_holder);
+          appendRowHeader("হিসাব নং", account_no);
+          appendRowHeader("তারিখ", date);
+          appendRowHeader("রিসিপ্ট নং", receipt_no, true);
 
-          if (due_return !== null && due_return !== "") {
-            total += parseInt(due_return);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">বকেয়া ফেরত</th>
-      <td class="text-end">${due_return}</td>
-    </tr>
-  `);
-          }
-
-          if (advance !== null && advance !== "") {
-            total += parseInt(advance);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">অগ্রিম</th>
-      <td class="text-end">${advance}</td>
-    </tr>
-  `);
-          }
-
-          if (advance_return !== null && advance_return !== "") {
-            total -= parseInt(advance_return);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">অগ্রিম সমন্বয়</th>
-      <td class="text-end text-danger">${advance_return}</td>
-    </tr>
-  `);
-          }
-
-          if (grace !== null && grace !== "") {
-            total -= parseInt(grace);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">ছাড়</th>
-      <td class="text-end text-danger">${grace}</td>
-    </tr>
-  `);
-          }
-
-          if (loan_installment !== null && loan_installment !== "") {
-            total += parseInt(loan_installment);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">ঋণ ফেরত</th>
-      <td class="text-end">${loan_installment}</td>
-    </tr>
-  `);
-          }
-
-          if (interest !== null && interest !== "") {
-            total += parseInt(interest);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">ঋণের লভ্যাংশ</th>
-      <td class="text-end">${interest}</td>
-    </tr>
-  `);
-          }
-
-          if (due_interest !== null && due_interest !== "") {
-            total += parseInt(due_interest);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">বকেয়া লভ্যাংশ</th>
-      <td class="text-end">${due_interest}</td>
-    </tr>
-  `);
-          }
-
-          if (loan_late_fee !== null && loan_late_fee !== "") {
-            total += parseInt(loan_late_fee);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">ঋণের বিলম্ব ফি</th>
-      <td class="text-end">${loan_late_fee}</td>
-    </tr>
-  `);
-          }
-
-          if (loan_other_fee !== null && loan_other_fee !== "") {
-            total += parseInt(loan_other_fee);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">ঋণের অন্যান্য ফি</th>
-      <td class="text-end">${loan_other_fee}</td>
-    </tr>
-  `);
-          }
-
-          if (loan_grace !== null && loan_grace !== "") {
-            total -= parseInt(loan_grace);
-            $(".table-collection-details").append(`
-    <tr>
-      <th class="py-1">ঋণের ছাড়</th>
-      <td class="text-end text-danger">${loan_grace}</td>
-    </tr>
-  `);
-          }
+          appendRow("জমা", dpsInstallment.dps_amount);
+          appendRow("বিলম্ব ফি", dpsInstallment.late_fee);
+          appendRow("অন্যান্য ফি", dpsInstallment.other_fee);
+          appendRow("বকেয়া", dpsInstallment.due, true);
+          appendRow("বকেয়া ফেরত", dpsInstallment.due_return);
+          appendRow("অগ্রিম", dpsInstallment.advance);
+          appendRow("অগ্রিম সমন্বয়", dpsInstallment.advance_return, true, true);
+          appendRow("ছাড়", dpsInstallment.grace, true, true);
+          appendRow("ঋণ ফেরত", dpsInstallment.loan_installment);
+          appendRow("ঋণের লভ্যাংশ", dpsInstallment.interest);
+          appendRow("বকেয়া লভ্যাংশ", dpsInstallment.due_interest);
+          appendRow("ঋণের বিলম্ব ফি", dpsInstallment.loan_late_fee);
+          appendRow("ঋণের অন্যান্য ফি", dpsInstallment.loan_other_fee);
+          appendRow("ঋণের ছাড়", dpsInstallment.loan_grace, true, true);
 
           $("#total").val(total);
           $(".table-collection-details").append(`
-            <tfoot>
-            <tr>
-                <td class="fw-bolder text-end">সর্বমোট</td>
-                <td class="text-dark total fw-bolder text-end p-0">${total}</td>
-            </tr>
-            </tfoot>
+                <tfoot>
+                    <tr>
+                        <td class="fw-bolder text-end">সর্বমোট</td>
+                        <td class="text-dark total fw-bolder text-end p-0">${total}</td>
+                    </tr>
+                </tfoot>
             `);
 
           $("#modalCollectionDetails").modal("show");
@@ -2012,7 +1755,14 @@
           $("#editDpsInstallmentForm input[name='advance']").val(data.dpsInstallment.advance);
           $("#editDpsInstallmentForm input[name='advance_return']").val(data.dpsInstallment.advance_return);
           $("#editDpsInstallmentForm input[name='grace']").val(data.dpsInstallment.grace);
-          $("#editDpsInstallmentForm input[name='date']").val(data.dpsInstallment.date);
+         // $("#editDpsInstallmentForm input[name='date']").val(data.dpsInstallment.date);
+          $("#editDpsInstallmentForm input[name='date']").flatpickr({
+            altInput: true,
+            allowInput: true,
+            altFormat: "d-m-Y",
+            dateFormat: "Y-m-d",
+            defaultDate: data.dpsInstallment.date
+          });
           $("#editDpsInstallmentForm input[name='dps_note']").val(data.dpsInstallment.dps_note);
         }
       })
@@ -2044,7 +1794,14 @@
           $("#editLoanInstallmentForm input[name='loan_other_fee']").val(data.dpsInstallment.loan_other_fee);
           $("#editLoanInstallmentForm input[name='loan_grace']").val(data.dpsInstallment.loan_grace);
           $("#editLoanInstallmentForm input[name='loan_note']").val(data.dpsInstallment.loan_note);
-          $("#editLoanInstallmentForm input[name='date']").val(data.dpsInstallment.date);
+          //$("#editLoanInstallmentForm input[name='date']").val(data.dpsInstallment.date);
+          $("#editLoanInstallmentForm input[name='date']").flatpickr({
+            altInput: true,
+            allowInput: true,
+            altFormat: "d-m-Y",
+            dateFormat: "Y-m-d",
+            defaultDate: data.dpsInstallment.date
+          });
           let loanInfo = data.loanInterests;
           $.each(loanInfo, function (a, b) {
             total_interest += parseInt(b.interest) * parseInt(b.installments);

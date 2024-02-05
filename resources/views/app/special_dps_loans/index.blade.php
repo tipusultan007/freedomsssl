@@ -138,11 +138,11 @@
             render: function(data, type, full, meta) {
               var $name = full["name"],
                 $id = full["user_id"],
-                $image = full["profile_photo_url"];
+                $image = full["image"];
               if ($image != null) {
                 // For Avatar image
                 var $output =
-                  "<img src=\"" + assetPath + "images/avatars/" + $image + "\" alt=\"Avatar\" height=\"32\" width=\"32\">";
+                  "<img src=\"{{ asset('storage/images/profile') }}/" + $image + "\" alt=\"Avatar\" height=\"32\" width=\"32\">";
               } else {
                 // For Avatar badge
                 var stateNum = Math.floor(Math.random() * 6) + 1;

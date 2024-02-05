@@ -258,7 +258,7 @@ class ProcessDpsInstallments implements ShouldQueue
         }*/
 
 
-        /*if ($installment->loan_installment > 0 || $installment->interest > 0) {
+        if ($installment->loan_installment > 0 || $installment->interest > 0) {
           $interests = Helpers::getSpecialInterest($installment->account_no,$installment->date,'');
           $loan = SpecialDpsLoan::find($installment->special_dps_loan_id);
 
@@ -384,7 +384,7 @@ class ProcessDpsInstallments implements ShouldQueue
           $installment->unpaid_interest = $unpaid_interest;
           $installment->save();
 
-        }*/
+        }
 
         /*Transaction::create([
           'account_no' => $installment->account_no,
