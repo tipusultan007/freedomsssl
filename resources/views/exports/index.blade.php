@@ -1,5 +1,5 @@
 @extends('layouts/layoutMaster')
-@section('title', __('নোটিফিকেশন'))
+@section('title', 'রিপোর্ট তালিকা')
 @section('vendor-style')
   <link rel="stylesheet" href="{{asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css')}}">
   <link rel="stylesheet" href="{{asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css')}}">
@@ -24,127 +24,71 @@
 
 @section('content')
   <div class="container-fluid">
-    <h4 class="text-success text-center fw-bolder">নোটিফিকেশন</h4>
+    <h4 class="text-success text-center fw-bolder"> রিপোর্ট তালিকা</h4>
     <hr>
-
+    @include('app.partials.alert_success')
     <div class="card">
       <div class="card-body">
-        <form action="{{ route('notifications.index') }}" method="GET" class="mb-3">
-          <div class="row">
-            <div class="col-md-4">
-              <select name="notificationType" id="notificationType" class="form-select select2">
-                <option value="" @if(empty($notificationType)) selected @endif>All Notifications</option>
-                <option value="dps" @if($notificationType == 'dps') selected @endif>মাসিক (DPS) ঋণ</option>
-                <option value="special" @if($notificationType == 'special') selected @endif>স্পেশাল ঋণ </option>
-                <option value="fdr" @if($notificationType == 'fdr') selected @endif>স্থায়ী সঞ্চয় (FDR) মুনাফা</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <button type="submit" class="btn btn-primary">সার্চ</button>
-            </div>
+        <form method="GET" action="{{ route('generate.report') }}">
+        <div class="row">
+          <div class="col-md-4">
+            <select name="type" class="form-control select2" id="type" data-placeholder="ধরন">
+              <option value="daily_savings">দৈনিক সঞ্চয় রিপোর্ট</option>
+              <option value="daily_loans">দৈনিক ঋণ রিপোর্ট</option>
+              <option value="dps_savings">মাসিক সঞ্চয় রিপোর্ট</option>
+              <option value="dps_loans">মাসিক ঋণ রিপোর্ট</option>
+              <option value="special_dps">স্পেশাল সঞ্চয় রিপোর্ট</option>
+              <option value="special_loans">স্পেশাল ঋণ রিপোর্ট</option>
+              <option value="fdr">স্থায়ী সঞ্চয় রিপোর্ট</option>
+            </select>
           </div>
-
+          <div class="col-md-3">
+            <button type="submit" class="btn btn-primary">Generate</button>
+          </div>
+        </div>
         </form>
       </div>
     </div>
-    <table class="table table-sm table-bordered">
-      <thead class="table-light">
+    <table class="table table-sm table-striped table-bordered">
+      <thead class="table-dark">
       <tr>
-        <th class="fw-bolder py-2 align-middle">ধরন</th>
-        <th class="fw-bolder align-middle py-2">হিসাব নং</th>
-        <th class="fw-bolder align-middle py-2">বকেয়া</th>
-        <th class="fw-bolder align-middle text-center py-2">বর্ণনা <br>
-        <div class="d-flex text-center pt-2 border-top justify-content-between">
-          <p>অবশিষ্ট পরিমাণ</p>
-          <p>কিস্তি সংখ্যা</p>
-        </div>
-        </th>
-        <th class="fw-bolder align-middle py-2">নাম</th>
-        <th class="fw-bolder align-middle py-2">সর্বশেষ লেনদেন</th>
+        <th class="fw-bolder">রিপোর্ট</th>
+        <th class="fw-bolder">স্ট্যাটাস</th>
+        <th class="fw-bolder">#</th>
       </tr>
       </thead>
       <tbody>
-      @foreach($notifications as $notification)
-        @php
-          $data = json_decode($notification->data, true);
-        @endphp
-        @if($notification->notifiable_type == 'App\Models\DpsLoan')
-          <tr>
-            <td>
-              <span class=" text-success">মাসিক (DPS) ঋণ</span>
-            </td>
-            <td><span class="text-success">{{ $data['account_no'] }}</td>
-            <td><span class="text-success">{{ $data['total_interest'] }}</span></td>
-            <td>
-          <table class=" table table-sm table-bordered table-primary">
-              @forelse($data['interest_details'] as $item)
-                <tr>
-                  <td class="text-left">{{ $item['loanRemain'] }}</td>
-                  <td class="text-end">{{ $item['dueInstallment'] }}</td>
-                </tr>
-                @empty
-              @endforelse
-          </table>
-            </td>
-            <td><span class="text-dark fw-bold">{{ $data['user']['name'] }}</span> <br>
-            মোবাইলঃ <span class="text-danger fw-bolder">{{ $data['user']['phone1'] }}</span>
-            </td>
-            <td>{{ $data['last_date'] }}</td>
-          </tr>
-          @elseif($notification->notifiable_type == 'App\Models\SpecialDpsLoan')
-            <tr>
-              <td>
-                <span class=" text-primary">স্পেশাল মাসিক ঋণ</span>
-              </td>
-              <td><span class="text-primary">{{ $data['account_no'] }}</td>
-              <td><span class="text-primary">{{ $data['total_interest'] }}</span></td>
-              <td>
-                <table class=" table table-sm table-bordered table-primary">
-                  @forelse($data['interest_details'] as $item)
-                    <tr>
-                      <td class="text-left">{{ $item['loanRemain'] }}</td>
-                      <td class="text-end">{{ $item['dueInstallment'] }}</td>
-                    </tr>
-                  @empty
-                  @endforelse
-                </table>
-              </td>
-              <td><span class="text-dark fw-bold">{{ $data['user']['name'] }}</span> <br>
-                মোবাইলঃ <span class="text-danger fw-bolder">{{ $data['user']['phone1'] }}</span>
-              </td>
-              <td>{{ $data['last_date'] }}</td>
-            </tr>
-        @else
-          <tr>
-            <td>
-              <span class="text-danger">স্থায়ী সঞ্চয় (FDR) মুনাফা</span>
-            </td>
-            <td><span class="text-danger">{{ $data['account_no'] }}</span></td>
-            <td><span class="text-danger">{{ $data['total_profit'] }}</span></td>
-           <td>
-             <table class=" table table-sm table-bordered table-info">
-               @forelse($data['profit_details'] as $item)
-                 <tr>
-                   <td class="text-left">{{ $item['fdr_deposit'] }}</td>
-                   <td class="text-end">{{ $item['dueInstallment'] }}</td>
-                 </tr>
-               @empty
-               @endforelse
-             </table>
-           </td>
-            <td><span class="text-dark fw-bold">{{ $data['user']['name'] }}</span> <br>
-              মোবাইলঃ <span class="text-danger fw-bolder">{{ $data['user']['phone1'] }}</span>
-            </td>
-            <td>{{ $data['last_date'] }}</td>
-          </tr>
-        @endif
+      @foreach ($exports as $export)
+        <tr>
+          <td>{{ $export->file_name }}</td>
+          <td>
+            @if($export->status == 'completed')
+              <span class="badge rounded-pill bg-label-success">সম্পন্ন</span>
+            @elseif($export->status == 'processing')
+              <span class="badge rounded-pill bg-label-warning">প্রক্রিয়াধীন</span>
+            @else
+              <span class="badge rounded-pill bg-label-danger">ব্যর্থ</span>
+            @endif
 
+          </td>
+          <td>
+           @if($export->status == 'completed')
+              <a href="{{ route('exports.download', $export->id) }}" class="btn rounded-pill btn-success waves-effect waves-light"><span class="ti-xs ti ti-download me-1"></span> ডাউনলোড</a>
+            @endif
+            <form action="{{ route('exports.destroy', $export->id) }}" method="POST" style="display: inline;">
+              @csrf
+              @method('DELETE')
+              <button type="submit" class="btn rounded-pill btn-google-plus waves-effect waves-light" onclick="return confirm('Are you sure you want to delete this export file?')">
+                <i class="tf-icons ti ti-trash-x ti-xs me-1"></i>Delete</button>
+            </form>
+          </td>
+        </tr>
       @endforeach
       </tbody>
     </table>
 
     <div class="mt-3">
-      {{ $notifications->appends(['notificationType' => $notificationType])->links() }}
+      {{ $exports->links() }}
     </div>
   </div>
 @endsection

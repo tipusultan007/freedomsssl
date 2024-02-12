@@ -61,11 +61,11 @@
 
             <div class="col-md-3 mb-2">
               <label for="interest1" class="form-label">সুদের হার (%)</label>
-              <input type="number" class="form-control" value="2" id="interest1" name="interest1" value="{{ $loan->interest1??'' }}">
+              <input type="number" class="form-control" id="interest1" step="any" name="interest1" value="{{ $loan->interest1??'' }}">
             </div>
             <div class="col-md-3 mb-2">
               <label for="interest2" class="form-label">স্পেশাল সুদের হার (%)</label>
-              <input type="number" class="form-control" id="interest2" name="interest2" value="{{ $loan->interest2??'' }}">
+              <input type="number" class="form-control" id="interest2" name="interest2" step="any" value="{{ $loan->interest2??'' }}">
             </div>
             <div class="col-md-3 mb-2">
               <label for="upto_amount" class="form-label">Upto Amount</label>

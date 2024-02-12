@@ -12,7 +12,6 @@
            @if( $minAttr = Arr::get($field, 'min')) min="{{ $minAttr }}" @endif
            id="{{ Arr::get($field, 'name') }}"
     >
-
     @if( $append = Arr::get($field, 'append'))
         <span>{{ $append }}</span>
     @endif

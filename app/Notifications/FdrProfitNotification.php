@@ -12,12 +12,16 @@ class FdrProfitNotification extends Notification
     use Queueable;
 
   private $interestData;
+  private $fdr;
+  private $last_trx;
   /**
    * Create a new notification instance.
    */
-  public function __construct($interestData)
+  public function __construct($interestData, $fdr, $last_trx)
   {
     $this->interestData = $interestData;
+    $this->fdr = $fdr;
+    $this->last_trx = $last_trx;
   }
 
     /**
@@ -50,6 +54,8 @@ class FdrProfitNotification extends Notification
     {
       return [
         'account_no' => $this->interestData['account_no'],
+        'user' => $this->fdr->user,
+        'last_date' => $this->last_trx?date('d-m-Y',strtotime($this->last_trx->date)):'-',
         'total_profit' => $this->interestData['total_profit'],
         'profit_details' => $this->interestData['profit_details'],
       ];

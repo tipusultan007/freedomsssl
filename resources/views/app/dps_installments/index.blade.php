@@ -324,8 +324,7 @@ $managers = \App\Models\Manager::all();
     </div>
     <div class="col-xl-2 col-md-6 col-12">
       <div class="mb-1">
-        <input type="date" class="form-control flatpickr-basic" name="s_todate"
-               id="s_todate" placeholder="To">
+        <input type="date" class="form-control flatpickr-basic" name="s_todate" id="s_todate" placeholder="To">
       </div>
     </div>
 
@@ -338,7 +337,6 @@ $managers = \App\Models\Manager::all();
               onclick="resetFilterSavings()">রিসেট
       </button>
     </div>
-
   </div>
   <div class="card">
     <table class="datatables-basic table-bordered table table-sm">
@@ -349,6 +347,8 @@ $managers = \App\Models\Manager::all();
         <th class="fw-bolder py-2">জমা</th>
         <th class="fw-bolder py-2">ঋণ ফেরত</th>
         <th class="fw-bolder py-2">ঋণের লভ্যাংশ</th>
+        <th class="fw-bolder py-2">বকেয়া</th>
+        <th class="fw-bolder py-2">বকেয়া ফেরত</th>
         <th class="fw-bolder py-2">সর্বমোট</th>
         <th class="fw-bolder py-2">তারিখ</th>
         <th class="fw-bolder py-2">এসএমএস </th>
@@ -974,6 +974,8 @@ $managers = \App\Models\Manager::all();
           {"data": "dps_amount"},
           {"data": "loan_installment"},
           {"data": "interest"},
+          {"data": "due"},
+          {"data": "due_return"},
           {"data": "total"},
           {"data": "date"},
           {"data": "sent"},
@@ -986,7 +988,7 @@ $managers = \App\Models\Manager::all();
         columnDefs: [
           {
             // Actions
-            targets: 7,
+            targets: 9,
             title: 'এসএমএস',
             orderable: false,
             render: function(data, type, full, meta) {
@@ -1017,7 +1019,7 @@ $managers = \App\Models\Manager::all();
           },
           {
             // Actions
-            targets: 9,
+            targets: 11,
             orderable: false,
             render: function(data, type, full, meta) {
               return (
@@ -1073,7 +1075,7 @@ $managers = \App\Models\Manager::all();
               text: '<i class="ti ti-printer me-2" ></i>Print',
               className: 'dropdown-item',
               exportOptions: {
-                columns: [0,1, 2, 3,4,5],
+                columns: [0,1, 2, 3,4,5,6,7,8,10],
               }
             },
             {
@@ -1082,7 +1084,7 @@ $managers = \App\Models\Manager::all();
               bom: true,
               className: 'dropdown-item',
               exportOptions: {
-                columns: [0,1, 2, 3,4,5],
+                columns: [0,1, 2, 3,4,5,6,7,8,10],
               }
             },
             {
@@ -1091,7 +1093,7 @@ $managers = \App\Models\Manager::all();
               bom: true,
               className: 'dropdown-item',
               exportOptions: {
-                columns: [0,1, 2, 3,4,5],
+                columns: [0,1, 2, 3,4,5,6,7,8,10],
               }
             },
             {
@@ -1100,7 +1102,7 @@ $managers = \App\Models\Manager::all();
               bom: true,
               className: 'dropdown-item',
               exportOptions: {
-                columns: [0,1, 2, 3,4,5],
+                columns: [0,1, 2, 3,4,5,6,7,8,10],
               }
             },
             {
@@ -1108,7 +1110,7 @@ $managers = \App\Models\Manager::all();
               text: '<i class="ti ti-copy me-2" ></i>Copy',
               className: 'dropdown-item',
               exportOptions: {
-                columns: [0,1, 2, 3,4,5],
+                columns: [0,1, 2, 3,4,5,6,7,8,10],
               }
             }
           ],

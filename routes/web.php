@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ExportController;
+use App\Http\Controllers\GeneratedReportController;
 use App\Http\Controllers\SavingsCollectionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\laravel_example\UserManagement;
@@ -497,7 +499,24 @@ Route::middleware(['web', 'manager'])->group(function () {
   Route::get('print-dps-form/{id}',[DpsController::class,'print'])->name('print.dps.form');
 
   //Route::resource('dps-completes',\App\Http\Controllers\DpsCompleteController::class);
-  Route::get('notifications',[\App\Http\Controllers\NotificationController::class,'index']);
+  Route::get('notifications',[\App\Http\Controllers\NotificationController::class,'index'])->name('notifications.index');
+
+  Route::get('/check-report-progress/{id}', [GeneratedReportController::class, 'checkReportProgress']);
+
+  Route::get('/generate-pdf', [GeneratedReportController::class, 'generatePDF']);
+  Route::get('/download/{filename}', [ExportController::class,'download'])->name('download.export');
+
+  Route::resource('exports', ExportController::class);
+  Route::get('exports/{export}/download', [ExportController::class, 'download'])->name('exports.download');
+
+  Route::get('generate-report',[ExportController::class,'generateReport'])->name('generate.report');
+
+  Route::resource('profits',\App\Http\Controllers\ProfitItemController::class);
+  /*Route::post('profits',[\App\Http\Controllers\ProfitItemController::class,'store'])->name('profits.store');
+  Route::post('profits-update',[\App\Http\Controllers\ProfitItemController::class,'update'])->name('profits.update');
+  Route::post('profits-update',[\App\Http\Controllers\ProfitItemController::class,'update'])->name('profits.update');*/
+
+  Route::get('accountList/{type}',[\App\Http\Controllers\ProfitItemController::class,'accountList']);
 });
 
 

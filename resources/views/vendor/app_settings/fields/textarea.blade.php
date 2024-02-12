@@ -15,5 +15,5 @@
               @if( $styleAttr = Arr::get($field, 'style')) style="{{ $styleAttr }}" @endif
               id="{{ Arr::get($field, 'name') }}"
     >{{ old($field['name'], \setting($field['name'])) }}</textarea>
-
+    <div class="fs-6 text-end" id="text_count_{{ Arr::get($field, 'name') }}">Total Characters: 0</div>
 @endcomponent

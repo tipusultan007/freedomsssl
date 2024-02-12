@@ -383,6 +383,8 @@
           <th class="fw-bolder py-2">জমা</th>
           <th class="fw-bolder py-2">ঋণ ফেরত</th>
           <th class="fw-bolder py-2">ঋণের লভ্যাংশ</th>
+          <th class="fw-bolder py-2">বকেয়া</th>
+          <th class="fw-bolder py-2">বকেয়া ফেরত</th>
           <th class="fw-bolder py-2">সর্বমোট</th>
           <th class="fw-bolder py-2">তারিখ</th>
           <th class="fw-bolder py-2">এসএমএস </th>
@@ -1386,6 +1388,8 @@
           {"data": "dps_amount"},
           {"data": "loan_installment"},
           {"data": "interest"},
+          {"data": "due"},
+          {"data": "due_return"},
           {"data": "total"},
           {"data": "date"},
           {"data": "sent"},
@@ -1398,7 +1402,7 @@
         columnDefs: [
           {
             // Actions
-            targets: 7,
+            targets: 9,
             title: 'এসএমএস',
             orderable: false,
             render: function(data, type, full, meta) {
@@ -1429,8 +1433,7 @@
           },
           {
             // Actions
-            targets: 9,
-            title: 'Actions',
+            targets: 11,
             orderable: false,
             render: function (data, type, full, meta) {
               return (
@@ -1479,31 +1482,44 @@
                 extend: 'print',
                 text: '<i class="ti ti-printer me-2" ></i>Print',
                 className: 'dropdown-item',
-                exportOptions: {columns: [0, 1, 2, 3, 4, 5, 6, 7]}
+                exportOptions: {
+                  columns: [0,1, 2, 3,4,5,6,7,8,10],
+                }
               },
               {
                 extend: 'csv',
                 text: '<i class="ti ti-file-text me-2" ></i>Csv',
+                bom: true,
                 className: 'dropdown-item',
-                exportOptions: {columns: [0, 1, 2, 3, 4, 5, 6, 7]}
+                exportOptions: {
+                  columns: [0,1, 2, 3,4,5,6,7,8,10],
+                }
               },
               {
                 extend: 'excel',
                 text: '<i class="ti ti-file-spreadsheet me-2"></i>Excel',
+                bom: true,
                 className: 'dropdown-item',
-                exportOptions: {columns: [0, 1, 2, 3, 4, 5, 6, 7]}
+                exportOptions: {
+                  columns: [0,1, 2, 3,4,5,6,7,8,10],
+                }
               },
               {
                 extend: 'pdf',
                 text: '<i class="ti ti-file-code-2 me-2"></i>Pdf',
+                bom: true,
                 className: 'dropdown-item',
-                exportOptions: {columns: [0, 1, 2, 3, 4, 5, 6, 7]}
+                exportOptions: {
+                  columns: [0,1, 2, 3,4,5,6,7,8,10],
+                }
               },
               {
                 extend: 'copy',
                 text: '<i class="ti ti-copy me-2" ></i>Copy',
                 className: 'dropdown-item',
-                exportOptions: {columns: [0, 1, 2, 3, 4, 5, 6, 7]}
+                exportOptions: {
+                  columns: [0,1, 2, 3,4,5,6,7,8,10],
+                }
               }
             ],
             init: function (api, node, config) {
@@ -1850,8 +1866,6 @@
             closeButton: true,
             tapToDismiss: false,
           });
-
-
         },
         error: function (data) {
           $("#modalEditDpsInstallment").modal("hide");

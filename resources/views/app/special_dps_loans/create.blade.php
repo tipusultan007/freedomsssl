@@ -70,11 +70,11 @@
 
              <div class="col-md-3 mb-2">
                <label for="interest1" class="form-label">সুদের হার (%)</label>
-               <input type="number" class="form-control" value="2" id="interest1" name="interest1">
+               <input type="number" class="form-control" value="2" id="interest1" name="interest1" step="any">
              </div>
              <div class="col-md-3 mb-2">
                <label for="interest2" class="form-label">স্পেশাল সুদের হার (%)</label>
-               <input type="number" class="form-control" id="interest2" name="interest2">
+               <input type="number" class="form-control" id="interest2" name="interest2" step="any">
              </div>
              <div class="col-md-3 mb-2">
                <label for="upto_amount" class="form-label">Upto Amount</label>
@@ -82,12 +82,12 @@
              </div>
              <div class="col-md-3 mb-2">
                <label for="account_no" class="form-label">ঋণের তারিখ</label>
-               <input type="date" class="form-control flatpickr-basic" id="opening_date"
+               <input type="text" class="form-control datepicker" id="opening_date"
                       name="opening_date" aria-label="MM/DD/YYYY">
              </div>
              <div class="col-md-3 mb-2">
-               <label for="account_no" class="form-label">হিসাব শুরু</label>
-               <input type="date" class="form-control flatpickr-basic" id="commencement"
+               <label for="commencement" class="form-label">হিসাব শুরু</label>
+               <input type="text" class="form-control datepicker" id="commencement"
                       name="commencement" aria-label="MM/DD/YYYY">
              </div>
 

@@ -7,12 +7,14 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 
 class SpecialDpsLoan extends Model
 {
   use HasFactory;
   use Searchable;
   use SoftDeletes;
+  use Notifiable;
 
   protected $fillable = [
     'account_no',

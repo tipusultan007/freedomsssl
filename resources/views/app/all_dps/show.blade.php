@@ -237,7 +237,17 @@
               aria-selected="true">
               <span class="fw-bold">উত্তোলন</span></a>
           </li>
-
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="profits-tab"
+              data-bs-toggle="tab"
+              href="#profits"
+              aria-controls="home"
+              role="tab"
+              aria-selected="true">
+              <span class="fw-bold">মুনাফা</span></a>
+          </li>
         </ul>
 
         <div class="tab-content">
@@ -297,6 +307,47 @@
             </table>
           </div>
           <div class="tab-pane " id="closingTransactions" aria-labelledby="homeIcon-tab" role="tabpanel">
+            <table class="table table-sm table-bordered">
+              <thead class="table-light py-0">
+              <tr>
+                <th class="fs-6 fw-bolder py-1">তারিখ</th>
+                <th class="fs-6 fw-bolder py-1">সঞ্চয় উত্তোলন</th>
+                <th class="fs-6 fw-bolder py-1">মুনাফা উত্তোলন</th>
+                <th class="fs-6 fw-bolder py-1">ঋন ফেরত</th>
+                <th class="fs-6 fw-bolder py-1">ঋণের লভ্যাংশ</th>
+                <th class="fs-6 fw-bolder py-1">ছাড়</th>
+                <th class="fs-6 fw-bolder py-1">উত্তোলন ফি</th>
+                <th class="fs-6 fw-bolder py-1">কর্মীর নাম</th>
+                <th class="fs-6 fw-bolder py-1">#</th>
+              </tr>
+              </thead>
+
+              @forelse($dps->dpsCompletes as $complete)
+                <tr>
+                  <td>{{ date('d/m/Y',strtotime($complete->date))}}</td>
+                  <td>{{ $complete->withdraw??"-"}}</td>
+                  <td>{{ $complete->profit??'-' }}</td>
+                  <td>{{ $complete->loan_payment??'-' }}</td>
+                  <td>{{ $complete->interest??'-' }}</td>
+                  <td>{{ $complete->grace??'-' }}</td>
+                  <td>{{ $complete->service_fee??'-' }}</td>
+                  <td>{{ $complete->manager->name??'-' }}</td>
+                  <td>
+                    <div class="dropdown chart-dropdown">
+                      <i class="ti ti-dots-vertical font-medium-3 text-primary cursor-pointer" data-bs-toggle="dropdown"></i>
+                      <div class="dropdown-menu dropdown-menu-end">
+                        <a class="dropdown-item text-info edit-dps-complete" href="javascript:;" data-id="{{ $complete->id }}">এডিট করুন </a>
+                        <a class="dropdown-item text-danger delete-dps-complete" data-id="{{ $complete->id }}" href="javascript:;">ডিলেট</a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              @empty
+
+              @endforelse
+            </table>
+          </div>
+          <div class="tab-pane " id="profits" aria-labelledby="homeIcon-tab" role="tabpanel">
             <table class="table table-sm table-bordered">
               <thead class="table-light py-0">
               <tr>

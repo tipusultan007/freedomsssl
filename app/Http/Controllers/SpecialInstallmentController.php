@@ -133,6 +133,8 @@ class SpecialInstallmentController extends Controller
         $nestedData['loan_late_fee'] = $post->loan_late_fee;
         $nestedData['loan_other_fee'] = $post->loan_other_fee;
         $nestedData['late_fee'] = $post->late_fee;
+        $nestedData['due'] = $post->due;
+        $nestedData['due_return'] = $post->due_return;
         $nestedData['other_fee'] = $post->other_fee;
         $nestedData['dps_balance'] = $post->dps_balance;
         $nestedData['loan_balance'] = $post->loan_balance;

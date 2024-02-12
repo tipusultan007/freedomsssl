@@ -5,16 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProfitItem extends Model
+class GeneratedReport extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-      'account_no',
-      'type',
-      'profit',
-      'date',
-      'manager_id',
-      'profit_id'
+      'name',
+      'category',
+      'file_type'
     ];
 }

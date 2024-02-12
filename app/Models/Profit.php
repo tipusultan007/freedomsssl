@@ -15,4 +15,9 @@ class Profit extends Model
       'total_profit',
       'remain_profit',
     ];
+
+    public function profits()
+    {
+      return $this->hasMany(ProfitItem::class);
+    }
 }
